@@ -1,0 +1,651 @@
+{% extends "public/byt3lab_layout.html" %}
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% block content %}
+<div class="b-home">
+
+    <!-- =====================================================================
+         SECTION 1 — HERO INSTITUTIONNEL
+         ===================================================================== -->
+    <section class="b-hero" id="hero">
+        <div class="b-hero__pattern" aria-hidden="true"></div>
+        <div class="b-container b-container--wide">
+            <div class="b-hero__inner">
+                
+                <div class="b-hero__content">
+                    <div class="b-hero__signature">
+                        {{ settings['home.hero.signature']|default("GROUPE TECHNOLOGIQUE & D'INNOVATION") }}
+                    </div>
+                    <h1 class="b-hero__title">
+                        {{ settings['home.hero.title']|default("L'ingénierie des technologies qui façonnent l'Afrique de demain.") }}
+                    </h1>
+                    <p class="b-hero__subtitle">
+                        {{ settings['home.hero.subtitle']|default("Byt3Lab conçoit, déploie et opère des solutions logicielles, des infrastructures critiques et des technologies industrielles pour les entreprises, les gouvernements et les institutions.") }}
+                    </p>
+                    <div class="b-hero__actions">
+                        <a href="{{ site_prefix }}/technologies/" class="b-btn b-btn--lg b-btn--primary">
+                            <span>{{ t('hero_explore_tech', 'Explorer nos technologies') }}</span>
+                            {{ m.byt3lab_icon('arrow-right', 18) }}
+                        </a>
+                        <a href="{{ site_prefix }}/partenaires/" class="b-btn b-btn--lg b-btn--outline-dark">
+                            {{ m.byt3lab_icon('handshake', 18) }}
+                            <span>{{ t('hero_become_partner', 'Devenir partenaire') }}</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Architecture Multi-Couches Technologique BYT3LAB -->
+                <div class="b-hero__visual">
+                    <div class="b-tech-matrix">
+                        <!-- En-tête de la matrice technologique -->
+                        <div class="b-tech-matrix__header">
+                            <div class="b-tech-matrix__status">
+                                <span class="b-tech-matrix__dot"></span>
+                                <span>{{ t('hero_architecture_title', 'Architecture en 5 Couches') }}</span>
+                            </div>
+                            <span class="b-tech-matrix__badge">{{ t('hero_architecture_badge', 'Écosystème Byt3Lab') }}</span>
+                        </div>
+
+                        <!-- Pile des 5 couches d'ingénierie -->
+                        <div class="b-tech-matrix__stack">
+                            <div class="b-tech-matrix__bus"></div>
+
+                            <!-- Couche 01 : Logiciel & Numérique -->
+                            <a href="{{ site_prefix }}/technologies/logiciel-numerique/" class="b-tech-matrix__card" style="--matrix-accent: #38bdf8;">
+                                <div class="b-tech-matrix__icon-box">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="16 18 22 12 16 6"></polyline>
+                                        <polyline points="8 6 2 12 8 18"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="b-tech-matrix__content">
+                                    <div class="b-tech-matrix__layer-tag">
+                                        <span>L1 · Logiciel &amp; Numérique</span>
+                                    </div>
+                                    <div class="b-tech-matrix__layer-title">MELODI ERP • SaaS • Intelligence Artificielle</div>
+                                    <div class="b-tech-matrix__layer-desc">Progiciels de gestion, APIs asynchrones &amp; applications mobiles</div>
+                                </div>
+                                <div class="b-tech-matrix__aside">
+                                    <span class="b-tech-matrix__pill b-tech-matrix__pill--active">Opérationnel</span>
+                                    <span class="b-tech-matrix__arrow">&rarr;</span>
+                                </div>
+                            </a>
+
+                            <!-- Couche 02 : Infrastructure & Cloud -->
+                            <a href="{{ site_prefix }}/technologies/infrastructure-cloud/" class="b-tech-matrix__card" style="--matrix-accent: #0ea5e9;">
+                                <div class="b-tech-matrix__icon-box">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                                    </svg>
+                                </div>
+                                <div class="b-tech-matrix__content">
+                                    <div class="b-tech-matrix__layer-tag">
+                                        <span>L2 · Infrastructure &amp; Cloud</span>
+                                    </div>
+                                    <div class="b-tech-matrix__layer-title">BWS — Byt3Lab Web Services • Infogérance 24/7</div>
+                                    <div class="b-tech-matrix__layer-desc">Serveurs dédiés haute disponibilité &amp; virtualisation KVM / Proxmox</div>
+                                </div>
+                                <div class="b-tech-matrix__aside">
+                                    <span class="b-tech-matrix__pill b-tech-matrix__pill--dev">En Déploiement</span>
+                                    <span class="b-tech-matrix__arrow">&rarr;</span>
+                                </div>
+                            </a>
+
+                            <!-- Couche 03 : Matériel & Réseaux -->
+                            <a href="{{ site_prefix }}/technologies/materiel-reseaux/" class="b-tech-matrix__card" style="--matrix-accent: #818cf8;">
+                                <div class="b-tech-matrix__icon-box">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="2" width="20" height="8" rx="2"></rect>
+                                        <rect x="2" y="14" width="20" height="8" rx="2"></rect>
+                                        <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                        <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                                    </svg>
+                                </div>
+                                <div class="b-tech-matrix__content">
+                                    <div class="b-tech-matrix__layer-tag">
+                                        <span>L3 · Matériel &amp; Réseaux</span>
+                                    </div>
+                                    <div class="b-tech-matrix__layer-title">Datacenters • Baies Serveurs &amp; Télécoms</div>
+                                    <div class="b-tech-matrix__layer-desc">Câblage structuré certifié, pare-feu UTM &amp; interconnexions fibre</div>
+                                </div>
+                                <div class="b-tech-matrix__aside">
+                                    <span class="b-tech-matrix__pill b-tech-matrix__pill--dev">En Déploiement</span>
+                                    <span class="b-tech-matrix__arrow">&rarr;</span>
+                                </div>
+                            </a>
+
+                            <!-- Couche 04 : Technologies Industrielles -->
+                            <a href="{{ site_prefix }}/technologies/technologies-industrielles/" class="b-tech-matrix__card" style="--matrix-accent: #10b981;">
+                                <div class="b-tech-matrix__icon-box">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                                        <rect x="9" y="9" width="6" height="6"></rect>
+                                        <line x1="9" y1="1" x2="9" y2="4"></line>
+                                        <line x1="15" y1="1" x2="15" y2="4"></line>
+                                        <line x1="9" y1="20" x2="9" y2="23"></line>
+                                        <line x1="15" y1="20" x2="15" y2="23"></line>
+                                        <line x1="20" y1="9" x2="23" y2="9"></line>
+                                        <line x1="20" y1="14" x2="23" y2="14"></line>
+                                        <line x1="1" y1="9" x2="4" y2="9"></line>
+                                        <line x1="1" y1="14" x2="4" y2="14"></line>
+                                    </svg>
+                                </div>
+                                <div class="b-tech-matrix__content">
+                                    <div class="b-tech-matrix__layer-tag">
+                                        <span>L4 · Technologies Industrielles</span>
+                                    </div>
+                                    <div class="b-tech-matrix__layer-title">IoT Industriel • Systèmes Cyber-Physiques</div>
+                                    <div class="b-tech-matrix__layer-desc">Capteurs d'entrepôt en direct, protocoles MQTT / Modbus &amp; télémétrie</div>
+                                </div>
+                                <div class="b-tech-matrix__aside">
+                                    <span class="b-tech-matrix__pill b-tech-matrix__pill--strat">Pôle R&amp;D</span>
+                                    <span class="b-tech-matrix__arrow">&rarr;</span>
+                                </div>
+                            </a>
+
+                            <!-- Couche 05 : Technologies Énergétiques -->
+                            <a href="{{ site_prefix }}/technologies/technologies-energetiques/" class="b-tech-matrix__card" style="--matrix-accent: #f59e0b;">
+                                <div class="b-tech-matrix__icon-box">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                                    </svg>
+                                </div>
+                                <div class="b-tech-matrix__content">
+                                    <div class="b-tech-matrix__layer-tag">
+                                        <span>L5 · Technologies Énergétiques</span>
+                                    </div>
+                                    <div class="b-tech-matrix__layer-title">Solaire Hybride • Stockage LiFePO4 &amp; Résilience</div>
+                                    <div class="b-tech-matrix__layer-desc">Alimentation continue des serveurs critiques &amp; autonomie énergétique 24/7</div>
+                                </div>
+                                <div class="b-tech-matrix__aside">
+                                    <span class="b-tech-matrix__pill b-tech-matrix__pill--strat">Pôle R&amp;D</span>
+                                    <span class="b-tech-matrix__arrow">&rarr;</span>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Pied de la matrice technologique -->
+                        <div class="b-tech-matrix__footer">
+                            <span class="b-tech-matrix__footer-text">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <span>{{ t('hero_architecture_footer', 'Interconnexion totale : Du matériel & de l\'énergie au progiciel métier') }}</span>
+                            </span>
+                            <a href="{{ site_prefix }}/technologies/" class="b-tech-matrix__footer-link">
+                                <span>{{ t('hero_architecture_explore', 'Explorer l\'architecture') }}</span>
+                                <span>&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 2 — ABOUT BYT3LAB (Positionnement Groupe)
+         ===================================================================== -->
+    <section class="b-section" id="about">
+        <div class="b-container">
+            <div class="b-section-head b-section-head--center">
+                <span class="b-eyebrow">{{ settings['home.about.eyebrow']|default('NOTRE POSITIONNEMENT') }}</span>
+                <h2 class="b-title">{{ settings['home.about.title']|default("Un groupe technologique intégré, fondé sur l'ingénierie d'excellence") }}</h2>
+                <p class="b-lead">{{ settings['home.about.text']|default("Byt3Lab conçoit des systèmes informatiques et industriels robustes, développant des produits propriétaires et fédérant des marques spécialisées au service de l'Afrique.") }}</p>
+            </div>
+
+            <div class="b-about-grid">
+                <div class="b-about-card">
+                    <span class="b-about-card__num">01</span>
+                    <h3 class="b-about-card__title">Écosystème structuré</h3>
+                    <p class="b-about-card__text">
+                        Byt3Lab dépasse le modèle d'agence classique pour opérer comme un ensemble coordonné de divisions technologiques, de produits propriétaires et d'une marque créative spécialisée.
+                    </p>
+                </div>
+
+                <div class="b-about-card">
+                    <span class="b-about-card__num">02</span>
+                    <h3 class="b-about-card__title">Excellence d'ingénierie</h3>
+                    <p class="b-about-card__text">
+                        De la ligne de code à l'infrastructure réseau, nos équipes conçoivent des solutions résilientes, sécurisées et adaptées aux réalités opérationnelles des entreprises en Afrique.
+                    </p>
+                </div>
+
+                <div class="b-about-card">
+                    <span class="b-about-card__num">03</span>
+                    <h3 class="b-about-card__title">Ambition panafricaine</h3>
+                    <p class="b-about-card__text">
+                        Enraciné au Cameroun, Byt3Lab construit des partenariats et déploie des technologies conçues pour accompagner la modernisation des industries et des infrastructures du continent.
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{{ site_prefix }}/a-propos/" class="b-btn b-btn--secondary">
+                    <span>Découvrir l'histoire &amp; la vision de Byt3Lab</span>
+                    {{ m.byt3lab_icon('arrow-right', 16) }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 3 — OUR TECHNOLOGY DIVISIONS (Les 5 axes stratégiques)
+         ===================================================================== -->
+    <section class="b-section b-section--alt" id="divisions">
+        <div class="b-container">
+            <div class="b-section-head">
+                <span class="b-eyebrow">{{ settings['home.divisions.eyebrow']|default('NOS 5 DIVISIONS') }}</span>
+                <h2 class="b-title">{{ settings['home.divisions.title']|default('Une couverture technologique complète') }}</h2>
+                <p class="b-lead">{{ settings['home.divisions.intro']|default('Chaque division opère avec une gouvernance dédiée et des capacités adaptées à la criticité de ses missions.') }}</p>
+            </div>
+
+            <div class="b-divisions-grid">
+                {% for div in divisions %}
+                    {% set is_active = (div.maturity_status == 'active') %}
+                    <article class="b-card b-div-card {% if is_active %}b-div-card--active{% else %}b-div-card--sub{% endif %}">
+                        <div class="b-card__header">
+                            <div class="b-card__icon-wrap">
+                                {{ m.byt3lab_icon(div.icon|default('code'), 24) }}
+                            </div>
+                            {{ m.byt3lab_status_badge(div.maturity_status) }}
+                        </div>
+
+                        <h3 class="b-card__title">
+                            <a href="{{ site_prefix }}/technologies/{{ div.slug }}/">{{ div.title }}</a>
+                        </h3>
+
+                        <p class="b-card__text">
+                            {{ div.excerpt }}
+                        </p>
+
+                        {% if div.expertise_areas %}
+                            <div class="b-card__tags">
+                                {% for tag in div.expertise_areas[:4] %}
+                                    <span class="b-tag">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="b-card__footer">
+                            <a href="{{ site_prefix }}/technologies/{{ div.slug }}/" class="b-btn b-btn--ghost">
+                                <span>Explorer la division</span>
+                                {{ m.byt3lab_icon('arrow-right', 16) }}
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <div style="text-align: center; margin-top: 36px;">
+                <a href="{{ site_prefix }}/technologies/" class="b-btn b-btn--primary">
+                    <span>Consulter le détail des 5 divisions technologiques</span>
+                    {{ m.byt3lab_icon('arrow-right', 16) }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 4 — OUR PRODUCTS & SOLUTIONS (MELODI ERP, SUKU, BWS)
+         ===================================================================== -->
+    <section class="b-section" id="produits">
+        <div class="b-container">
+            <div class="b-section-head b-section-head--center">
+                <span class="b-eyebrow">{{ settings['home.offers.eyebrow']|default('PRODUITS ET SOLUTIONS') }}</span>
+                <h2 class="b-title">{{ settings['home.offers.title']|default('Des plateformes propriétaires éprouvées') }}</h2>
+                <p class="b-lead">{{ settings['home.offers.intro']|default('Nos logiciels et offres d\'infrastructure répondent aux enjeux critiques de gestion et d\'hébergement des organisations.') }}</p>
+            </div>
+
+            <div class="b-grid b-grid--3">
+                {% for sol in solutions[:3] %}
+                    <article class="b-product-card" style="--card-accent: {{ sol.accent_color|default('#1D7FD8') }};">
+                        <div class="b-product-card__top">
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <span class="b-product-card__badge" style="margin-bottom: 0;">{{ sol.badge|default(sol.category|default('Produit')) }}</span>
+                                {{ m.byt3lab_status_badge(sol.maturity_status|default('active')) }}
+                            </div>
+                            <h3 class="b-product-card__title">{{ sol.title }}</h3>
+                            {% if sol.tagline %}
+                                <p class="b-product-card__tagline">{{ sol.tagline }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="b-product-card__body">
+                            <p style="font-size: 14px; color: var(--c-gray-600); line-height: 1.6; margin-bottom: 20px;">
+                                {{ sol.excerpt }}
+                            </p>
+
+                            {% if sol.features %}
+                                <ul class="b-checklist">
+                                    {% for feat in sol.features[:4] %}
+                                        <li>
+                                            {{ m.byt3lab_icon('check', 16) }}
+                                            <span>{{ feat }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            <div class="b-product-card__actions">
+                                <a href="{{ site_prefix }}/produits/{{ sol.slug }}/" class="b-btn b-btn--sm b-btn--secondary">
+                                    <span>Fiche détaillée</span>
+                                </a>
+                                {% if sol.external_url %}
+                                    <a href="{{ sol.external_url }}" class="b-btn b-btn--sm b-btn--primary" target="_blank" rel="noopener noreferrer">
+                                        <span>{{ sol.button_text|default('En savoir plus') }}</span>
+                                        {{ m.byt3lab_icon('arrow-up-right', 14) }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <div style="text-align: center; margin-top: 36px;">
+                <a href="{{ site_prefix }}/produits/" class="b-btn b-btn--secondary">
+                    <span>Explorer l'ensemble des produits et solutions</span>
+                    {{ m.byt3lab_icon('arrow-right', 16) }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 5 — CREATIVE EXCELLENCE / NGRAFIX STUDIO
+         ===================================================================== -->
+    <section class="b-section b-section--tight" id="ngrafix">
+        <div class="b-container">
+            <div class="b-ngx-feature">
+                <div class="b-ngx-feature__inner">
+                    
+                    <div class="b-ngx-feature__content">
+                        <span class="b-eyebrow b-ngx-eyebrow">{{ settings['home.ngrafix.eyebrow']|default('PÔLE CRÉATIF SPÉCIALISÉ') }}</span>
+                        <h2 class="b-title">{{ settings['home.ngrafix.title']|default('NGRAFIX — Creative & Brand Experience Studio') }}</h2>
+                        <p style="font-size: 16px; line-height: 1.7; margin-bottom: 28px;">
+                            {{ settings['home.ngrafix.text']|default('Studio créatif intégré du groupe Byt3Lab, NGRAFIX combine design graphique de précision, identités visuelles fortes et récits de marque pour les entreprises ambitieuses.') }}
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <a href="{{ site_prefix }}/ngrafix/" class="b-btn b-btn--lg" style="background: var(--c-ngx-orange); color: #fff; border-color: var(--c-ngx-orange);">
+                                <span>Découvrir le Studio NGRAFIX</span>
+                                {{ m.byt3lab_icon('arrow-right', 18) }}
+                            </a>
+                            <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--outline-dark">
+                                <span>Projet créatif ou de marque</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Grille des 4 pôles NGRAFIX -->
+                    <div class="b-ngx-grid">
+                        <div class="b-ngx-box">
+                            <div class="b-ngx-box__num">01 · BRAND IDENTITY</div>
+                            <div class="b-ngx-box__title">Identité de marque</div>
+                            <p class="b-ngx-box__desc">Logos, chartes 360°, naming et stratégie visuelle institutionnelle.</p>
+                        </div>
+
+                        <div class="b-ngx-box">
+                            <div class="b-ngx-box__num">02 · CREATIVE DESIGN</div>
+                            <div class="b-ngx-box__title">Design créatif</div>
+                            <p class="b-ngx-box__desc">UI/UX, supports marketing, packaging et design éditorial soigné.</p>
+                        </div>
+
+                        <div class="b-ngx-box">
+                            <div class="b-ngx-box__num">03 · DIGITAL COM</div>
+                            <div class="b-ngx-box__title">Communication digitale</div>
+                            <p class="b-ngx-box__desc">Campagnes, gestion des réseaux sociaux et stratégie de contenu.</p>
+                        </div>
+
+                        <div class="b-ngx-box">
+                            <div class="b-ngx-box__num">04 · MEDIA PRODUCTION</div>
+                            <div class="b-ngx-box__title">Production média</div>
+                            <p class="b-ngx-box__desc">Photographie professionnelle, motion design et production audiovisuelle.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 6 — TECHNOLOGY & INNOVATION (Construire ce qui vient)
+         ===================================================================== -->
+    <section class="b-section b-section--alt" id="innovation">
+        <div class="b-container">
+            <div class="b-section-head b-section-head--center">
+                <span class="b-eyebrow">{{ settings['home.innovation.eyebrow']|default('RECHERCHE & INNOVATION') }}</span>
+                <h2 class="b-title">{{ settings['home.innovation.title']|default('Construire les fondations technologiques de demain') }}</h2>
+                <p class="b-lead">{{ settings['home.innovation.intro']|default('Nos axes de recherche prioritaires répondent aux défis d\'industrialisation, de souveraineté numérique et d\'efficacité opérationnelle.') }}</p>
+            </div>
+
+            {% set inno_items = [
+                ['Systèmes distribués & résilience cloud', 'Architectures haute disponibilité et calcul distribué optimisés pour les contextes à connectivité variable.', 'cloud'],
+                ['Intelligence artificielle appliquée', 'Modèles prédictifs et automatisation décisionnelle adaptés aux flux d\'affaires et aux documents métiers.', 'brain'],
+                ['Instrumentation industrielle & IoT', 'Capteurs communicants, télémétrie temps réel et passerelles de télégestion pour sites isolés.', 'cpu'],
+                ['Transition énergétique & micro-réseaux', 'Monitoring de parcs solaires, optimisation du stockage stationnaire et régulation intelligente.', 'sun'],
+                ['Sécurité des systèmes & souveraineté des données', 'Chiffrement de bout en bout, conformité des hébergements et résilience face aux cybermenaces.', 'shield']
+            ] %}
+            <div class="b-grid b-grid--3">
+                {% for item in inno_items %}
+                    <div class="b-card" style="padding: 28px;">
+                        <div class="b-card__icon-wrap" style="margin-bottom: 16px;">
+                            {{ m.byt3lab_icon(item[2], 22) }}
+                        </div>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 8px;">{{ item[0] }}</h3>
+                        <p style="font-size: 13.5px; color: var(--c-gray-600); line-height: 1.6; margin: 0;">
+                            {{ item[1] }}
+                        </p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div style="text-align: center; margin-top: 36px;">
+                <a href="{{ site_prefix }}/recherche-innovation/" class="b-btn b-btn--secondary">
+                    <span>En savoir plus sur nos axes de R&amp;D</span>
+                    {{ m.byt3lab_icon('arrow-right', 16) }}
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 7 — INDUSTRIES WE SERVE (Secteurs d'activité)
+         ===================================================================== -->
+    <section class="b-section" id="industries">
+        <div class="b-container">
+            <div class="b-section-head b-section-head--center">
+                <span class="b-eyebrow">{{ settings['home.industries.eyebrow']|default("SECTEURS D'ACTIVITÉ") }}</span>
+                <h2 class="b-title">{{ settings['home.industries.title']|default('Technologies adaptées à vos défis industriels') }}</h2>
+                <p class="b-lead">Des technologies conçues pour répondre aux défis spécifiques de vos filières.</p>
+            </div>
+
+            {% set industries_data = [
+                ['Industrie & Manufacturier', 'Obsolescence des automates, silos de données de production, maintenance corrective coûteuse.', 'Instrumentation IoT, supervision SCADA moderne, monitoring énergétique et maintenance prédictive.', 'factory'],
+                ['Banque, Finance & Assurance', 'Exigences réglementaires strictes, cybersécurité, intégration des systèmes legacy.', 'Architectures modulaires sécurisées, automatisation des processus et chiffrement de bout en bout.', 'landmark'],
+                ['Éducation & Formation', 'Absence de centralisation des données pédagogiques, gestion manuelle des inscriptions et notes.', 'Déploiement de SUKU, plateforme intégrée de gestion scolaire et académique.', 'graduation'],
+                ['Énergie & Utilities', 'Instabilité des réseaux électriques, manque de visibilité temps réel sur les flux énergétiques.', 'Systèmes de monitoring énergétique, micro-réseaux solaires et gestion intelligente de la charge.', 'zap'],
+                ['Commerce & Distribution', 'Ruptures de stocks imprévues, dispersion des points de vente, encaissement déconnecté.', 'Intégration de MELODI ERP avec gestion unifiée des stocks, points de vente et comptabilité.', 'cart']
+            ] %}
+            <div class="b-tabs">
+                <div class="b-tabs__nav" role="tablist" aria-label="Secteurs d'activité">
+                    {% for ind in industries_data %}
+                        {% set idx = loop.index0 %}
+                        <button type="button" 
+                                class="b-tabs__btn" 
+                                role="tab" 
+                                id="tab-ind-{{ idx }}" 
+                                aria-controls="panel-ind-{{ idx }}" 
+                                aria-selected="{% if idx == 0 %}true{% else %}false{% endif %}">
+                            {{ ind[0] }}
+                        </button>
+                    {% endfor %}
+                </div>
+
+                {% for ind in industries_data %}
+                    {% set idx = loop.index0 %}
+                    <div class="b-tabs__panel {% if idx == 0 %}is-active{% endif %}" 
+                         id="panel-ind-{{ idx }}" 
+                         role="tabpanel" 
+                         aria-labelledby="tab-ind-{{ idx }}">
+                        <div>
+                            <div class="b-tabs__col-title">Problématiques identifiées</div>
+                            <p style="font-size: 15px; color: var(--c-gray-700); line-height: 1.65;">
+                                {{ ind[1] }}
+                            </p>
+                        </div>
+                        <div>
+                            <div class="b-tabs__col-title">Apport technologique BYT3LAB</div>
+                            <p style="font-size: 15px; color: var(--c-navy-900); font-weight: 500; line-height: 1.65;">
+                                {{ ind[2] }}
+                            </p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 8 — PROJECTS & ACHIEVEMENTS (Réalisations réelles uniquement)
+         ===================================================================== -->
+    <section class="b-section b-section--alt" id="realisations">
+        <div class="b-container">
+            <div class="b-section-head b-section-head--center">
+                <span class="b-eyebrow">{{ settings['home.projects.eyebrow']|default('RÉALISATIONS') }}</span>
+                <h2 class="b-title">{{ settings['home.projects.title']|default("L'ingénierie mise en pratique") }}</h2>
+                <p class="b-lead">{{ settings['home.projects.intro']|default('Chaque projet illustre notre capacité à concevoir et déployer des solutions adaptées aux réalités de nos partenaires.') }}</p>
+            </div>
+
+            {% if projects and projects|length > 0 %}
+                <div class="b-grid b-grid--3">
+                    {% for p in projects[:3] %}
+                        <article class="b-card">
+                            {% if p.thumbnail %}
+                                <div style="margin: -32px -32px 20px -32px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; overflow: hidden;">
+                                    <img src="{{ p.thumbnail }}" alt="{{ p.title }}" style="width:100%; height:180px; object-fit:cover;">
+                                </div>
+                            {% endif %}
+
+                            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--c-blue-500); margin-bottom: 6px;">
+                                {{ p.category|default('Ingénierie') }} {% if p.year %}· {{ p.year }}{% endif %}
+                            </div>
+
+                            <h3 class="b-card__title">{{ p.title }}</h3>
+                            <p class="b-card__text">{{ p.excerpt }}</p>
+
+                            <div class="b-card__footer">
+                                <a href="{{ site_prefix }}/realisations/{{ p.slug }}/" class="b-btn b-btn--ghost">
+                                    <span>Consulter l'étude &rarr;</span>
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- État sobre et transparent : aucun projet fictif n'est inventé -->
+                <div class="b-empty-state">
+                    <div class="b-empty-state__icon">
+                        {{ m.byt3lab_icon('rocket', 40) }}
+                    </div>
+                    <h3 class="b-empty-state__title">Études de cas en cours de documentation</h3>
+                    <p class="b-empty-state__text">
+                        Conformément à notre charte de transparence industrielle, seules les réalisations pour lesquelles nous disposons d'une autorisation de divulgation et d'un retour d'expérience complet sont publiées. Nos équipes finalisent actuellement la documentation de projets dans les télécoms et l'industrie.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ site_prefix }}/produits/" class="b-btn b-btn--sm b-btn--primary">
+                            <span>Voir nos produits logiciels</span>
+                        </a>
+                        <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--sm b-btn--secondary">
+                            <span>Échanger sur vos projets</span>
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 9 — PARTNERSHIPS (Construire l'avenir ensemble)
+         ===================================================================== -->
+    <section class="b-section" id="partenariats">
+        <div class="b-container">
+            <div class="b-section-head b-section-head--center">
+                <span class="b-eyebrow">{{ settings['home.partners.eyebrow']|default('PARTENARIATS & ALLIANCES') }}</span>
+                <h2 class="b-title">{{ settings['home.partners.title']|default("Construire l'avenir technologique ensemble") }}</h2>
+                <p class="b-lead">{{ settings['home.partners.intro']|default('Byt3Lab collabore avec des acteurs de référence pour intégrer les meilleures briques technologiques et étendre l\'impact de ses solutions.') }}</p>
+            </div>
+
+            {% set partner_types = [
+                'Fournisseurs de technologies & composants industriels',
+                'Opérateurs cloud & centres de données régionaux',
+                'Constructeurs d\'équipements & intégrateurs matériels',
+                'Laboratoires de recherche & institutions académiques',
+                'Partenaires commerciaux & distributeurs panafricains',
+                'Bailleurs & fonds d\'investissement technologique'
+            ] %}
+            <div class="b-grid b-grid--3" style="margin-bottom: 40px;">
+                {% for ptype in partner_types %}
+                    <div class="b-card" style="padding: 24px; text-align: center;">
+                        <div class="b-card__icon-wrap" style="margin: 0 auto 12px auto;">
+                            {{ m.byt3lab_icon('handshake', 20) }}
+                        </div>
+                        <h3 style="font-size: 15px; font-weight: 700; color: var(--c-navy-950); margin: 0;">
+                            {{ ptype }}
+                        </h3>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Logos partenaires si publiés en base -->
+            {% if partners and partners|length > 0 %}
+                <div class="b-partners-logos" style="display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 36px; padding: 24px; background: var(--c-gray-50); border-radius: var(--radius-lg);">
+                    {% for partner in partners %}
+                        <div style="opacity: 0.75; filter: grayscale(1); transition: all var(--transition-fast);">
+                            {% if partner.logo %}
+                                <img src="{{ partner.logo }}" alt="{{ partner.name }}" style="height: 40px; width: auto; object-fit: contain;">
+                            {% else %}
+                                <span style="font-weight: 600; color: var(--c-gray-600);">{{ partner.name }}</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div style="text-align: center;">
+                <a href="{{ site_prefix }}/partenaires/" class="b-btn b-btn--lg b-btn--primary">
+                    {{ m.byt3lab_icon('handshake', 18) }}
+                    <span>Découvrir notre programme &amp; proposer un partenariat</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         SECTION 10 — FINAL CTA (Concevons ce qui vient)
+         ===================================================================== -->
+    <section class="b-section b-section--tight" id="cta">
+        <div class="b-container">
+            <div class="b-cta-band">
+                <h2 class="b-title">{{ settings['home.cta.title']|default("Prêt à construire ce qui vient ?") }}</h2>
+                <p>{{ settings['home.cta.text']|default("Que vous ayez besoin d'une plateforme logicielle sur mesure, d'une infrastructure résiliente ou d'une collaboration d'ingénierie, nos divisions sont mobilisées.") }}</p>
+                <div class="b-cta-band__actions">
+                    <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--on-dark">
+                        {{ m.byt3lab_icon('mail', 18) }}
+                        <span>Nous contacter</span>
+                    </a>
+                    <a href="{{ site_prefix }}/partenaires/#formulaire" class="b-btn b-btn--lg b-btn--outline-dark">
+                        {{ m.byt3lab_icon('handshake', 18) }}
+                        <span>Proposer une collaboration</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

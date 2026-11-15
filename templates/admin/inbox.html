@@ -1,0 +1,160 @@
+<div class="byt3lab-admin" style="padding: 24px;">
+    <div class="byt3lab-admin__header">
+        <div>
+            <h1 class="byt3lab-admin__title">{{ t('admin_inbox', 'Boîte de Réception — Demandes & Contact') }}</h1>
+            <p style="color: var(--c-gray-600); margin: 4px 0 0 0; font-size: 0.95rem;">
+                Toutes les soumissions des formulaires Contact et Partenariat
+            </p>
+        </div>
+        <a href="/admin/byt3lab" class="ds-btn ds-btn-secondary">
+            &larr; {{ t('admin_dashboard', 'Retour au Tableau de bord') }}
+        </a>
+    </div>
+
+    <!-- Si un message précis est sélectionné pour consultation -->
+    {% if selected_message %}
+    <div style="background: #fff; border: 1px solid var(--c-gray-200); border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-card); margin-bottom: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--c-gray-200);">
+            <div>
+                <span class="ds-badge {% if selected_message.form_type == 'partner' %}ds-badge-primary{% else %}ds-badge-neutral{% endif %}" style="margin-bottom: 8px;">
+                    FORMULAIRE {{ selected_message.form_type|upper }}
+                </span>
+                <h2 style="font-family: var(--font-heading); font-size: 1.4rem; margin: 4px 0 0 0; color: var(--c-navy-950);">
+                    {{ selected_message.subject or selected_message.partner_type or 'Demande sans objet' }}
+                </h2>
+                <p style="margin: 4px 0 0 0; color: var(--c-gray-500); font-size: 0.85rem;">
+                    Reçu le {{ selected_message.created_at }} &bull; IP: {{ selected_message.ip_address }}
+                </p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <form action="/admin/byt3lab/inbox/status" method="POST" style="display:inline;">
+                    <input type="hidden" name="message_id" value="{{ selected_message.id }}">
+                    <input type="hidden" name="status" value="resolved">
+                    <button type="submit" class="ds-btn ds-btn-sm ds-btn-success">
+                        {{ t('admin_mark_resolved', 'Marquer comme traité') }}
+                    </button>
+                </form>
+                <form action="/admin/byt3lab/inbox/status" method="POST" style="display:inline;">
+                    <input type="hidden" name="message_id" value="{{ selected_message.id }}">
+                    <input type="hidden" name="status" value="in_progress">
+                    <button type="submit" class="ds-btn ds-btn-sm ds-btn-secondary">
+                        {{ t('admin_mark_progress', 'Marquer en cours') }}
+                    </button>
+                </form>
+                <form action="/admin/byt3lab/inbox/delete" method="POST" style="display:inline;" onsubmit="return confirm('{{ t('admin_delete_confirm', 'Êtes-vous certain de vouloir supprimer cet élément ?') }}');">
+                    <input type="hidden" name="message_id" value="{{ selected_message.id }}">
+                    <button type="submit" class="ds-btn ds-btn-sm ds-btn-danger">
+                        Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; background: var(--c-gray-50); padding: 18px; border-radius: var(--radius-sm);">
+            <div>
+                <small style="color: var(--c-gray-500); display: block;">Expéditeur :</small>
+                <strong>{{ selected_message.sender_name }}</strong>
+            </div>
+            <div>
+                <small style="color: var(--c-gray-500); display: block;">Organisation :</small>
+                <strong>{{ selected_message.organization or 'Non spécifiée' }}</strong>
+            </div>
+            <div>
+                <small style="color: var(--c-gray-500); display: block;">E-mail :</small>
+                <a href="mailto:{{ selected_message.email }}" style="font-weight: 600; color: var(--c-blue-500);">{{ selected_message.email }}</a>
+            </div>
+            <div>
+                <small style="color: var(--c-gray-500); display: block;">Téléphone :</small>
+                <strong>{{ selected_message.phone or 'Non spécifié' }}</strong>
+            </div>
+            {% if selected_message.website %}
+            <div>
+                <small style="color: var(--c-gray-500); display: block;">Site web :</small>
+                <a href="{{ selected_message.website }}" target="_blank" rel="noopener noreferrer" style="color: var(--c-blue-500);">{{ selected_message.website }}</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <h4 style="font-family: var(--font-heading); font-size: 1.05rem; margin-bottom: 10px;">Message détaillé :</h4>
+            <div style="background: #fff; border: 1px solid var(--c-gray-200); padding: 20px; border-radius: var(--radius-sm); font-size: 1rem; line-height: 1.7; white-space: pre-wrap; color: var(--c-anthracite);">{{ selected_message.message }}</div>
+        </div>
+
+        <div style="margin-top: 24px;">
+            <a href="/admin/byt3lab/inbox" class="ds-btn ds-btn-secondary">
+                &larr; Fermer le détail et revenir à la liste
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Liste complète des messages avec onglets de statut -->
+    <div class="byt3lab-admin__table-card">
+        <div style="padding: 16px 24px; border-bottom: 1px solid var(--c-gray-200); display: flex; gap: 8px;">
+            <a href="/admin/byt3lab/inbox" class="ds-btn ds-btn-sm {% if not filter_status %}ds-btn-primary{% else %}ds-btn-secondary{% endif %}">
+                Tous ({{ total_count }})
+            </a>
+            <a href="/admin/byt3lab/inbox?status=new" class="ds-btn ds-btn-sm {% if filter_status == 'new' %}ds-btn-primary{% else %}ds-btn-secondary{% endif %}">
+                Nouveaux ({{ new_count }})
+            </a>
+            <a href="/admin/byt3lab/inbox?status=in_progress" class="ds-btn ds-btn-sm {% if filter_status == 'in_progress' %}ds-btn-primary{% else %}ds-btn-secondary{% endif %}">
+                En cours ({{ progress_count }})
+            </a>
+            <a href="/admin/byt3lab/inbox?status=resolved" class="ds-btn ds-btn-sm {% if filter_status == 'resolved' %}ds-btn-primary{% else %}ds-btn-secondary{% endif %}">
+                Traités ({{ resolved_count }})
+            </a>
+        </div>
+
+        {% if messages and messages|length > 0 %}
+        <table class="byt3lab-admin__table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Expéditeur</th>
+                    <th>Organisation</th>
+                    <th>Objet / Alliance</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in messages %}
+                <tr {% if msg.id == selected_id %}style="background-color: #f1f5f9;"{% endif %}>
+                    <td style="color: var(--c-gray-600); font-size: 0.85rem;">{{ msg.created_at }}</td>
+                    <td>
+                        <span class="ds-badge {% if msg.form_type == 'partner' %}ds-badge-primary{% else %}ds-badge-neutral{% endif %}">
+                            {{ msg.form_type|upper }}
+                        </span>
+                    </td>
+                    <td><strong>{{ msg.sender_name }}</strong><br><small style="color: var(--c-gray-500);">{{ msg.email }}</small></td>
+                    <td>{{ msg.organization or '—' }}</td>
+                    <td style="max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        {{ msg.subject or msg.partner_type or '—' }}
+                    </td>
+                    <td>
+                        {% if msg.status == 'new' %}
+                            <span class="ds-badge ds-badge-success">{{ t('status_new', 'Nouveau') }}</span>
+                        {% elif msg.status == 'in_progress' %}
+                            <span class="ds-badge ds-badge-warning">{{ t('status_in_progress', 'En cours') }}</span>
+                        {% else %}
+                            <span class="ds-badge ds-badge-neutral">{{ t('status_resolved', 'Traité') }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/byt3lab/inbox?id={{ msg.id }}{% if filter_status %}&status={{ filter_status }}{% endif %}" class="ds-btn ds-btn-sm ds-btn-secondary">
+                            Ouvrir
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding: 40px; text-align: center; color: var(--c-gray-500);">
+            Aucun message correspondant au filtre sélectionné.
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script type="module" src="/static/byt3lab/js/admin.js"></script>

@@ -1,0 +1,114 @@
+{% extends "public/byt3lab_layout.html" %}
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% block content %}
+<div class="b-team-single-page">
+
+    <!-- Hero Membre Équipe -->
+    <section class="b-hero">
+        <div class="b-hero__pattern" aria-hidden="true"></div>
+        <div class="b-container">
+            <div style="max-width: 820px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                    <a href="{{ site_prefix }}/equipe" class="b-eyebrow b-eyebrow--white" style="margin-bottom: 0;">
+                        &larr; {{ t('team_back_link', 'Organisation & Équipe') }}
+                    </a>
+                </div>
+
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+                    <span class="b-badge b-badge--dark">{{ member.domain|default('Direction') }}</span>
+                </div>
+
+                <h1 class="b-hero__title" style="margin-bottom: 8px;">
+                    {{ member.name }}
+                </h1>
+
+                <p class="b-hero__subtitle" style="color: var(--c-cyan-400); font-family: var(--font-heading); font-size: 1.25rem;">
+                    {{ member.role|default('Ingénieur') }}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Détails du Profil -->
+    <section class="b-section">
+        <div class="b-container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; align-items: start;">
+                <!-- Sidebar Profil -->
+                <div class="b-card" style="padding: 36px 28px; text-align: center;">
+                    {% if member.photo_url %}
+                        <img src="{{ member.photo_url }}" alt="{{ member.name }}" style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 3px solid var(--c-blue-500); box-shadow: var(--shadow-card);" />
+                    {% else %}
+                        <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--c-gray-100); color: var(--c-navy-900); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px dashed var(--c-gray-300);">
+                            {{ m.byt3lab_icon('target', 48) }}
+                        </div>
+                    {% endif %}
+
+                    <span class="b-badge b-badge--light" style="margin-bottom: 8px;">{{ member.domain|default('Direction') }}</span>
+                    <h2 style="font-size: 1.35rem; color: var(--c-navy-950); margin: 0 0 4px;">{{ member.name }}</h2>
+                    <div style="font-size: 14px; color: var(--c-blue-500); font-weight: 600; margin-bottom: 20px;">{{ member.role|default('Ingénieur') }}</div>
+
+                    {% if member.linkedin or member.github %}
+                        <div style="display: flex; justify-content: center; gap: 12px; border-top: 1px solid var(--c-gray-200); padding-top: 20px;">
+                            {% if member.linkedin %}
+                                <a href="{{ member.linkedin }}" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--sm b-btn--secondary">
+                                    {{ m.byt3lab_icon('linkedin', 15) }}
+                                    <span>LinkedIn</span>
+                                </a>
+                            {% endif %}
+                            {% if member.github %}
+                                <a href="{{ member.github }}" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--sm b-btn--secondary">
+                                    {{ m.byt3lab_icon('code', 15) }}
+                                    <span>GitHub</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Biographie & Responsabilités -->
+                <div class="b-card" style="padding: 40px;">
+                    <span class="b-eyebrow">{{ t('team_profile_eyebrow', 'Parcours & Responsabilités') }}</span>
+                    <h2 class="b-title" style="font-size: 1.6rem; margin-bottom: 24px;">
+                        {{ t('team_profile_title', 'Contribution au sein du Groupe BYT3LAB') }}
+                    </h2>
+
+                    {% if member.bio %}
+                        <p style="font-size: 1.125rem; color: var(--c-blue-500); font-weight: 500; line-height: 1.7; margin-bottom: 24px; padding-left: 16px; border-left: 3px solid var(--c-blue-500);">
+                            {{ member.bio }}
+                        </p>
+                    {% endif %}
+
+                    <div style="font-size: 16px; line-height: 1.8; color: var(--c-gray-700);">
+                        {% if member.content %}
+                            {{ member.content|safe }}
+                        {% else %}
+                            <p>Référent technique au sein du groupe BYT3LAB, contribuant à la conception, la gouvernance et la réalisation de systèmes technologiques durables.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="b-section b-section--tight">
+        <div class="b-container">
+            <div class="b-cta-band">
+                <h2 class="b-title">{{ t('team_join_title', 'Rejoignez nos équipes d\'ingénieurs') }}</h2>
+                <p>{{ t('team_join_desc', 'Byt3Lab recrute des profils engagés pour construire les technologies de demain en Afrique.') }}</p>
+                <div class="b-cta-band__actions">
+                    <a href="{{ site_prefix }}/carriere" class="b-btn b-btn--lg b-btn--on-dark">
+                        <span>{{ t('team_view_careers', 'Consulter les offres d\'emploi') }}</span>
+                        {{ m.byt3lab_icon('arrow-right', 18) }}
+                    </a>
+                    <a href="{{ site_prefix }}/equipe" class="b-btn b-btn--lg b-btn--outline-dark">
+                        <span>{{ t('team_back_link', 'Organisation & Équipe') }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

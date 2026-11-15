@@ -1,0 +1,139 @@
+<div class="byt3lab-admin" style="padding: 24px;">
+    <!-- En-tête de la console d'administration -->
+    <div class="byt3lab-admin__header">
+        <div>
+            <h1 class="byt3lab-admin__title">{{ t('admin_title', 'BYT3LAB Contenu — Console Éditoriale') }}</h1>
+            <p style="color: var(--c-gray-600); margin: 4px 0 0 0; font-size: 0.95rem;">
+                Pilotage institutionnel et éditorial du groupe Byt3Lab
+            </p>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <a href="/" target="_blank" class="ds-btn ds-btn-secondary" style="display: inline-flex; align-items: center; gap: 8px;">
+                <span>{{ t('admin_view_public_site', 'Voir le site public') }}</span>
+                &rarr;
+            </a>
+            <a href="/admin/byt3lab/settings" class="ds-btn ds-btn-primary">
+                {{ t('admin_settings', 'Réglages du site') }}
+            </a>
+        </div>
+    </div>
+
+    <!-- Bannière d'alerte si nouveaux messages -->
+    {% if unread_messages > 0 %}
+    <div style="background-color: #ecfdf5; border: 1px solid #10b981; border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background-color: #10b981; color: #fff; font-weight: bold;">!</span>
+            <div>
+                <strong style="color: #065f46; font-size: 1rem;">{{ unread_messages }} nouveau(x) message(s) reçu(s)</strong>
+                <p style="margin: 2px 0 0 0; color: #047857; font-size: 0.875rem;">Des demandes de contact ou de partenariat attendent votre traitement dans la boîte de réception.</p>
+            </div>
+        </div>
+        <a href="/admin/byt3lab/inbox" class="ds-btn ds-btn-primary" style="background-color: #10b981; border-color: #10b981;">
+            Accéder à la boîte de réception &rarr;
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Grille des indicateurs clés (KPIs) -->
+    <div class="byt3lab-admin__kpi-grid">
+        <a href="/admin/byt3lab/inbox" class="byt3lab-admin__kpi-card {% if unread_messages > 0 %}byt3lab-admin__kpi-card--alert{% endif %}" style="text-decoration: none;">
+            <span class="kpi-label">{{ t('admin_inbox', 'Boîte de Réception') }}</span>
+            <div class="kpi-num" style="color: {% if unread_messages > 0 %}#10b981{% else %}var(--c-navy-950){% endif %};">{{ total_messages }}</div>
+            <span style="font-size: 0.8rem; color: var(--c-gray-500);">{{ unread_messages }} {{ t('admin_unread_messages', 'messages non lus') }}</span>
+        </a>
+
+        <div class="byt3lab-admin__kpi-card">
+            <span class="kpi-label">{{ t('admin_divisions', 'Divisions Technologiques') }}</span>
+            <div class="kpi-num">{{ total_divisions }}</div>
+            <span style="font-size: 0.8rem; color: var(--c-gray-500);">5 axes stratégiques</span>
+        </div>
+
+        <div class="byt3lab-admin__kpi-card">
+            <span class="kpi-label">{{ t('admin_solutions', 'Produits & Solutions') }}</span>
+            <div class="kpi-num">{{ total_solutions }}</div>
+            <span style="font-size: 0.8rem; color: var(--c-gray-500);">MELODI, SUKU, BWS</span>
+        </div>
+
+        <div class="byt3lab-admin__kpi-card">
+            <span class="kpi-label">{{ t('admin_partners', 'Partenaires') }}</span>
+            <div class="kpi-num">{{ total_partners }}</div>
+            <span style="font-size: 0.8rem; color: var(--c-gray-500);">Fournisseurs &amp; Alliances</span>
+        </div>
+
+        <div class="byt3lab-admin__kpi-card">
+            <span class="kpi-label">{{ t('admin_projects', 'Projets & Réalisations') }}</span>
+            <div class="kpi-num">{{ total_projects }}</div>
+            <span style="font-size: 0.8rem; color: var(--c-gray-500);">Études de cas réelles</span>
+        </div>
+
+        <div class="byt3lab-admin__kpi-card">
+            <span class="kpi-label">{{ t('admin_jobs', 'Offres d\'Emploi') }}</span>
+            <div class="kpi-num">{{ total_jobs }}</div>
+            <span style="font-size: 0.8rem; color: var(--c-gray-500);">Postes ouverts</span>
+        </div>
+    </div>
+
+    <!-- Derniers messages reçus -->
+    <div class="byt3lab-admin__table-card">
+        <div style="padding: 18px 24px; border-bottom: 1px solid var(--c-gray-200); display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="font-family: var(--font-heading); font-size: 1.15rem; margin: 0; color: var(--c-navy-950);">
+                Dernières Demandes Reçues (Formulaires Publics)
+            </h2>
+            <a href="/admin/byt3lab/inbox" style="font-size: 0.875rem; font-weight: 600; color: var(--c-blue-500); text-decoration: none;">
+                Voir toute la boîte de réception &rarr;
+            </a>
+        </div>
+
+        {% if recent_messages and recent_messages|length > 0 %}
+        <table class="byt3lab-admin__table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Expéditeur</th>
+                    <th>Organisation</th>
+                    <th>Objet / Partenariat</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in recent_messages %}
+                <tr>
+                    <td style="color: var(--c-gray-600); font-size: 0.85rem;">{{ msg.created_at }}</td>
+                    <td>
+                        <span class="ds-badge {% if msg.form_type == 'partner' %}ds-badge-primary{% else %}ds-badge-neutral{% endif %}">
+                            {{ msg.form_type|upper }}
+                        </span>
+                    </td>
+                    <td><strong>{{ msg.sender_name }}</strong><br><small style="color: var(--c-gray-500);">{{ msg.email }}</small></td>
+                    <td>{{ msg.organization or '—' }}</td>
+                    <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        {{ msg.subject or msg.partner_type or '—' }}
+                    </td>
+                    <td>
+                        {% if msg.status == 'new' %}
+                            <span class="ds-badge ds-badge-success">{{ t('status_new', 'Nouveau') }}</span>
+                        {% elif msg.status == 'in_progress' %}
+                            <span class="ds-badge ds-badge-warning">{{ t('status_in_progress', 'En cours') }}</span>
+                        {% else %}
+                            <span class="ds-badge ds-badge-neutral">{{ t('status_resolved', 'Traité') }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/admin/byt3lab/inbox?id={{ msg.id }}" class="ds-btn ds-btn-sm ds-btn-secondary">
+                            Consulter
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding: 40px; text-align: center; color: var(--c-gray-500);">
+            Aucune demande reçue pour le moment.
+        </div>
+        {% endif %}
+    </div>
+</div>
+<script type="module" src="/static/byt3lab/js/admin.js"></script>

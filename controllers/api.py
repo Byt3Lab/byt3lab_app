@@ -1,0 +1,451 @@
+from __future__ import annotations
+from core.routing import Request, Response
+from ..services.contact_service import ContactService
+from ..services.settings_service import SettingsService
+from ..repositories.division_repository import DivisionRepository
+from ..repositories.solution_repository import SolutionRepository
+from ..repositories.service_repository import ServiceRepository
+from ..repositories.project_repository import ProjectRepository
+from ..repositories.partner_repository import PartnerRepository
+from ..repositories.ngrafix_repository import NgrafixRepository
+from ..repositories.team_repository import TeamRepository
+from ..repositories.job_repository import JobRepository
+from ..repositories.post_repository import PostRepository
+from ..repositories.message_repository import MessageRepository
+
+
+class By3labAPIController:
+    """
+    Contrôleur API REST JSON pour BYT3LAB.
+    Conforme aux normes de contrat API-First de MELODI ERP (§8.2).
+    Fournit toutes les routes publiques et d'administration SPA.
+    """
+
+    # --- ROUTES PUBLIQUES ---
+
+    @classmethod
+    async def handle_contact_submission(cls, request: Request, response: Response):
+        """POST /api/byt3lab/contact"""
+        data = dict(request.json or {}) if isinstance(request.json, dict) and request.json else {}
+        if not data:
+            form = request.form or {}
+            data = form.to_dict() if hasattr(form, "to_dict") else dict(form)
+
+        client_ip = request.remote_addr or getattr(request, "client_ip", "")
+        lang = (request.session or {}).get("lang") or "fr"
+
+        async with request.app.db.get_session() as session:
+            ok, msg, extra = await ContactService.process_submission(
+                session=session,
+                data=data,
+                client_ip=client_ip,
+                lang=lang,
+            )
+            if ok:
+                await session.commit()
+                return response.send_json({
+                    "success": True,
+                    "data": {
+                        "message": msg,
+                        "whatsapp_url": extra.get("whatsapp_url", ""),
+                        "message_id": extra.get("message_id"),
+                    }
+                }), 201
+            else:
+                return response.send_json({
+                    "success": False,
+                    "error": {
+                        "code": "VALIDATION_FAILED",
+                        "message": msg,
+                    },
+                    "data": {
+                        "message": msg,
+                    }
+                }), 400
+
+    @classmethod
+    async def list_divisions(cls, request: Request, response: Response):
+        """GET /api/byt3lab/divisions"""
+        lang = (request.session or {}).get("lang") or "fr"
+        async with request.app.db.get_session() as session:
+            divisions = await DivisionRepository.get_all(session, published_only=True)
+            return response.render_json({
+                "success": True,
+                "data": [d.to_dict(lang=lang) for d in divisions]
+            })
+
+    @classmethod
+    async def list_solutions(cls, request: Request, response: Response):
+        """GET /api/byt3lab/solutions"""
+        lang = (request.session or {}).get("lang") or "fr"
+        async with request.app.db.get_session() as session:
+            solutions = await SolutionRepository.get_all(session, published_only=True)
+            return response.render_json({
+                "success": True,
+                "data": [s.to_dict(lang=lang) for s in solutions]
+            })
+
+    @classmethod
+    async def get_settings(cls, request: Request, response: Response):
+        """GET /api/byt3lab/settings"""
+        lang = (request.session or {}).get("lang") or "fr"
+        async with request.app.db.get_session() as session:
+            settings = await SettingsService.get_public_settings(session, lang=lang)
+            return response.render_json({
+                "success": True,
+                "data": settings
+            })
+
+    # --- ROUTES ADMIN SPA ---
+
+    @classmethod
+    async def get_admin_dashboard(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/dashboard"""
+        async with request.app.db.get_session() as session:
+            divisions = await DivisionRepository.get_all(session, published_only=False)
+            solutions = await SolutionRepository.get_all(session, published_only=False)
+            services = await ServiceRepository.get_all(session, published_only=False)
+            projects = await ProjectRepository.get_all(session, published_only=False)
+            partners = await PartnerRepository.get_all(session, published_only=False)
+            team = await TeamRepository.get_all(session, published_only=False)
+            jobs = await JobRepository.get_all(session, published_only=False)
+            posts = await PostRepository.get_all(session, published_only=False)
+            messages = await MessageRepository.get_all(session)
+            unread_count = await MessageRepository.count_unread(session)
+
+            recent_messages = [m.to_dict() for m in messages[:10]]
+
+            return response.render_json({
+                "success": True,
+                "data": {
+                    "counts": {
+                        "divisions": len(divisions),
+                        "solutions": len(solutions),
+                        "services": len(services),
+                        "projects": len(projects),
+                        "partners": len(partners),
+                        "team": len(team),
+                        "jobs": len(jobs),
+                        "posts": len(posts),
+                        "messages": len(messages),
+                        "unread_messages": unread_count,
+                    },
+                    "recent_messages": recent_messages,
+                }
+            })
+
+    # --- MESSAGES (INBOX) ---
+
+    @classmethod
+    async def list_admin_messages(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/messages"""
+        status_filter = getattr(request, "args", {}).get("status")
+        async with request.app.db.get_session() as session:
+            all_messages = await MessageRepository.get_all(session)
+            if status_filter:
+                filtered = [m for m in all_messages if m.status == status_filter]
+            else:
+                filtered = all_messages
+
+            return response.render_json({
+                "success": True,
+                "data": [m.to_dict() for m in filtered],
+                "counts": {
+                    "total": len(all_messages),
+                    "new": len([m for m in all_messages if m.status == "new"]),
+                    "in_progress": len([m for m in all_messages if m.status == "in_progress"]),
+                    "resolved": len([m for m in all_messages if m.status == "resolved"]),
+                }
+            })
+
+    @classmethod
+    async def update_admin_message_status(cls, request: Request, response: Response):
+        """PUT /api/admin/byt3lab/messages/<id>/status"""
+        msg_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        new_status = data.get("status")
+        if not msg_id or not new_status:
+            return response.render_json({"success": False, "message": "ID et statut requis."}, 400)
+
+        async with request.app.db.get_session() as session:
+            updated = await MessageRepository.update_status(session, msg_id, str(new_status))
+            await session.commit()
+            if updated:
+                return response.render_json({"success": True, "data": updated.to_dict()})
+            return response.render_json({"success": False, "message": "Message introuvable."}, 404)
+
+    @classmethod
+    async def delete_admin_message(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/messages/<id>"""
+        msg_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await MessageRepository.delete(session, msg_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- REGLAGES (SETTINGS) ---
+
+    @classmethod
+    async def get_admin_settings(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/settings"""
+        async with request.app.db.get_session() as session:
+            raw = await SettingsService.get_admin_settings(session)
+            return response.render_json({"success": True, "data": raw})
+
+    @classmethod
+    async def save_admin_settings(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/settings"""
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            await SettingsService.save_settings(session, data)
+            await session.commit()
+            updated = await SettingsService.get_admin_settings(session)
+            return response.render_json({"success": True, "data": updated})
+
+    # --- DIVISIONS CRUD ---
+
+    @classmethod
+    async def list_admin_divisions(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/divisions"""
+        async with request.app.db.get_session() as session:
+            items = await DivisionRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_division(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/divisions & PUT /api/admin/byt3lab/divisions/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await DivisionRepository.update(session, item_id, data)
+            else:
+                item = await DivisionRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_division(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/divisions/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await DivisionRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- SOLUTIONS CRUD ---
+
+    @classmethod
+    async def list_admin_solutions(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/solutions"""
+        async with request.app.db.get_session() as session:
+            items = await SolutionRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_solution(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/solutions & PUT /api/admin/byt3lab/solutions/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await SolutionRepository.update(session, item_id, data)
+            else:
+                item = await SolutionRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_solution(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/solutions/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await SolutionRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- SERVICES CRUD ---
+
+    @classmethod
+    async def list_admin_services(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/services"""
+        async with request.app.db.get_session() as session:
+            items = await ServiceRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_service(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/services & PUT /api/admin/byt3lab/services/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await ServiceRepository.update(session, item_id, data)
+            else:
+                item = await ServiceRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_service(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/services/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await ServiceRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- PROJETS CRUD ---
+
+    @classmethod
+    async def list_admin_projects(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/projects"""
+        async with request.app.db.get_session() as session:
+            items = await ProjectRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_project(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/projects & PUT /api/admin/byt3lab/projects/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await ProjectRepository.update(session, item_id, data)
+            else:
+                item = await ProjectRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_project(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/projects/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await ProjectRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- PARTENAIRES CRUD ---
+
+    @classmethod
+    async def list_admin_partners(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/partners"""
+        async with request.app.db.get_session() as session:
+            items = await PartnerRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_partner(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/partners & PUT /api/admin/byt3lab/partners/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await PartnerRepository.update(session, item_id, data)
+            else:
+                item = await PartnerRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_partner(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/partners/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await PartnerRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- EQUIPE CRUD ---
+
+    @classmethod
+    async def list_admin_team(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/team"""
+        async with request.app.db.get_session() as session:
+            items = await TeamRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_team(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/team & PUT /api/admin/byt3lab/team/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await TeamRepository.update(session, item_id, data)
+            else:
+                item = await TeamRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_team(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/team/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await TeamRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- CARRIERE / EMPLOIS CRUD ---
+
+    @classmethod
+    async def list_admin_jobs(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/jobs"""
+        async with request.app.db.get_session() as session:
+            items = await JobRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_job(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/jobs & PUT /api/admin/byt3lab/jobs/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await JobRepository.update(session, item_id, data)
+            else:
+                item = await JobRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_job(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/jobs/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await JobRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- ARTICLES BLOG CRUD ---
+
+    @classmethod
+    async def list_admin_posts(cls, request: Request, response: Response):
+        """GET /api/admin/byt3lab/posts"""
+        async with request.app.db.get_session() as session:
+            items = await PostRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @classmethod
+    async def save_admin_post(cls, request: Request, response: Response):
+        """POST /api/admin/byt3lab/posts & PUT /api/admin/byt3lab/posts/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await PostRepository.update(session, item_id, data)
+            else:
+                item = await PostRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @classmethod
+    async def delete_admin_post(cls, request: Request, response: Response):
+        """DELETE /api/admin/byt3lab/posts/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await PostRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})

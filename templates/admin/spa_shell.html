@@ -1,0 +1,912 @@
+<!-- Quill WYSIWYG Assets (AGENTS.md §8.9 & §8.10) -->
+<link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'quill', 'quill.snow.css']}) }}">
+<script src="{{ _url('static', {'module': 'base', 'path': ['libs', 'quill', 'quill.js']}) }}"></script>
+
+<div class="container-fluid py-3">
+  <!-- Ancrage racine de la SPA d'administration BYT3LAB -->
+  <div id="byt3lab-admin-app">
+    <!-- Skeleton loader initial pour éliminer tout saut de mise en page / FOUC -->
+    <div class="ds-card p-4 shadow-sm mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="ds-skeleton-line" style="width: 280px; height: 32px;"></div>
+        <div class="ds-skeleton-line" style="width: 160px; height: 36px;"></div>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-3" v-for="i in 4">
+          <div class="ds-skeleton-line" style="height: 90px; border-radius: 8px;"></div>
+        </div>
+      </div>
+      <div class="ds-skeleton-line mb-3" style="height: 45px;"></div>
+      <div class="ds-skeleton-line mb-2" style="height: 40px;"></div>
+      <div class="ds-skeleton-line mb-2" style="height: 40px;"></div>
+    </div>
+  </div>
+
+  <!-- Mention Développé avec MELODI -->
+  <div class="text-center text-muted small py-3 mt-4 border-top">
+    Administration propulsée par <a href="https://melodi.byt3lab.com" target="_blank" rel="noopener noreferrer" class="fw-bold text-decoration-none" style="color: var(--ds-color-primary, #002a4e);">MELODI ERP</a> &bull; Développé avec MELODI
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- Templates serveur pré-traduits Jinja2 pour la SPA MelodiJS              -->
+<!-- ======================================================================= -->
+
+<!-- 1. TEMPLATE DASHBOARD -->
+<template id="tpl-byt3lab-dashboard">
+  <div class="byt3lab-dashboard-view">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1" style="color: var(--ds-color-text, #0f172a);">
+          {{ t('admin_title', 'BYT3LAB Contenu — Console Éditoriale') }}
+        </h1>
+        <p class="text-muted small mb-0">Pilotage institutionnel et éditorial du groupe Byt3Lab</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/" target="_blank" class="ds-btn ds-btn-outline-secondary">
+          <span>{{ t('admin_view_public_site', 'Voir le site public') }} &rarr;</span>
+        </a>
+        <button type="button" class="ds-btn ds-btn-primary" @click="goTo('/settings')">
+          {{ t('admin_settings', 'Réglages du site') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Bannière alertes messages non lus -->
+    <div v-if="counts.unread_messages > 0" class="alert alert-success d-flex justify-content-between align-items-center mb-4 shadow-sm">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-success rounded-pill px-2 py-1">!</span>
+        <div>
+          <strong>[[ counts.unread_messages ]] nouveau(x) message(s) non lu(s)</strong>
+          <div class="small">Des demandes de contact ou de partenariat attendent votre traitement.</div>
+        </div>
+      </div>
+      <button type="button" class="ds-btn ds-btn-sm ds-btn-primary" @click="goTo('/inbox')">
+        Consulter &rarr;
+      </button>
+    </div>
+
+    <!-- Grille des KPIs -->
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-md-4 col-xl-3">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/inbox')">
+          <div class="text-muted small fw-bold text-uppercase">📥 Boîte de Réception</div>
+          <div class="fs-2 fw-bold my-1" style="color: var(--ds-color-primary, #002A4E);">[[ counts.messages || 0 ]]</div>
+          <div class="small text-muted">[[ counts.unread_messages || 0 ]] non lus</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-3">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/divisions')">
+          <div class="text-muted small fw-bold text-uppercase">🏛️ Divisions</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.divisions || 0 ]]</div>
+          <div class="small text-muted">Axes fondateurs</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-3">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/solutions')">
+          <div class="text-muted small fw-bold text-uppercase">🚀 Solutions & Produits</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.solutions || 0 ]]</div>
+          <div class="small text-muted">MELODI, SUKU, BWS</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-3">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/services')">
+          <div class="text-muted small fw-bold text-uppercase">🛠️ Services</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.services || 0 ]]</div>
+          <div class="small text-muted">Offres d'ingénierie</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-3">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/projects')">
+          <div class="text-muted small fw-bold text-uppercase">💼 Portfolio (Projets)</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.projects || 0 ]]</div>
+          <div class="small text-muted">Études de cas</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-3">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/partners')">
+          <div class="text-muted small fw-bold text-uppercase">🤝 Partenaires</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.partners || 0 ]]</div>
+          <div class="small text-muted">Alliances stratégiques</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-2">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/team')">
+          <div class="text-muted small fw-bold text-uppercase">👥 Équipe</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.team || 0 ]]</div>
+          <div class="small text-muted">Pôles d'expertise</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-2">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/jobs')">
+          <div class="text-muted small fw-bold text-uppercase">🎯 Carrières</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.jobs || 0 ]]</div>
+          <div class="small text-muted">Offres d'emploi</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-2">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/posts')">
+          <div class="text-muted small fw-bold text-uppercase">📰 Blog</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.posts || 0 ]]</div>
+          <div class="small text-muted">Publications R&D</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Derniers messages reçus -->
+    <div class="ds-card shadow-sm p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0">Dernières Demandes Reçues (Formulaires)</h2>
+        <button type="button" class="ds-btn ds-btn-sm ds-btn-outline-primary" @click="goTo('/inbox')">
+          Voir toute la boîte de réception &rarr;
+        </button>
+      </div>
+
+      <div class="table-responsive" v-if="recentMessages && recentMessages.length > 0">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Expéditeur</th>
+              <th>Organisation</th>
+              <th>Objet</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="m in recentMessages" :key="m.id">
+              <td class="small text-muted">[[ formatDate(m.created_at) ]]</td>
+              <td>
+                <span class="badge" :class="m.form_type === 'partner' ? 'bg-primary' : 'bg-secondary'">
+                  [[ m.form_type.toUpperCase() ]]
+                </span>
+              </td>
+              <td>
+                <strong>[[ m.sender_name ]]</strong><br>
+                <small class="text-muted">[[ m.email ]]</small>
+              </td>
+              <td>[[ m.organization || '—' ]]</td>
+              <td>[[ m.subject || m.partner_type || '—' ]]</td>
+              <td>
+                <span v-if="m.status === 'new'" class="badge bg-success">Nouveau</span>
+                <span v-else-if="m.status === 'in_progress'" class="badge bg-warning text-dark">En cours</span>
+                <span v-else class="badge bg-light text-dark border">Traité</span>
+              </td>
+              <td>
+                <button type="button" class="ds-btn ds-btn-sm ds-btn-secondary" @click="goTo('/inbox')">
+                  Consulter
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="text-center text-muted py-4">
+        Aucune demande reçue pour le moment.
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- 2. TEMPLATE INBOX -->
+<template id="tpl-byt3lab-inbox">
+  <div class="byt3lab-inbox-view">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">Boîte de Réception</h1>
+        <p class="text-muted small mb-0">Demandes de contact et propositions de partenariat reçues</p>
+      </div>
+      <router-link to="/" class="ds-btn ds-btn-outline-secondary">
+        &larr; Retour au tableau de bord
+      </router-link>
+    </div>
+
+    <!-- Alertes Feedback -->
+    <div v-if="successMessage" class="alert alert-success alert-dismissible fade show mb-3">
+      [[ successMessage ]]
+    </div>
+
+    <!-- Détail d'un message sélectionné -->
+    <div v-if="selectedMessage" class="ds-card p-4 shadow-sm mb-4 border-primary">
+      <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+        <div>
+          <span class="badge mb-2" :class="selectedMessage.form_type === 'partner' ? 'bg-primary' : 'bg-secondary'">
+            FORMULAIRE [[ selectedMessage.form_type.toUpperCase() ]]
+          </span>
+          <h2 class="h4 fw-bold mb-1">[[ selectedMessage.subject || selectedMessage.partner_type || 'Sans objet' ]]</h2>
+          <div class="small text-muted">Reçu le [[ formatDate(selectedMessage.created_at) ]] &bull; IP: [[ selectedMessage.ip_address || '—' ]]</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="ds-btn ds-btn-sm ds-btn-success" @click="updateStatus(selectedMessage.id, 'resolved')">
+            Marquer Traité
+          </button>
+          <button type="button" class="ds-btn ds-btn-sm ds-btn-warning" @click="updateStatus(selectedMessage.id, 'in_progress')">
+            En cours
+          </button>
+          <button type="button" class="ds-btn ds-btn-sm ds-btn-danger" @click="deleteMsg(selectedMessage.id)">
+            Supprimer
+          </button>
+          <button type="button" id="btn-close-msg-modal" class="btn-close ms-2" @click="closeDetail"></button>
+        </div>
+      </div>
+
+      <div class="row g-3 bg-light p-3 rounded mb-3">
+        <div class="col-md-3">
+          <small class="text-muted d-block">Expéditeur :</small>
+          <strong>[[ selectedMessage.sender_name ]]</strong>
+        </div>
+        <div class="col-md-3">
+          <small class="text-muted d-block">Organisation :</small>
+          <strong>[[ selectedMessage.organization || 'Non spécifiée' ]]</strong>
+        </div>
+        <div class="col-md-3">
+          <small class="text-muted d-block">E-mail :</small>
+          <a :href="'mailto:' + selectedMessage.email" class="fw-bold">[[ selectedMessage.email ]]</a>
+        </div>
+        <div class="col-md-3">
+          <small class="text-muted d-block">Téléphone :</small>
+          <strong>[[ selectedMessage.phone || 'Non spécifié' ]]</strong>
+        </div>
+        <div class="col-md-3" v-if="selectedMessage.website">
+          <small class="text-muted d-block">Site web :</small>
+          <a :href="selectedMessage.website" target="_blank" rel="noopener noreferrer">[[ selectedMessage.website ]]</a>
+        </div>
+      </div>
+
+      <div>
+        <h5 class="fw-bold mb-2">Message détaillé :</h5>
+        <div class="p-3 bg-white border rounded" style="white-space: pre-wrap; line-height: 1.6;">
+          [[ selectedMessage.message ]]
+        </div>
+      </div>
+    </div>
+
+    <!-- Filtres & Tableau des messages -->
+    <div class="ds-card p-4 shadow-sm">
+      <div class="d-flex gap-2 border-bottom pb-3 mb-3">
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeFilter === '' ? 'ds-btn-primary' : 'ds-btn-outline-secondary'" @click="setFilter('')">
+          Tous ([[ counts.total || 0 ]])
+        </button>
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeFilter === 'new' ? 'ds-btn-primary' : 'ds-btn-outline-secondary'" @click="setFilter('new')">
+          Nouveaux ([[ counts.new || 0 ]])
+        </button>
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeFilter === 'in_progress' ? 'ds-btn-primary' : 'ds-btn-outline-secondary'" @click="setFilter('in_progress')">
+          En cours ([[ counts.in_progress || 0 ]])
+        </button>
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeFilter === 'resolved' ? 'ds-btn-primary' : 'ds-btn-outline-secondary'" @click="setFilter('resolved')">
+          Traités ([[ counts.resolved || 0 ]])
+        </button>
+      </div>
+
+      <div class="table-responsive" v-if="messages && messages.length > 0">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Expéditeur</th>
+              <th>Organisation</th>
+              <th>Objet / Type</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="m in messages" :key="m.id" :class="selectedMessage && selectedMessage.id === m.id ? 'table-primary' : ''">
+              <td class="small text-muted">[[ formatDate(m.created_at) ]]</td>
+              <td>
+                <span class="badge" :class="m.form_type === 'partner' ? 'bg-primary' : 'bg-secondary'">
+                  [[ m.form_type.toUpperCase() ]]
+                </span>
+              </td>
+              <td>
+                <strong>[[ m.sender_name ]]</strong><br>
+                <small class="text-muted">[[ m.email ]]</small>
+              </td>
+              <td>[[ m.organization || '—' ]]</td>
+              <td>[[ m.subject || m.partner_type || '—' ]]</td>
+              <td>
+                <span v-if="m.status === 'new'" class="badge bg-success">Nouveau</span>
+                <span v-else-if="m.status === 'in_progress'" class="badge bg-warning text-dark">En cours</span>
+                <span v-else class="badge bg-light text-dark border">Traité</span>
+              </td>
+              <td>
+                <button type="button" class="ds-btn ds-btn-sm ds-btn-secondary btn-view-msg" @click="viewMessage(m)">
+                  Ouvrir
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="text-center text-muted py-4">
+        Aucun message dans cette catégorie.
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- 3. TEMPLATE SETTINGS -->
+<template id="tpl-byt3lab-settings">
+  <div class="byt3lab-settings-view">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">{{ t('admin_settings', 'Réglages Généraux du Site BYT3LAB') }}</h1>
+        <p class="text-muted small mb-0">Textes clés, coordonnées, réseaux et mentions légales</p>
+      </div>
+      <router-link to="/" class="ds-btn ds-btn-outline-secondary">
+        &larr; Retour au tableau de bord
+      </router-link>
+    </div>
+
+    <div v-if="successMessage" class="alert alert-success alert-dismissible fade show mb-3">
+      [[ successMessage ]]
+    </div>
+
+    <div class="ds-card p-4 shadow-sm">
+      <div class="mb-4 pb-2 border-bottom" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeTab === 'contact' ? 'ds-btn-primary' : 'ds-btn-secondary'" @click="activeTab = 'contact'">
+          📍 Coordonnées & Réseaux
+        </button>
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeTab === 'hero' ? 'ds-btn-primary' : 'ds-btn-secondary'" @click="activeTab = 'hero'">
+          ✨ Hero & Accueil
+        </button>
+        <button type="button" class="ds-btn ds-btn-sm" :class="activeTab === 'legal' ? 'ds-btn-primary' : 'ds-btn-secondary'" @click="activeTab = 'legal'">
+          ⚖️ Mentions Légales & Footer
+        </button>
+      </div>
+
+      <form @submit.prevent="submitForm">
+        <!-- Tab 1: Coordonnées & Réseaux -->
+        <div v-show="activeTab === 'contact'">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">E-mail Principal :</label>
+              <input type="email" class="form-control" v-model="form.contact_email_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">E-mail Support :</label>
+              <input type="email" class="form-control" v-model="form.contact_email_support_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Téléphone Principal :</label>
+              <input type="text" class="form-control" v-model="form.contact_phone_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">WhatsApp (numéro) :</label>
+              <input type="text" class="form-control" v-model="form.contact_whatsapp_fr">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold small">Présence Géographique :</label>
+              <input type="text" class="form-control" v-model="form.contact_location_fr">
+            </div>
+          </div>
+
+          <h5 class="fw-bold mt-4 mb-3 border-top pt-3">Liens Réseaux Sociaux</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">LinkedIn :</label>
+              <input type="url" class="form-control" v-model="form.social_linkedin_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Facebook Byt3Lab :</label>
+              <input type="url" class="form-control" v-model="form.social_facebook_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">YouTube :</label>
+              <input type="url" class="form-control" v-model="form.social_youtube_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Facebook NGRAFIX :</label>
+              <input type="url" class="form-control" v-model="form.social_ngrafix_fr">
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Hero & Accueil -->
+        <div v-show="activeTab === 'hero'">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-bold small">Signature Hero :</label>
+              <input type="text" class="form-control" v-model="form.home_hero_signature_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Titre Hero (FR) :</label>
+              <input type="text" class="form-control" v-model="form.home_hero_title_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Titre Hero (EN) :</label>
+              <input type="text" class="form-control" v-model="form.home_hero_title_en">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Sous-titre (FR) :</label>
+              <textarea class="form-control" rows="3" v-model="form.home_hero_subtitle_fr"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Sous-titre (EN) :</label>
+              <textarea class="form-control" rows="3" v-model="form.home_hero_subtitle_en"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Mentions Légales & Footer -->
+        <div v-show="activeTab === 'legal'">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-bold small">Raison Sociale :</label>
+              <input type="text" class="form-control" v-model="form.legal_company_fr">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Texte Footer (FR) :</label>
+              <textarea class="form-control" rows="3" v-model="form.legal_footer_text_fr"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold small">Texte Footer (EN) :</label>
+              <textarea class="form-control" rows="3" v-model="form.legal_footer_text_en"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+          <button type="submit" class="ds-btn ds-btn-primary" :disabled="loading">
+            Enregistrer les modifications
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<!-- 4. TEMPLATE CRUD UNIFIÉ AVEC FORMULAIRES SUR-MESURE PAR RESSOURCE -->
+<template id="tpl-byt3lab-crud">
+  <div class="byt3lab-crud-view">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">[[ resourceTitle ]]</h1>
+        <p class="text-muted small mb-0">Gestion, édition bilingue et publication des contenus</p>
+      </div>
+      <div class="d-flex gap-2">
+        <router-link to="/" class="ds-btn ds-btn-outline-secondary">
+          &larr; Tableau de bord
+        </router-link>
+        <button type="button" class="ds-btn ds-btn-primary" @click="openCreate">
+          + Ajouter un élément
+        </button>
+      </div>
+    </div>
+
+    <!-- Alertes Feedback -->
+    <div v-if="successMessage" class="alert alert-success alert-dismissible fade show mb-3">
+      [[ successMessage ]]
+    </div>
+
+    <!-- Liste Table -->
+    <div class="ds-card p-4 shadow-sm">
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <input type="text" class="form-control form-control-sm" placeholder="Rechercher par titre, nom, slug..." v-model="searchQuery">
+        </div>
+      </div>
+
+      <div class="table-responsive" v-if="items && items.length > 0">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th>Titre / Nom</th>
+              <th>Détails / Catégorie</th>
+              <th style="width: 80px;">Ordre</th>
+              <th style="width: 100px;">Publication</th>
+              <th style="width: 160px; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="it in items" :key="it.id">
+              <td class="text-muted small">[[ it.id ]]</td>
+              <td>
+                <div class="fw-bold" style="color: var(--ds-color-text, #0f172a);">
+                  [[ it.title_fr || it.title || it.name || '—' ]]
+                </div>
+                <div class="small text-muted" v-if="it.title_en">
+                  EN: [[ it.title_en ]]
+                </div>
+                <div class="small text-muted font-monospace" v-if="it.slug">
+                  /[[ it.slug ]]
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-light text-dark border">[[ getItemMeta(it) ]]</span>
+              </td>
+              <td>[[ it.order_num || 0 ]]</td>
+              <td>
+                <span class="badge" :class="it.is_published ? 'bg-success' : 'bg-secondary'">
+                  [[ it.is_published ? 'Publié' : 'Brouillon' ]]
+                </span>
+              </td>
+              <td style="text-align: right;">
+                <div class="btn-group btn-group-sm">
+                  <button type="button" class="ds-btn ds-btn-sm ds-btn-outline-primary btn-edit" @click="openEdit(it)">
+                    Modifier
+                  </button>
+                  <button type="button" class="ds-btn ds-btn-sm ds-btn-outline-danger btn-delete" @click="deleteItem(it.id)">
+                    Supprimer
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-else class="text-center text-muted py-5">
+        Aucun élément enregistré dans cette section.
+      </div>
+    </div>
+
+    <!-- MODAL DE CRÉATION & MODIFICATION SUR-MESURE -->
+    <div v-if="showModal" class="modal-backdrop fade show" style="z-index: 1050;"></div>
+    <div v-if="showModal" class="modal fade show d-block" tabindex="-1" style="z-index: 1055;">
+      <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content ds-card p-4 border shadow">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h5 class="fw-bold m-0">
+              [[ isEditing ? 'Modifier' : 'Ajouter' ]] : [[ resourceTitle ]]
+            </h5>
+            <button type="button" class="btn-close" @click="closeModal"></button>
+          </div>
+
+          <!-- Onglets bilingues pour les champs textuels -->
+          <div class="mb-3 bg-light p-2 rounded" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.5rem;">
+            <button type="button" class="ds-btn ds-btn-sm modal-tab-btn" data-tab="tab-fr" :class="activeFormTab === 'fr' ? 'ds-btn-primary' : 'ds-btn-secondary'" @click="switchTab('fr')">
+              🇫🇷 Contenu en Français
+            </button>
+            <button type="button" class="ds-btn ds-btn-sm modal-tab-btn" data-tab="tab-en" :class="activeFormTab === 'en' ? 'ds-btn-primary' : 'ds-btn-secondary'" @click="switchTab('en')">
+              🇬🇧 Contenu en Anglais
+            </button>
+            <button type="button" class="ds-btn ds-btn-sm modal-tab-btn" data-tab="tab-meta" :class="activeFormTab === 'meta' ? 'ds-btn-primary' : 'ds-btn-secondary'" @click="switchTab('meta')">
+              ⚙️ Paramètres & Métadonnées
+            </button>
+          </div>
+
+          <form @submit.prevent="saveItem">
+            <!-- ================= ONGLET 1 : FRANÇAIS ================= -->
+            <div v-show="activeFormTab === 'fr'">
+              <!-- A. POUR LES PARTENAIRES -->
+              <div v-if="resourceName === 'partners'" class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Nom du Partenaire * :</label>
+                  <input type="text" class="form-control" v-model="formData.name" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Catégorie * :</label>
+                  <select class="form-select" v-model="formData.category" required>
+                    <option value="technologie">Fournisseur Technologique</option>
+                    <option value="infrastructure">Opérateur Infrastructure & Cloud</option>
+                    <option value="constructeurs">Constructeur Matériel & Serveurs</option>
+                    <option value="academique">Institution Académique & Université</option>
+                    <option value="commercial">Partenaire Commercial & Télécom</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-bold">Description de l'alliance (FR) :</label>
+                  <textarea class="form-control" rows="3" v-model="formData.description_fr"></textarea>
+                </div>
+              </div>
+
+              <!-- B. POUR LES MEMBRES D'ÉQUIPE -->
+              <div v-else-if="resourceName === 'team'" class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Nom du Responsable ou Intitulé du Pôle * :</label>
+                  <input type="text" class="form-control" v-model="formData.name" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Rôle / Mission (FR) * :</label>
+                  <input type="text" class="form-control" v-model="formData.role_fr" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-bold">Présentation & Biographie (FR) :</label>
+                  <textarea class="form-control" rows="4" v-model="formData.bio_fr"></textarea>
+                </div>
+              </div>
+
+              <!-- C. POUR TOUTES LES AUTRES RESSOURCES (Divisions, Solutions, Services, Projets, Jobs, Posts) -->
+              <div v-else class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold">Titre principal (FR) * :</label>
+                  <input type="text" class="form-control" v-model="formData.title_fr" required>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">Secteur / Domaine d'application (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.domain_fr" placeholder="Ex: Commerce & Distribution">
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Badge Marketing (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.badge_fr" placeholder="Ex: Progiciel Phare">
+                </div>
+
+                <!-- Tagline solution -->
+                <div class="col-12" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Accroche / Tagline (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.tagline_fr" placeholder="Progiciel de gestion modulaire...">
+                </div>
+
+                <!-- Bouton CTA pour solutions -->
+                <div class="col-md-6" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Texte du bouton CTA (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.button_label_fr" placeholder="Découvrir MELODI ERP">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">URL de destination :</label>
+                  <input type="text" class="form-control" v-model="formData.button_url" placeholder="https://...">
+                </div>
+
+                <!-- Vision pour divisions -->
+                <div class="col-12" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Vision Stratégique (FR) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.vision_fr"></textarea>
+                </div>
+
+                <!-- Résumé / Extrait -->
+                <div class="col-12" v-if="resourceName !== 'jobs'">
+                  <label class="form-label small fw-bold">Résumé / Extrait court (FR) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.excerpt_fr"></textarea>
+                </div>
+
+                <!-- Description / Contenu complet avec éditeur WYSIWYG Quill -->
+                <div class="col-12">
+                  <label class="form-label small fw-bold d-flex justify-content-between align-items-center mb-1">
+                    <span>Description complète / Contenu détaillé (FR) :</span>
+                    <span class="badge bg-light text-primary border" style="font-size: 0.75rem;">
+                      <span style="color: #10b981;">●</span> Éditeur WYSIWYG Quill
+                    </span>
+                  </label>
+                  <div class="quill-editor-wrapper">
+                    <div id="quill-editor-fr"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= ONGLET 2 : ANGLAIS ================= -->
+            <div v-show="activeFormTab === 'en'">
+              <div v-if="resourceName === 'partners'" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label small fw-bold">Description of Alliance (EN) :</label>
+                  <textarea class="form-control" rows="3" v-model="formData.description_en"></textarea>
+                </div>
+              </div>
+
+              <div v-else-if="resourceName === 'team'" class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small fw-bold">Role / Mission (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.role_en">
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-bold">Presentation & Biography (EN) :</label>
+                  <textarea class="form-control" rows="4" v-model="formData.bio_en"></textarea>
+                </div>
+              </div>
+
+              <div v-else class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold">Main Title (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.title_en">
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">Domain / Sector (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.domain_en" placeholder="Retail & Distribution">
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Marketing Badge (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.badge_en" placeholder="Flagship ERP">
+                </div>
+
+                <div class="col-12" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Tagline (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.tagline_en">
+                </div>
+
+                <div class="col-md-6" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">CTA Button Label (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.button_label_en">
+                </div>
+
+                <div class="col-12" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Strategic Vision (EN) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.vision_en"></textarea>
+                </div>
+
+                <div class="col-12" v-if="resourceName !== 'jobs'">
+                  <label class="form-label small fw-bold">Short Excerpt / Summary (EN) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.excerpt_en"></textarea>
+                </div>
+
+                <!-- Detailed Content with Quill WYSIWYG Editor -->
+                <div class="col-12">
+                  <label class="form-label small fw-bold d-flex justify-content-between align-items-center mb-1">
+                    <span>Detailed Content (EN) :</span>
+                    <span class="badge bg-light text-primary border" style="font-size: 0.75rem;">
+                      <span style="color: #10b981;">●</span> Quill WYSIWYG Editor
+                    </span>
+                  </label>
+                  <div class="quill-editor-wrapper">
+                    <div id="quill-editor-en"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= ONGLET 3 : MÉTADONNÉES & LISTES SUR-MESURE ================= -->
+            <div v-show="activeFormTab === 'meta'">
+              <div class="row g-3">
+                <!-- Slug (identifiant URL) -->
+                <div class="col-md-6" v-if="resourceName !== 'partners'">
+                  <label class="form-label small fw-bold">Slug URL (minuscules, sans espace) * :</label>
+                  <input type="text" class="form-control font-monospace" v-model="formData.slug" required>
+                </div>
+
+                <!-- Ordre d'affichage -->
+                <div class="col-md-3">
+                  <label class="form-label small fw-bold">Ordre d'affichage :</label>
+                  <input type="number" class="form-control" v-model="formData.order_num">
+                </div>
+
+                <!-- Case à cocher Publié -->
+                <div class="col-md-3 d-flex align-items-center mt-4">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="modalPubCheck" v-model="formData.is_published">
+                    <label class="form-check-label small fw-bold" for="modalPubCheck">Publier sur le site</label>
+                  </div>
+                </div>
+
+                <!-- Rattaché à une division (pour solutions, services, jobs) -->
+                <div class="col-md-6" v-if="['solutions', 'services', 'jobs'].includes(resourceName)">
+                  <label class="form-label small fw-bold">Division de rattachement :</label>
+                  <select class="form-select" v-model="formData.division_slug">
+                    <option value="">-- Aucune division spécifique --</option>
+                    <option v-for="d in divisions" :key="d.slug" :value="d.slug">
+                      [[ d.title_fr || d.title ]]
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Niveau de maturité pour divisions & solutions -->
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Niveau de maturité opérationnelle :</label>
+                  <select class="form-select" v-model="formData.maturity_status">
+                    <option value="active">Opérationnel</option>
+                    <option value="in_development">En développement</option>
+                    <option value="strategic">Orientation stratégique</option>
+                  </select>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Statut de la solution :</label>
+                  <select class="form-select" v-model="formData.status">
+                    <option value="active">Opérationnel</option>
+                    <option value="in_development">En développement</option>
+                    <option value="strategic">Orientation stratégique</option>
+                  </select>
+                </div>
+
+                <!-- Icône SVG pour divisions & services -->
+                <div class="col-md-6" v-if="['divisions', 'services'].includes(resourceName)">
+                  <label class="form-label small fw-bold">Icône vectorielle :</label>
+                  <select class="form-select" v-model="formData.icon">
+                    <option value="code">code (Logiciel)</option>
+                    <option value="cloud">cloud (Cloud & Hébergement)</option>
+                    <option value="server">server (Matériel & Serveurs)</option>
+                    <option value="cpu">cpu (IoT & Électronique)</option>
+                    <option value="zap">zap (Énergie & Électricité)</option>
+                    <option value="layers">layers (Architecture)</option>
+                    <option value="shield">shield (Cybersécurité)</option>
+                    <option value="database">database (Base de données)</option>
+                  </select>
+                </div>
+
+                <!-- Couleur d'accent pour solutions -->
+                <div class="col-md-6" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Couleur d'accentuation marketing :</label>
+                  <div class="d-flex gap-2 align-items-center">
+                    <input type="color" class="form-control form-control-color" v-model="formData.accent_color">
+                    <input type="text" class="form-control font-monospace" v-model="formData.accent_color">
+                  </div>
+                </div>
+
+                <!-- URL externe pour partenaires -->
+                <div class="col-md-6" v-if="resourceName === 'partners'">
+                  <label class="form-label small fw-bold">Lien web officiel (URL) :</label>
+                  <input type="url" class="form-control" v-model="formData.website_url" placeholder="https://...">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'partners'">
+                  <label class="form-label small fw-bold">URL du logo vectoriel :</label>
+                  <input type="text" class="form-control" v-model="formData.logo_url">
+                </div>
+
+                <!-- Champs pour recrutements / jobs -->
+                <div class="col-md-6" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Type de contrat :</label>
+                  <select class="form-select" v-model="formData.contract_type">
+                    <option value="CDI">CDI (Contrat à durée indéterminée)</option>
+                    <option value="CDD">CDD (Contrat à durée déterminée)</option>
+                    <option value="Stage">Stage Pré-Emploi / PFE</option>
+                    <option value="Freelance">Freelance / Consultant</option>
+                  </select>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Lieu d'exercice :</label>
+                  <input type="text" class="form-control" v-model="formData.location" placeholder="Douala / Yaoundé (Hybride)">
+                </div>
+
+                <!-- Auteur & image pour blog posts -->
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Nom de l'auteur :</label>
+                  <input type="text" class="form-control" v-model="formData.author_name">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">URL de l'image de couverture :</label>
+                  <input type="text" class="form-control" v-model="formData.cover_image">
+                </div>
+
+                <!-- Image pour projets -->
+                <div class="col-md-12" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">URL de l'image d'illustration :</label>
+                  <input type="text" class="form-control" v-model="formData.image_url">
+                </div>
+
+                <!-- LISTES DYNAMIQUES JSON (Divisions) -->
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Domaines d'expertise (1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.expertise_list" placeholder="Ingénierie logicielle&#10;ERP & Progiciels"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Technologies clés (1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.technologies_list" placeholder="Python & AsyncIO&#10;PostgreSQL"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Services associés (1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.services_list"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Secteurs industriels cibles (1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.industries_list"></textarea>
+                </div>
+
+                <!-- LISTES DYNAMIQUES JSON (Solutions) -->
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Fonctionnalités clés (1 par ligne) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.features_list" placeholder="Gestion commerciale&#10;Stocks multi-dépôts"></textarea>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Problématiques résolues (1 par ligne) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.problems_list" placeholder="Données dispersées&#10;Pertes financières"></textarea>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Bénéfices pour le client (1 par ligne) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.benefits_list" placeholder="Plateforme unifiée&#10;Visibilité temps réel"></textarea>
+                </div>
+
+                <!-- LISTE DYNAMIQUE JSON (Exigences de poste pour jobs) -->
+                <div class="col-12" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Compétences & Exigences requises (1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.requirements" placeholder="Maîtrise de Python 3.10+&#10;Bonne maîtrise de PostgreSQL"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+              <button type="button" id="btn-cancel-modal" class="ds-btn ds-btn-secondary" @click="closeModal">Annuler</button>
+              <button type="submit" class="ds-btn ds-btn-primary" :disabled="loading">
+                Enregistrer les modifications
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- Script d'amorce SPA MelodiJS compilé depuis TypeScript -->
+<script type="module" src="{{ _url('static', {'module': 'byt3lab_app', 'path': 'spa/byt3lab_admin/app.js'}) }}"></script>

@@ -1,0 +1,72 @@
+{% extends "public/byt3lab_layout.html" %}
+
+{% block content %}
+<!-- Hero Header -->
+<section class="b-section b-section--navy" style="padding: calc(var(--space-2xl) * 1.2) 0 var(--space-xl);">
+    <div class="b-container">
+        <div style="margin-bottom: var(--space-md);">
+            <a href="{{ site_prefix }}/realisations" style="color: var(--color-cyan); font-family: var(--font-mono); font-size: var(--text-xs); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-xs);">
+                &larr; {{ t('project_back_link', 'Retour à l\'ensemble des réalisations') }}
+            </a>
+        </div>
+
+        <div style="display: flex; gap: var(--space-xs); align-items: center; flex-wrap: wrap; margin-bottom: var(--space-xs);">
+            <span class="b-badge b-badge--dark">{{ project.domain|default('INGÉNIERIE')|upper }}</span>
+            {% if project.stack %}
+                {% for st in project.stack.split('/') %}
+                    {% if st|trim %}
+                        <span class="b-badge b-badge--light">{{ st|trim }}</span>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <h1 style="color: var(--color-white); font-size: clamp(2rem, 4vw, 3rem); margin: var(--space-xs) 0 0; letter-spacing: -0.02em;">
+            {{ project.title }}
+        </h1>
+    </div>
+</section>
+
+<!-- Main Article -->
+<section class="b-section b-section--light" style="padding: var(--space-2xl) 0;">
+    <div class="b-container">
+        <article class="b-card" style="background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 3rem); max-width: 900px; margin: 0 auto;">
+            {% if project.image_url %}
+                <div style="margin-bottom: var(--space-xl); border-radius: var(--radius-md); overflow: hidden; max-height: 440px; background: var(--color-slate-lightest);">
+                    <img src="{{ project.image_url }}" alt="{{ project.title }}" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+            {% endif %}
+
+            <div style="font-size: var(--text-md); line-height: 1.8; color: var(--color-slate-dark); margin-bottom: var(--space-xl);">
+                {% if project.content %}
+                    {{ project.content|safe }}
+                {% elif project.excerpt %}
+                    <p>{{ project.excerpt }}</p>
+                {% endif %}
+            </div>
+
+            {% if project.impact %}
+                <div style="padding: var(--space-lg); background: var(--color-slate-lightest); border-left: 4px solid var(--color-blue); border-radius: var(--radius-sm); margin-bottom: var(--space-xl);">
+                    <strong style="color: var(--color-navy); display: block; margin-bottom: var(--space-xs); font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase;">
+                        ⚡ {{ t('project_impact_title', 'Impact Opérationnel Mesuré :') }}
+                    </strong>
+                    <p style="margin: 0; color: var(--color-slate-dark); font-size: var(--text-sm); line-height: 1.6;">
+                        {{ project.impact }}
+                    </p>
+                </div>
+            {% endif %}
+
+            <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-lg); display: flex; gap: var(--space-md); flex-wrap: wrap;">
+                {% if project.url %}
+                    <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--primary">
+                        {{ t('project_visit_resource', 'Consulter la ressource →') }}
+                    </a>
+                {% endif %}
+                <a href="{{ site_prefix }}/contact" class="b-btn b-btn--outline">
+                    {{ t('project_discuss_similar', 'Échanger sur un projet similaire') }}
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}

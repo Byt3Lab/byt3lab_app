@@ -1,0 +1,304 @@
+{% extends "public/byt3lab_layout.html" %}
+
+{% block content %}
+<div class="component-services-body bg-white text-dark">
+    <!-- BYT3LAB-CONTENT-START -->
+    
+    <!-- Hero / Title Header -->
+    <section class="py-5 text-center position-relative overflow-hidden" style="background: radial-gradient(circle at bottom left, rgba(2, 132, 199, 0.08), transparent 60%), #ffffff; border-bottom: 1px solid #e2e8f0;">
+        <div class="container py-5 position-relative" style="z-index: 2;">
+            <span class="text-uppercase tracking-wider fw-bold font-monospace d-block mb-2" style="color: #0284c7;">Notre Expertise</span>
+            <h1 class="f-nasalization display-4 fw-bold mb-3" style="color: #0f172a;">Nos Services &amp; Ingénierie</h1>
+            <p class="lead mx-auto" style="max-width: 700px; color: #475569;">
+                Des architectures logicielles modernes, robustes et hautement sécurisées pour accélérer la croissance de vos projets technologiques.
+            </p>
+        </div>
+    </section>
+
+    <!-- Services Details Section - Software & Cloud -->
+    <section class="py-5" style="background: #f8fafc;">
+        <div class="container py-5">
+
+            <!-- Interactive Department / Branch Filters -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
+                <div>
+                    <span class="text-uppercase tracking-wider fw-bold font-monospace d-block mb-1" style="color: #0284c7; font-size: 12px;">CATALOGUE DE SERVICES</span>
+                    <h2 class="f-nasalization h2 fw-bold mb-0" style="color: #0f172a;">Explorez par Pôle &amp; Filiale</h2>
+                </div>
+
+                <!-- Filter Buttons -->
+                <div class="d-flex flex-wrap gap-2 service-filter-group">
+                    <button type="button" class="service-filter-btn active" data-filter="all">Tous les Services</button>
+                    <button type="button" class="service-filter-btn" data-filter="byt3lab tech">Byt3lab Tech</button>
+                    <button type="button" class="service-filter-btn" data-filter="ngrafix studio">Ngrafix Studio</button>
+                    <button type="button" class="service-filter-btn" data-filter="conseil & stratégie">Conseil &amp; Stratégie</button>
+                </div>
+            </div>
+
+            <div class="row g-4 text-start justify-content-center">
+                {% if services and services|length > 0 %}
+                    {% for s in services %}
+                    {% set branch = s.division_slug or 'byt3lab tech' %}
+                    <div class="col-md-6 col-lg-4 col-xl-3 service-item-col" data-branch="{{ branch|lower }}" style="transition: all 0.3s ease;">
+                        <div class="card card-premium h-100 rounded-4 overflow-hidden d-flex flex-column justify-content-between" style="background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+                            <div>
+                                <!-- Service Image Banner -->
+                                <div class="position-relative overflow-hidden" style="height: 190px; background: #0f172a;">
+                                    {% if s.featured_image %}
+                                        <img src="{{ s.featured_image }}" alt="{{ s.title }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='none'" />
+                                    {% else %}
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: radial-gradient(circle at center, rgba(2, 132, 199, 0.25), #0f172a);">
+                                            <span style="font-size: 48px;">{{ s.icon|default('💻') }}</span>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge px-3 py-2 rounded-pill font-monospace shadow-sm" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); color: #38bdf8; font-size: 11px; border: 1px solid rgba(56, 189, 248, 0.35);">
+                                            {{ s.division_slug|default('Byt3lab Tech')|upper }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="p-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span style="font-size: 20px;">{{ s.icon|default('💻') }}</span>
+                                        <h3 class="h5 fw-bold mb-0" style="color: #0f172a;">
+                                            <a href="{{ site_prefix }}/services/{{ s.slug }}" class="text-decoration-none text-dark hover-blue">{{ s.title }}</a>
+                                        </h3>
+                                    </div>
+                                    <p class="small mb-3" style="color: #334155; line-height: 1.6;">
+                                        {{ s.excerpt }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="p-4 pt-0">
+                                <a href="{{ site_prefix }}/services/{{ s.slug }}" class="btn btn-sm btn-outline-primary w-100 font-monospace py-2 fw-semibold" style="font-size: 12px; border-radius: 8px; border-color: rgba(2, 132, 199, 0.4); color: #0284c7;">
+                                    Découvrir le service &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Offres de services permanentes (identiques à l'original) -->
+                    <div class="col-md-6 col-lg-4 col-xl-3 service-item-col" data-branch="byt3lab tech" style="transition: all 0.3s ease;">
+                        <div class="card card-premium h-100 rounded-4 overflow-hidden d-flex flex-column justify-content-between" style="background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+                            <div>
+                                <div class="position-relative overflow-hidden" style="height: 190px; background: #0f172a;">
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: radial-gradient(circle at center, rgba(2, 132, 199, 0.25), #0f172a);">
+                                        <span style="font-size: 48px;">💻</span>
+                                    </div>
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge px-3 py-2 rounded-pill font-monospace shadow-sm" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); color: #38bdf8; font-size: 11px; border: 1px solid rgba(56, 189, 248, 0.35);">
+                                            Byt3lab Tech
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span style="font-size: 20px;">💻</span>
+                                        <h3 class="h5 fw-bold mb-0" style="color: #0f172a;">
+                                            <a href="{{ site_prefix }}/contact" class="text-decoration-none text-dark hover-blue">Ingénierie Logicielle &amp; ERP</a>
+                                        </h3>
+                                    </div>
+                                    <p class="small mb-3" style="color: #334155; line-height: 1.6;">
+                                        Conception d'architectures logicielles modernes, robustes et modulaires pour des environnements d'entreprise complexes.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <a href="{{ site_prefix }}/contact" class="btn btn-sm btn-outline-primary w-100 font-monospace py-2 fw-semibold" style="font-size: 12px; border-radius: 8px; border-color: rgba(2, 132, 199, 0.4); color: #0284c7;">
+                                    Découvrir le service &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 service-item-col" data-branch="byt3lab tech" style="transition: all 0.3s ease;">
+                        <div class="card card-premium h-100 rounded-4 overflow-hidden d-flex flex-column justify-content-between" style="background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+                            <div>
+                                <div class="position-relative overflow-hidden" style="height: 190px; background: #0f172a;">
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: radial-gradient(circle at center, rgba(2, 132, 199, 0.25), #0f172a);">
+                                        <span style="font-size: 48px;">☁️</span>
+                                    </div>
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge px-3 py-2 rounded-pill font-monospace shadow-sm" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); color: #38bdf8; font-size: 11px; border: 1px solid rgba(56, 189, 248, 0.35);">
+                                            Byt3lab Tech
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span style="font-size: 20px;">☁️</span>
+                                        <h3 class="h5 fw-bold mb-0" style="color: #0f172a;">
+                                            <a href="{{ site_prefix }}/contact" class="text-decoration-none text-dark hover-blue">Infrastructures Cloud &amp; DevOps</a>
+                                        </h3>
+                                    </div>
+                                    <p class="small mb-3" style="color: #334155; line-height: 1.6;">
+                                        Déploiement haute disponibilité, orchestrations de conteneurs, clusters Kubernetes et pipelines CI/CD automatisés.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <a href="{{ site_prefix }}/contact" class="btn btn-sm btn-outline-primary w-100 font-monospace py-2 fw-semibold" style="font-size: 12px; border-radius: 8px; border-color: rgba(2, 132, 199, 0.4); color: #0284c7;">
+                                    Découvrir le service &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 service-item-col" data-branch="ngrafix studio" style="transition: all 0.3s ease;">
+                        <div class="card card-premium h-100 rounded-4 overflow-hidden d-flex flex-column justify-content-between" style="background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+                            <div>
+                                <div class="position-relative overflow-hidden" style="height: 190px; background: #0f172a;">
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: radial-gradient(circle at center, rgba(147, 51, 234, 0.25), #0f172a);">
+                                        <span style="font-size: 48px;">🎨</span>
+                                    </div>
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge px-3 py-2 rounded-pill font-monospace shadow-sm" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); color: #c084fc; font-size: 11px; border: 1px solid rgba(192, 132, 252, 0.35);">
+                                            Ngrafix Studio
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span style="font-size: 20px;">🎨</span>
+                                        <h3 class="h5 fw-bold mb-0" style="color: #0f172a;">
+                                            <a href="{{ site_prefix }}/contact" class="text-decoration-none text-dark hover-blue">Branding, UI/UX &amp; Stratégie</a>
+                                        </h3>
+                                    </div>
+                                    <p class="small mb-3" style="color: #334155; line-height: 1.6;">
+                                        Création d'identités visuelles percutantes, chartes graphiques de marque et ergonomie d'interfaces logicielles modernes.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <a href="{{ site_prefix }}/contact" class="btn btn-sm btn-outline-primary w-100 font-monospace py-2 fw-semibold" style="font-size: 12px; border-radius: 8px; border-color: rgba(147, 51, 234, 0.4); color: #9333ea;">
+                                    Découvrir le service &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4 col-xl-3 service-item-col" data-branch="conseil & stratégie" style="transition: all 0.3s ease;">
+                        <div class="card card-premium h-100 rounded-4 overflow-hidden d-flex flex-column justify-content-between" style="background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='none'">
+                            <div>
+                                <div class="position-relative overflow-hidden" style="height: 190px; background: #0f172a;">
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: radial-gradient(circle at center, rgba(16, 185, 129, 0.25), #0f172a);">
+                                        <span style="font-size: 48px;">🛡️</span>
+                                    </div>
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge px-3 py-2 rounded-pill font-monospace shadow-sm" style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); color: #34d399; font-size: 11px; border: 1px solid rgba(52, 211, 153, 0.35);">
+                                            Conseil &amp; Stratégie
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span style="font-size: 20px;">🛡️</span>
+                                        <h3 class="h5 fw-bold mb-0" style="color: #0f172a;">
+                                            <a href="{{ site_prefix }}/contact" class="text-decoration-none text-dark hover-blue">Audit de Sécurité &amp; Souveraineté</a>
+                                        </h3>
+                                    </div>
+                                    <p class="small mb-3" style="color: #334155; line-height: 1.6;">
+                                        Audits complets d'infrastructures, tests d'intrusion, plans de reprise d'activité (PRA) et conformité réglementaire.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-0">
+                                <a href="{{ site_prefix }}/contact" class="btn btn-sm btn-outline-primary w-100 font-monospace py-2 fw-semibold" style="font-size: 12px; border-radius: 8px; border-color: rgba(16, 185, 129, 0.4); color: #059669;">
+                                    Découvrir le service &rarr;
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Management Methodologies -->
+    <section class="py-5" style="background: #ffffff; border-top: 1px solid #e2e8f0;">
+        <div class="container py-5 text-start">
+            <div class="row mb-5 text-center">
+                <div class="col-12">
+                    <span class="text-uppercase tracking-wider fw-bold font-monospace d-block mb-2" style="color: #0284c7;">Notre Méthode</span>
+                    <h2 class="f-nasalization h1 fw-bold" style="color: #0f172a;">Gestion de Projet Agile</h2>
+                    <p class="mx-auto mt-2" style="max-width: 600px; color: #64748b;">
+                        Découvrez comment nous transformons vos idées en logiciels d'exception grâce à notre processus structuré étape par étape.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-10">
+                    <div class="position-relative">
+                        <!-- Vertical line for timeline -->
+                        <div class="position-absolute d-none d-md-block" style="width: 2px; background: rgba(2, 132, 199, 0.2); top: 0; bottom: 0; left: 50%; transform: translateX(-50%);"></div>
+
+                        <!-- Step 1 -->
+                        <div class="row mb-5 align-items-center">
+                            <div class="col-md-5 text-md-end">
+                                <h3 class="fw-bold h4" style="color: #0f172a;">1. Analyse &amp; Spécifications</h3>
+                                <p class="mb-0 small" style="color: #475569;">Nous étudions vos flux de travail et vos besoins métiers. Nous rédigeons un cahier des charges précis et concevons des maquettes UI/UX interactives sur Figma.</p>
+                            </div>
+                            <div class="col-md-2 text-center my-3 my-md-0 position-relative">
+                                <div class="rounded-circle bg-white border border-3 d-flex align-items-center justify-content-center mx-auto" style="width: 48px; height: 48px; border-color: #0284c7 !important;">
+                                    <span class="fw-bold" style="color: #0284c7 !important;">1</span>
+                                </div>
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="row mb-5 align-items-center flex-md-row-reverse">
+                            <div class="col-md-5 text-md-start">
+                                <h3 class="fw-bold h4" style="color: #0f172a;">2. Développement Agile &amp; Sprints</h3>
+                                <p class="mb-0 small" style="color: #475569;">Votre projet est divisé en modules fonctionnels livrés régulièrement. Vous suivez l'avancement via des démonstrations et des sprint reviews bi-mensuels.</p>
+                            </div>
+                            <div class="col-md-2 text-center my-3 my-md-0 position-relative">
+                                <div class="rounded-circle bg-white border border-3 d-flex align-items-center justify-content-center mx-auto" style="width: 48px; height: 48px; border-color: #0284c7 !important;">
+                                    <span class="fw-bold" style="color: #0284c7 !important;">2</span>
+                                </div>
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="row mb-5 align-items-center">
+                            <div class="col-md-5 text-md-end">
+                                <h3 class="fw-bold h4" style="color: #0f172a;">3. Tests &amp; Audit de Sécurité</h3>
+                                <p class="mb-0 small" style="color: #475569;">Avant toute mise en production, nos ingénieurs effectuent des tests unitaires et d'intégration, complétés par un audit de vulnérabilités pour garantir la sécurité.</p>
+                            </div>
+                            <div class="col-md-2 text-center my-3 my-md-0 position-relative">
+                                <div class="rounded-circle bg-white border border-3 d-flex align-items-center justify-content-center mx-auto" style="width: 48px; height: 48px; border-color: #0284c7 !important;">
+                                    <span class="fw-bold" style="color: #0284c7 !important;">3</span>
+                                </div>
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="row align-items-center flex-md-row-reverse">
+                            <div class="col-md-5 text-md-start">
+                                <h3 class="fw-bold h4" style="color: #0f172a;">4. Déploiement CI/CD &amp; Maintenance</h3>
+                                <p class="mb-0 small" style="color: #475569;">Déploiement automatisé sur des serveurs sécurisés et scalables. Nous assurons un support technique continu de vos applications 24h/24 et 7j/7.</p>
+                            </div>
+                            <div class="col-md-2 text-center my-3 my-md-0 position-relative">
+                                <div class="rounded-circle bg-white border border-3 d-flex align-items-center justify-content-center mx-auto" style="width: 48px; height: 48px; border-color: #0284c7 !important;">
+                                    <span class="fw-bold" style="color: #0284c7 !important;">4</span>
+                                </div>
+                            </div>
+                            <div class="col-md-5"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BYT3LAB-CONTENT-END -->
+</div>
+{% endblock %}

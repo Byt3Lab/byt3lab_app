@@ -1,0 +1,140 @@
+{% import "public/byt3lab_macros.html" as m with context %}
+<footer class="b-footer" role="contentinfo">
+    <div class="b-container b-container--wide">
+
+        <!-- Grille Principale du Footer -->
+        <div class="b-footer__grid">
+
+            <!-- Colonne 1 : Identité Groupe & Vision -->
+            <div class="b-footer__col b-footer__col--brand">
+                <a href="{{ site_prefix }}/" class="b-brand b-brand--footer" aria-label="BYT3LAB — {{ t('nav_home', 'Accueil') }}">
+                    {{ m.byt3lab_logo_svg('b-brand__mark') }}
+                    <span class="b-brand__text">
+                        <span class="b-brand__name">BYT3LAB</span>
+                        <span class="b-brand__tagline">Technology &amp; Innovation Group</span>
+                    </span>
+                </a>
+
+                <p class="b-footer__desc">
+                    {{ settings['legal.footer_text'] }}
+                </p>
+
+                <div class="b-footer__slogan">
+                    {{ t('footer_slogan', 'ENGINEERING THE TECHNOLOGIES OF TOMORROW.') }}
+                </div>
+
+                <!-- Réseaux Sociaux -->
+                <div class="b-footer__socials">
+                    {% if settings['social.linkedin'] %}
+                        <a href="{{ settings['social.linkedin'] }}" class="b-social-btn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                            {{ m.byt3lab_icon('linkedin', 16) }}
+                        </a>
+                    {% endif %}
+                    {% if settings['social.facebook'] %}
+                        <a href="{{ settings['social.facebook'] }}" class="b-social-btn" aria-label="Facebook Byt3Lab" target="_blank" rel="noopener noreferrer">
+                            {{ m.byt3lab_icon('facebook', 16) }}
+                        </a>
+                    {% endif %}
+                    {% if settings['social.youtube'] %}
+                        <a href="{{ settings['social.youtube'] }}" class="b-social-btn" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                            {{ m.byt3lab_icon('youtube', 16) }}
+                        </a>
+                    {% endif %}
+                    {% if settings['social.ngrafix'] %}
+                        <a href="{{ settings['social.ngrafix'] }}" class="b-social-btn b-social-btn--ngx" aria-label="Facebook NGRAFIX" title="NGRAFIX Studio" target="_blank" rel="noopener noreferrer">
+                            {{ m.byt3lab_icon('palette', 16) }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Colonne 2 : Divisions Technologiques -->
+            <div class="b-footer__col">
+                <h4 class="b-footer__heading">{{ t('footer_divisions_title', 'Divisions Technologiques') }}</h4>
+                <ul class="b-footer__list">
+                    <li><a href="{{ site_prefix }}/technologies/logiciel-numerique/">Logiciel &amp; Numérique</a></li>
+                    <li><a href="{{ site_prefix }}/technologies/infrastructure-cloud/">Infrastructure &amp; Cloud</a></li>
+                    <li><a href="{{ site_prefix }}/technologies/materiel-reseaux/">Matériel &amp; Réseaux</a></li>
+                    <li><a href="{{ site_prefix }}/technologies/technologies-industrielles/">Technologies Industrielles</a></li>
+                    <li><a href="{{ site_prefix }}/technologies/technologies-energetiques/">Technologies Énergétiques</a></li>
+                    <li style="margin-top: 8px;">
+                        <a href="{{ site_prefix }}/technologies/" style="color: var(--c-cyan-400); font-weight: 600;">
+                            {{ t('nav_all_divisions', 'Toutes les divisions &rarr;') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Colonne 3 : Produits & Services -->
+            <div class="b-footer__col">
+                <h4 class="b-footer__heading">{{ t('footer_offers_title', 'Produits &amp; Offres') }}</h4>
+                <ul class="b-footer__list">
+                    <li><a href="{{ site_prefix }}/produits/melodi-erp/">MELODI ERP</a></li>
+                    <li><a href="{{ site_prefix }}/produits/suku/">SUKU (Éducation)</a></li>
+                    <li><a href="{{ site_prefix }}/produits/bws/">BWS — Web Services</a></li>
+                    <li><a href="{{ site_prefix }}/services/">{{ t('nav_services', 'Services &amp; Ingénierie IT') }}</a></li>
+                    <li><a href="{{ site_prefix }}/recherche-innovation/">{{ t('nav_rd', 'Recherche &amp; Innovation') }}</a></li>
+                    <li><a href="{{ site_prefix }}/realisations/">{{ t('admin_projects', 'Réalisations &amp; Portfolio') }}</a></li>
+                </ul>
+            </div>
+
+            <!-- Colonne 4 : Studio Créatif NGRAFIX -->
+            <div class="b-footer__col">
+                <h4 class="b-footer__heading">{{ t('footer_studio_title', 'Studio Créatif') }}</h4>
+                <ul class="b-footer__list">
+                    <li><a href="{{ site_prefix }}/ngrafix/" style="color: var(--c-ngx-orange); font-weight: 600;">NGRAFIX Studio &rarr;</a></li>
+                    <li><a href="{{ site_prefix }}/ngrafix/#brand-identity">{{ t('ngrafix_brand_identity', 'Brand Identity &amp; Logos') }}</a></li>
+                    <li><a href="{{ site_prefix }}/ngrafix/#creative-design">{{ t('ngrafix_creative_design', 'Creative Design &amp; UI/UX') }}</a></li>
+                    <li><a href="{{ site_prefix }}/ngrafix/#digital-communication">{{ t('ngrafix_digital_comm', 'Communication Digitale') }}</a></li>
+                    <li><a href="{{ site_prefix }}/ngrafix/#media-production">{{ t('ngrafix_media_prod', 'Production Audiovisuelle') }}</a></li>
+                </ul>
+            </div>
+
+            <!-- Colonne 5 : Coordonnées & Contact -->
+            <div class="b-footer__col">
+                <h4 class="b-footer__heading">{{ t('footer_contact_title', 'Contact &amp; Siège') }}</h4>
+                <div class="b-footer__contact">
+                    <p class="b-footer__contact-item">
+                        {{ m.byt3lab_icon('map-pin', 16) }}
+                        <span>{{ settings['contact.location'] }}</span>
+                    </p>
+                    <p class="b-footer__contact-item">
+                        {{ m.byt3lab_icon('mail', 16) }}
+                        <a href="mailto:{{ settings['contact.email'] }}">
+                            {{ settings['contact.email'] }}
+                        </a>
+                    </p>
+                    <p class="b-footer__contact-item">
+                        {{ m.byt3lab_icon('phone', 16) }}
+                        <a href="tel:{{ settings['contact.phone'] }}">
+                            {{ settings['contact.phone'] }}
+                        </a>
+                    </p>
+                    <div style="margin-top: 14px;">
+                        <a href="{{ site_prefix }}/partenaires/#formulaire" class="b-btn b-btn--sm b-btn--primary" style="width: 100%; text-align: center;">
+                            {{ t('nav_partner_cta', 'Devenir Partenaire') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Barre Inférieure : Mentions légales & Droits -->
+        <div class="b-footer__bottom">
+            <div class="b-footer__copy">
+                &copy; {{ current_year }} <strong>{{ settings['legal.company'] }}</strong>. {{ t('footer_rights', 'Tous droits réservés. Groupe technologique & d\'ingénierie.') }}
+                <span class="b-footer__tech-credit" style="display: inline-flex; align-items: center; gap: 6px; margin-left: 8px;">
+                    • {{ t('developed_with_melodi', 'Développé avec') }} <a href="https://melodi.byt3lab.com" target="_blank" rel="noopener noreferrer" style="color: var(--c-blue-400, #38bdf8); text-decoration: none; font-weight: 600;">MELODI</a>
+                </span>
+            </div>
+            <div class="b-footer__legal-links">
+                <a href="{{ site_prefix }}/a-propos/">{{ t('footer_org', 'Organisation') }}</a>
+                <a href="{{ site_prefix }}/carriere/">{{ t('footer_careers', 'Carrières') }}</a>
+                <a href="{{ site_prefix }}/partenaires/">{{ t('footer_partnerships', 'Partenariats') }}</a>
+                <a href="{{ site_prefix }}/contact/">{{ t('footer_legal', 'Mentions Légales & Contact') }}</a>
+            </div>
+        </div>
+
+    </div>
+</footer>

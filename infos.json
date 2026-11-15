@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "name": "byt3lab_app",
+  "title": "BYT3LAB Official Website & Content Hub",
+  "description": "Site institutionnel officiel et espace d'administration de contenu du groupe technologique et d'innovation BYT3LAB.",
+  "depends": [
+    "base"
+  ],
+  "author": "BYT3LAB",
+  "category": "Website"
+}

@@ -1,0 +1,98 @@
+{# Macro pour le logo vectoriel officiel BYT3LAB #}
+{% macro byt3lab_logo_svg(class_name='') %}
+<svg class="b-brand__mark {{ class_name }}" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+    <polygon fill="#3FEA3F" points="22,1 56,1 83,28 73,38 47,15 20,15"/>
+    <polygon fill="currentColor" points="19,18 47,18 69,41 15,41"/>
+    <polygon fill="currentColor" points="7,44 68,44 65,54 2,54"/>
+    <polygon fill="#4FD3F5" points="1,56 57,56 70,69 10,69"/>
+    <polygon fill="#4FD3F5" points="9,72 70,72 56,98 4,98"/>
+    <polygon fill="#3FEA3F" points="74,45 99,71 66,99 52,99 79,71 62,57"/>
+</svg>
+{% endmacro %}
+
+{# Macro pour les icônes vectorielles homogènes #}
+{% macro byt3lab_icon(name, size=20, class_name='') %}
+<svg class="b-icon {{ class_name }}" width="{{ size }}" height="{{ size }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    {% if name == 'arrow-right' %}
+        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+    {% elif name == 'arrow-up-right' %}
+        <path d="M7 17 17 7"/><path d="M7 7h10v10"/>
+    {% elif name == 'chevron-down' %}
+        <path d="m6 9 6 6 6-6"/>
+    {% elif name == 'check' %}
+        <path d="M20 6 9 17l-5-5"/>
+    {% elif name == 'menu' %}
+        <path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>
+    {% elif name == 'x' %}
+        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+    {% elif name == 'code' %}
+        <path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>
+    {% elif name == 'cloud' %}
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+    {% elif name == 'server' %}
+        <rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/>
+    {% elif name == 'network' %}
+        <rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/>
+    {% elif name == 'cpu' %}
+        <rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/>
+    {% elif name == 'factory' %}
+        <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/>
+    {% elif name == 'zap' %}
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    {% elif name == 'sun' %}
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+    {% elif name == 'layers' %}
+        <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>
+    {% elif name == 'graduation' %}
+        <path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>
+    {% elif name == 'shield' %}
+        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+    {% elif name == 'brain' %}
+        <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M12 5v13"/>
+    {% elif name == 'workflow' %}
+        <rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/>
+    {% elif name == 'radio' %}
+        <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>
+    {% elif name == 'handshake' %}
+        <path d="m11 17 2 2a1 1 0 0 0 1.4 0l4.3-4.3a1 1 0 0 0 0-1.4l-2-2"/><path d="m18 10 1.4-1.4a1 1 0 0 0 0-1.4l-3-3a1 1 0 0 0-1.4 0L13.6 5.6"/><path d="m2 14 6 6"/><path d="M7 9 2 14"/><path d="M22 10l-6-6"/>
+    {% elif name == 'mail' %}
+        <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+    {% elif name == 'phone' %}
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    {% elif name == 'map-pin' %}
+        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>
+    {% elif name == 'palette' %}
+        <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+    {% elif name == 'briefcase' %}
+        <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>
+    {% elif name == 'linkedin' %}
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>
+    {% elif name == 'facebook' %}
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+    {% elif name == 'youtube' %}
+        <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/>
+    {% else %}
+        <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/>
+    {% endif %}
+</svg>
+{% endmacro %}
+
+{# Macro pour les badges de statut de maturité #}
+{% macro byt3lab_status_badge(status) %}
+{% if status == 'active' %}
+    <span class="b-status b-status--active">
+        <span class="b-status__dot" aria-hidden="true"></span>
+        {{ t('status_active', 'Opérationnel') }}
+    </span>
+{% elif status == 'in_development' or status == 'in-development' %}
+    <span class="b-status b-status--in-development">
+        <span class="b-status__dot" aria-hidden="true"></span>
+        {{ t('status_in_development', 'En développement') }}
+    </span>
+{% elif status == 'strategic' %}
+    <span class="b-status b-status--strategic">
+        <span class="b-status__dot" aria-hidden="true"></span>
+        {{ t('status_strategic', 'Orientation stratégique') }}
+    </span>
+{% endif %}
+{% endmacro %}

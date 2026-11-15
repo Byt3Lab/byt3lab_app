@@ -1,0 +1,139 @@
+<div class="byt3lab-admin" style="padding: 24px;">
+    <div class="byt3lab-admin__header">
+        <div>
+            <h1 class="byt3lab-admin__title">{{ t('admin_settings', 'Réglages Généraux du Site BYT3LAB') }}</h1>
+            <p style="color: var(--c-gray-600); margin: 4px 0 0 0; font-size: 0.95rem;">
+                Modifiez les textes clés, coordonnées et liens sans toucher au code source
+            </p>
+        </div>
+        <a href="/admin/byt3lab" class="ds-btn ds-btn-secondary">
+            &larr; {{ t('admin_dashboard', 'Retour au Tableau de bord') }}
+        </a>
+    </div>
+
+    {% if saved_success %}
+    <div style="background-color: #ecfdf5; border: 1px solid #10b981; color: #065f46; border-radius: var(--radius-sm); padding: 14px 20px; margin-bottom: 24px; font-weight: 500;">
+        {{ t('admin_success_save', 'Réglages enregistrés avec succès !') }}
+    </div>
+    {% endif %}
+
+    <div style="background: #fff; border: 1px solid var(--c-gray-200); border-radius: var(--radius-md); box-shadow: var(--shadow-card); padding: 24px;">
+        <!-- Barre d'onglets de réglages -->
+        <div style="display: flex; gap: 8px; border-bottom: 2px solid var(--c-gray-200); margin-bottom: 24px; padding-bottom: 8px;">
+            <button type="button" class="ds-btn ds-btn-sm ds-btn-primary byt3lab-admin-tab-btn is-active" data-target="tab-contact">
+                Coordonnées &amp; Réseaux
+            </button>
+            <button type="button" class="ds-btn ds-btn-sm ds-btn-secondary byt3lab-admin-tab-btn" data-target="tab-hero">
+                Page d'Accueil &amp; Hero
+            </button>
+            <button type="button" class="ds-btn ds-btn-sm ds-btn-secondary byt3lab-admin-tab-btn" data-target="tab-legal">
+                Mentions Légales &amp; Pied de page
+            </button>
+        </div>
+
+        <form action="/admin/byt3lab/settings" method="POST" class="b-form">
+            <!-- Onglet 1 : Coordonnées & Réseaux -->
+            <div id="tab-contact" class="byt3lab-admin-tab-panel is-active">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="b-form__group">
+                        <label class="b-form__label">E-mail Principal :</label>
+                        <input type="email" name="contact.email_fr" class="b-form__input" value="{{ raw_settings['contact.email']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">E-mail Support :</label>
+                        <input type="email" name="contact.email_support_fr" class="b-form__input" value="{{ raw_settings['contact.email_support']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">E-mail Carrières :</label>
+                        <input type="email" name="contact.email_careers_fr" class="b-form__input" value="{{ raw_settings['contact.email_careers']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">Téléphone Principal :</label>
+                        <input type="text" name="contact.phone_fr" class="b-form__input" value="{{ raw_settings['contact.phone']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">Téléphone Secondaire :</label>
+                        <input type="text" name="contact.phone2_fr" class="b-form__input" value="{{ raw_settings['contact.phone2']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">Numéro WhatsApp (Chiffres uniquement) :</label>
+                        <input type="text" name="contact.whatsapp_fr" class="b-form__input" value="{{ raw_settings['contact.whatsapp']['fr'] }}">
+                    </div>
+                    <div class="b-form__group" style="grid-column: span 2;">
+                        <label class="b-form__label">Présence Géographique :</label>
+                        <input type="text" name="contact.location_fr" class="b-form__input" value="{{ raw_settings['contact.location']['fr'] }}">
+                    </div>
+                </div>
+
+                <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin: 28px 0 16px 0; border-top: 1px solid var(--c-gray-200); padding-top: 20px;">
+                    Liens de Réseaux Sociaux
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="b-form__group">
+                        <label class="b-form__label">LinkedIn :</label>
+                        <input type="url" name="social.linkedin_fr" class="b-form__input" value="{{ raw_settings['social.linkedin']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">Facebook Byt3Lab :</label>
+                        <input type="url" name="social.facebook_fr" class="b-form__input" value="{{ raw_settings['social.facebook']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">YouTube :</label>
+                        <input type="url" name="social.youtube_fr" class="b-form__input" value="{{ raw_settings['social.youtube']['fr'] }}">
+                    </div>
+                    <div class="b-form__group">
+                        <label class="b-form__label">Facebook NGRAFIX :</label>
+                        <input type="url" name="social.ngrafix_fr" class="b-form__input" value="{{ raw_settings['social.ngrafix']['fr'] }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet 2 : Accueil & Hero -->
+            <div id="tab-hero" class="byt3lab-admin-tab-panel" style="display: none;">
+                <div class="b-form__group">
+                    <label class="b-form__label">Hero — Signature de marque :</label>
+                    <input type="text" name="home.hero.signature_fr" class="b-form__input" value="{{ raw_settings['home.hero.signature']['fr'] }}">
+                </div>
+                <div class="b-form__group">
+                    <label class="b-form__label">Hero — Titre Principal (FR) :</label>
+                    <input type="text" name="home.hero.title_fr" class="b-form__input" value="{{ raw_settings['home.hero.title']['fr'] }}">
+                </div>
+                <div class="b-form__group">
+                    <label class="b-form__label">Hero — Titre Principal (EN) :</label>
+                    <input type="text" name="home.hero.title_en" class="b-form__input" value="{{ raw_settings['home.hero.title']['en'] }}">
+                </div>
+                <div class="b-form__group">
+                    <label class="b-form__label">Hero — Sous-titre (FR) :</label>
+                    <textarea name="home.hero.subtitle_fr" class="b-form__textarea">{{ raw_settings['home.hero.subtitle']['fr'] }}</textarea>
+                </div>
+                <div class="b-form__group">
+                    <label class="b-form__label">Hero — Sous-titre (EN) :</label>
+                    <textarea name="home.hero.subtitle_en" class="b-form__textarea">{{ raw_settings['home.hero.subtitle']['en'] }}</textarea>
+                </div>
+            </div>
+
+            <!-- Onglet 3 : Mentions Légales & Footer -->
+            <div id="tab-legal" class="byt3lab-admin-tab-panel" style="display: none;">
+                <div class="b-form__group">
+                    <label class="b-form__label">Raison Sociale :</label>
+                    <input type="text" name="legal.company_fr" class="b-form__input" value="{{ raw_settings['legal.company']['fr'] }}">
+                </div>
+                <div class="b-form__group">
+                    <label class="b-form__label">Description Institutionnelle Footer (FR) :</label>
+                    <textarea name="legal.footer_text_fr" class="b-form__textarea">{{ raw_settings['legal.footer_text']['fr'] }}</textarea>
+                </div>
+                <div class="b-form__group">
+                    <label class="b-form__label">Description Institutionnelle Footer (EN) :</label>
+                    <textarea name="legal.footer_text_en" class="b-form__textarea">{{ raw_settings['legal.footer_text']['en'] }}</textarea>
+                </div>
+            </div>
+
+            <div style="margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--c-gray-200); display: flex; justify-content: flex-end;">
+                <button type="submit" class="ds-btn ds-btn-lg ds-btn-primary">
+                    {{ t('admin_save_changes', 'Enregistrer les modifications') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="module" src="/static/byt3lab/js/admin.js"></script>

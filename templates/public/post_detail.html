@@ -1,0 +1,53 @@
+{% extends "public/byt3lab_layout.html" %}
+
+{% block content %}
+<div class="bg-white text-dark py-5" style="background-color: #ffffff !important;">
+    <div class="container py-5">
+        <article class="mx-auto" style="max-width: 800px;">
+            
+            <!-- Category and Date -->
+            <header class="entry-header mb-4 text-start">
+                <div class="mb-3 d-flex gap-2">
+                    <span class="badge px-3 py-2 rounded-pill font-monospace" style="background: rgba(2, 132, 199, 0.1); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.2);">
+                        {{ post.category|default('Tech') }}
+                    </span>
+                </div>
+                <h1 class="f-nasalization display-4 fw-bold mb-3" style="line-height: 1.2; color: #0f172a;">{{ post.title }}</h1>
+                
+                <div class="font-monospace small d-flex align-items-center gap-3" style="color: #64748b;">
+                    <span>{{ t('post_published_on', 'Publié le') }} {{ post.published_at|default('') }}</span>
+                    <span>•</span>
+                    <span>{{ t('post_by_author', 'Par BYT3LAB') }}</span>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            {% if post.cover_image or post.image_url %}
+                <div class="featured-image mb-5 rounded-4 overflow-hidden shadow-sm border" style="border-color: #e2e8f0 !important;">
+                    <img src="{{ post.cover_image or post.image_url }}" alt="{{ post.title }}" class="w-100 h-auto object-fit-cover" style="max-height: 480px;" />
+                </div>
+            {% endif %}
+
+            <!-- Article Content -->
+            <div class="entry-content text-start fs-5 lh-lg" style="letter-spacing: 0.2px; color: #334155;">
+                {% if post.content %}
+                    {{ post.content|safe }}
+                {% elif post.summary %}
+                    <p>{{ post.summary }}</p>
+                {% endif %}
+            </div>
+
+            <footer class="entry-footer mt-5 pt-4 border-top" style="border-color: #e2e8f0 !important;">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="tags-links small" style="color: #64748b;">
+                    </div>
+                    <a href="{{ site_prefix }}/blog" class="a-button a-button--outline btn btn-outline-primary py-2 px-4 fw-bold text-uppercase" style="border-radius: 8px; border-color: #0284c7; color: #0284c7;">
+                        ← {{ t('post_back_link', 'Retour au blog') }}
+                    </a>
+                </div>
+            </footer>
+
+        </article>
+    </div>
+</div>
+{% endblock %}

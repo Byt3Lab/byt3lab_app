@@ -1,0 +1,180 @@
+{% extends "public/byt3lab_layout.html" %}
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% block content %}
+<div class="b-job-page">
+
+    <!-- Hero Offre d'Emploi -->
+    <section class="b-hero">
+        <div class="b-hero__pattern" aria-hidden="true"></div>
+        <div class="b-container">
+            <div style="max-width: 860px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <a href="{{ site_prefix }}/carriere" class="b-eyebrow b-eyebrow--white" style="margin-bottom: 0;">
+                        &larr; {{ t('job_back_link', 'Toutes les Opportunités') }}
+                    </a>
+                    {{ m.byt3lab_status_badge('active') }}
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <span class="b-badge b-badge--dark">{{ job.department|default(job.division_slug|default('Software & Digital')) }}</span>
+                    <span class="b-badge b-badge--cyan">{{ job.contract_type|default('CDI - Temps Plein') }}</span>
+                </div>
+
+                <h1 class="b-hero__title" style="font-size: clamp(2rem, 4vw, 3.25rem); margin-bottom: 20px;">
+                    {{ job.title }}
+                </h1>
+
+                <!-- Fiche rapide métadonnées dans le Hero -->
+                <div style="display: flex; flex-wrap: wrap; gap: 20px 32px; font-size: 14px; color: var(--c-gray-300); margin-bottom: 32px; padding: 16px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md);">
+                    <div style="display: inline-flex; align-items: center; gap: 8px;">
+                        {{ m.byt3lab_icon('map-pin', 16) }}
+                        <span>{{ t('job_meta_location', 'Lieu :') }} <strong style="color: #fff;">{{ job.location|default('Douala / Yaoundé, Cameroun (Hybride)') }}</strong></span>
+                    </div>
+                    <div style="display: inline-flex; align-items: center; gap: 8px;">
+                        {{ m.byt3lab_icon('target', 16) }}
+                        <span>{{ t('job_meta_experience', 'Expérience :') }} <strong style="color: #fff;">{{ job.experience|default(t('job_exp_default', 'Confirmé (3+ ans)')) }}</strong></span>
+                    </div>
+                    <div style="display: inline-flex; align-items: center; gap: 8px;">
+                        {{ m.byt3lab_icon('layers', 16) }}
+                        <span>{{ t('job_meta_deadline', 'Échéance :') }} <strong style="color: #fff;">{{ job.deadline|default(t('job_deadline_default', 'Recrutement continu')) }}</strong></span>
+                    </div>
+                </div>
+
+                <div class="b-hero__actions">
+                    <a href="#postuler" class="b-btn b-btn--lg b-btn--primary">
+                        <span>{{ t('job_apply_btn', 'Postuler à ce poste') }}</span>
+                        {{ m.byt3lab_icon('arrow-right', 18) }}
+                    </a>
+                    <a href="https://wa.me/237696879475" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--lg b-btn--outline-dark">
+                        {{ m.byt3lab_icon('whatsapp', 18) }}
+                        <span>{{ t('job_chat_hr_btn', 'Échanger avec les RH') }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Détails du Poste & Candidature -->
+    <section class="b-section">
+        <div class="b-container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; align-items: start;">
+                
+                <!-- Colonne Gauche : Contenu du Poste -->
+                <div style="display: flex; flex-direction: column; gap: 32px; grid-column: span 2;">
+                    
+                    <!-- 1. Description & Contexte -->
+                    <div class="b-card" style="padding: 36px;">
+                        <span class="b-eyebrow">{{ t('job_context_eyebrow', 'Contexte & Enjeux') }}</span>
+                        <h2 class="b-title" style="font-size: 1.55rem; margin-bottom: 20px;">
+                            {{ t('job_desc_title', 'Description du Poste') }}
+                        </h2>
+                        <div style="font-size: 16px; color: var(--c-gray-700); line-height: 1.8;">
+                            {{ job.description|safe }}
+                        </div>
+                    </div>
+
+                    {% if job.requirements %}
+                        <!-- 2. Profil Recherché & Compétences (Dynamic List Rendering) -->
+                        <div class="b-card" style="padding: 36px;">
+                            <span class="b-eyebrow">{{ t('job_req_eyebrow', 'Compétences Requises') }}</span>
+                            <h2 class="b-title" style="font-size: 1.55rem; margin-bottom: 20px;">
+                                {{ t('job_req_title', 'Profil Recherché') }}
+                            </h2>
+                            {% if job.requirements is iterable and not job.requirements is string %}
+                                <ul class="b-checklist">
+                                    {% for req in job.requirements %}
+                                        <li>
+                                            {{ m.byt3lab_icon('check', 16) }}
+                                            <span>{{ req }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <div style="font-size: 15px; line-height: 1.7; color: var(--c-gray-700);">
+                                    {{ job.requirements|safe }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    <!-- 3. Pourquoi Rejoindre BYT3LAB ? -->
+                    <div class="b-card" style="padding: 36px;">
+                        <span class="b-eyebrow">{{ t('job_offer_eyebrow', 'Environnement de Travail') }}</span>
+                        <h2 class="b-title" style="font-size: 1.55rem; margin-bottom: 20px;">
+                            {{ t('job_offer_title', 'Ce que Nous Vous Offrons') }}
+                        </h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+                            <div style="padding: 20px; background: var(--c-gray-50); border: 1px solid var(--c-gray-200); border-radius: var(--radius-md);">
+                                <div style="color: var(--c-blue-500); margin-bottom: 8px;">
+                                    {{ m.byt3lab_icon('server', 22) }}
+                                </div>
+                                <strong style="color: var(--c-navy-950); display: block; margin-bottom: 6px; font-size: 15px;">{{ t('job_perk_equip_title', 'Équipements & Outils') }}</strong>
+                                <p style="color: var(--c-gray-600); font-size: 13.5px; line-height: 1.5; margin: 0;">{{ t('job_perk_equip_desc', 'Postes performants, accès cloud haut débit et licences professionnelles.') }}</p>
+                            </div>
+                            <div style="padding: 20px; background: var(--c-gray-50); border: 1px solid var(--c-gray-200); border-radius: var(--radius-md);">
+                                <div style="color: var(--c-blue-500); margin-bottom: 8px;">
+                                    {{ m.byt3lab_icon('workflow', 22) }}
+                                </div>
+                                <strong style="color: var(--c-navy-950); display: block; margin-bottom: 6px; font-size: 15px;">{{ t('job_perk_rigor_title', 'Rigueur & Méthode') }}</strong>
+                                <p style="color: var(--c-gray-600); font-size: 13.5px; line-height: 1.5; margin: 0;">{{ t('job_perk_rigor_desc', 'Revues de code systématiques, CI/CD, documentation et tests.') }}</p>
+                            </div>
+                            <div style="padding: 20px; background: var(--c-gray-50); border: 1px solid var(--c-gray-200); border-radius: var(--radius-md);">
+                                <div style="color: var(--c-blue-500); margin-bottom: 8px;">
+                                    {{ m.byt3lab_icon('compass', 22) }}
+                                </div>
+                                <strong style="color: var(--c-navy-950); display: block; margin-bottom: 6px; font-size: 15px;">{{ t('job_perk_impact_title', 'Impact Africain') }}</strong>
+                                <p style="color: var(--c-gray-600); font-size: 13.5px; line-height: 1.5; margin: 0;">{{ t('job_perk_impact_desc', 'Progiciels et infrastructures critiques déployés pour des organisations réelles.') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Colonne Droite : Sticky Sidebar de Candidature -->
+                <div>
+                    <div style="position: sticky; top: 96px;">
+                        <div class="b-card" id="postuler" style="padding: 32px; border: 2px solid var(--c-blue-500); box-shadow: var(--shadow-card);">
+                            <span class="b-badge b-badge--dark" style="margin-bottom: 12px; align-self: flex-start;">{{ t('job_apply_badge', 'Postuler') }}</span>
+                            <h3 style="font-size: 1.35rem; color: var(--c-navy-950); margin: 0 0 8px;">
+                                {{ t('job_sidebar_title', 'Rejoindre cette division') }}
+                            </h3>
+                            <p style="font-size: 13.5px; color: var(--c-gray-600); line-height: 1.6; margin-bottom: 24px;">
+                                {{ t('job_sidebar_desc', 'Transmettez-nous votre curriculum vitae et les liens vers vos réalisations techniques (projets GitHub, code, démos).') }}
+                            </p>
+
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                                <a href="mailto:carrieres@byt3lab.com?subject=Candidature%20-%20{{ job.title }}" class="b-btn b-btn--primary" style="width: 100%; justify-content: center;">
+                                    {{ m.byt3lab_icon('mail', 16) }}
+                                    <span>{{ t('job_sidebar_email_btn', 'Postuler par E-mail') }}</span>
+                                </a>
+                                <a href="https://wa.me/237696879475" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--secondary" style="width: 100%; justify-content: center;">
+                                    {{ m.byt3lab_icon('whatsapp', 16) }}
+                                    <span>{{ t('job_sidebar_wa_btn', 'Candidature via WhatsApp') }}</span>
+                                </a>
+                            </div>
+
+                            <div style="border-top: 1px solid var(--c-gray-200); padding-top: 20px; font-size: 13px; color: var(--c-gray-600); display: flex; flex-direction: column; gap: 10px;">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>{{ t('job_sidebar_dept', 'Département :') }}</span>
+                                    <strong style="color: var(--c-navy-950);">{{ job.department|default(job.division_slug|default('Software & Digital')) }}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>{{ t('job_sidebar_contract', 'Type de contrat :') }}</span>
+                                    <strong style="color: var(--c-navy-950);">{{ job.contract_type|default('CDI - Plein temps') }}</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>{{ t('job_meta_location', 'Lieu :') }}</span>
+                                    <strong style="color: var(--c-navy-950);">{{ job.location|default('Douala / Yaoundé') }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} | BYT3LAB Technology &amp; Innovation Group</title>
+    <meta name="description" content="{{ meta_description|default('BYT3LAB est un groupe technologique et d\'innovation camerounais à vocation africaine.') }}">
+    
+    <!-- Bootstrap 5 Grid & Utilities -->
+    <link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'bootstrap-5', 'css', 'bootstrap.min.css']}) }}">
+    <!-- Design System BYT3LAB Stylesheet (Compilée depuis SCSS) -->
+    <link rel="stylesheet" href="{{ _url('static', {'module': 'byt3lab', 'path': ['css', 'byt3lab.css']}) }}">
+</head>
+<body class="{% if is_ngrafix %}b-ngrafix-page{% endif %}">
+
+    {% include "public/byt3lab_header.html" %}
+
+    <main id="primary-content" class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include "public/byt3lab_footer.html" %}
+
+    <!-- Script interactif BYT3LAB (Compilé depuis TypeScript) -->
+    <script type="module" src="{{ _url('static', {'module': 'byt3lab', 'path': ['js', 'site.js']}) }}"></script>
+</body>
+</html>
