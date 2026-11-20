@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labJobModel
 
 
@@ -29,7 +30,7 @@ class JobRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labJobModel:
-        job = Byt3labJobModel(**data)
+        job = Byt3labJobModel(**sanitize_model_data(Byt3labJobModel, data))
         session.add(job)
         await session.flush()
         return job
@@ -39,7 +40,7 @@ class JobRepository:
         stmt = (
             update(Byt3labJobModel)
             .where(Byt3labJobModel.id == job_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labJobModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, job_id)

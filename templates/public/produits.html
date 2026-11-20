@@ -35,9 +35,9 @@
     <section class="b-section" id="catalogue">
         <div class="b-container">
             <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">Catalogue Groupe</span>
-                <h2 class="b-title">Produits Logiciels &amp; Services d'Infrastructure</h2>
-                <p class="b-lead">Chaque solution répond à des besoins métiers ciblés avec une exigence de fiabilité absolue.</p>
+                <span class="b-eyebrow">Écosystème &amp; Socle MELODI</span>
+                <h2 class="b-title">Un Socle Fondateur, des Produits Métiers Spécialisés</h2>
+                <p class="b-lead"><strong>MELODI ERP</strong> est notre socle progiciel modulaire sur lequel nous bâtissons des produits ciblés par domaine d'activité, notamment <strong>SOKO</strong> (gestion commerciale &amp; POS) et <strong>SUKU</strong> (gestion scolaire).</p>
             </div>
 
             <div class="b-grid b-grid--3">
@@ -45,8 +45,8 @@
                     <article class="b-product-card" style="--card-accent: {{ sol.accent_color|default('#1D7FD8') }};">
                         <div class="b-product-card__top">
                             <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span class="b-product-card__badge" style="margin-bottom: 0;">{{ sol.badge|default(sol.category|default('Produit')) }}</span>
-                                {{ m.byt3lab_status_badge(sol.maturity_status|default('active')) }}
+                                <span class="b-product-card__badge" style="margin-bottom: 0;">{{ sol.badge|default('Produit') }}</span>
+                                {{ m.byt3lab_status_badge(sol.status|default('active')) }}
                             </div>
                             <h3 class="b-product-card__title">{{ sol.title }}</h3>
                             {% if sol.tagline %}
@@ -59,9 +59,9 @@
                                 {{ sol.excerpt }}
                             </p>
 
-                            {% if sol.features %}
+                            {% if sol.features_list %}
                                 <ul class="b-checklist">
-                                    {% for feat in sol.features[:4] %}
+                                    {% for feat in sol.features_list[:4] %}
                                         <li>
                                             {{ m.byt3lab_icon('check', 16) }}
                                             <span>{{ feat }}</span>
@@ -74,9 +74,9 @@
                                 <a href="{{ site_prefix }}/produits/{{ sol.slug }}/" class="b-btn b-btn--sm b-btn--secondary">
                                     <span>Fiche détaillée</span>
                                 </a>
-                                {% if sol.external_url %}
-                                    <a href="{{ sol.external_url }}" class="b-btn b-btn--sm b-btn--primary" target="_blank" rel="noopener noreferrer">
-                                        <span>{{ sol.button_text|default('Découvrir') }}</span>
+                                {% if sol.button_url %}
+                                    <a href="{{ sol.button_url }}" class="b-btn b-btn--sm b-btn--primary" target="_blank" rel="noopener noreferrer">
+                                        <span>{{ sol.button_label|default('Découvrir') }}</span>
                                         {{ m.byt3lab_icon('arrow-up-right', 14) }}
                                     </a>
                                 {% endif %}

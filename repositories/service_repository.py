@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labServiceModel
 
 
@@ -29,7 +30,7 @@ class ServiceRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labServiceModel:
-        service = Byt3labServiceModel(**data)
+        service = Byt3labServiceModel(**sanitize_model_data(Byt3labServiceModel, data))
         session.add(service)
         await session.flush()
         return service
@@ -39,7 +40,7 @@ class ServiceRepository:
         stmt = (
             update(Byt3labServiceModel)
             .where(Byt3labServiceModel.id == service_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labServiceModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, service_id)

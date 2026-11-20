@@ -14,6 +14,7 @@ export const store = new MelodiStore({
     team: [],
     jobs: [],
     posts: [],
+    ngrafix: [],
     settings: {},
     loading: false,
     error: null,
@@ -64,6 +65,9 @@ export const store = new MelodiStore({
     },
     SET_POSTS(state, data) {
       state.posts = Array.isArray(data) ? data : [];
+    },
+    SET_NGRAFIX(state, data) {
+      state.ngrafix = Array.isArray(data) ? data : [];
     },
     SET_SETTINGS(state, data) {
       state.settings = data || {};

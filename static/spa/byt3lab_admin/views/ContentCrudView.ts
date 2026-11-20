@@ -14,14 +14,22 @@ export const ContentCrudView = {
       quillEn: null,
       listsText: {
         expertise_list: '',
+        expertise_list_en: '',
         technologies_list: '',
+        technologies_list_en: '',
         services_list: '',
+        services_list_en: '',
         industries_list: '',
+        industries_list_en: '',
         related_slugs: '',
         features_list: '',
+        features_list_en: '',
         problems_list: '',
+        problems_list_en: '',
         benefits_list: '',
+        benefits_list_en: '',
         requirements: '',
+        requirements_en: '',
       },
     };
   },
@@ -48,6 +56,16 @@ export const ContentCrudView = {
     },
     successMessage() {
       return this.$store.state.successMessage;
+    },
+    userPerms() {
+      return (window as any).__BYT3LAB_PERMS__ || {
+        read: true,
+        write: true,
+        publish: true,
+        delete: true,
+        settings: true,
+        admin: true,
+      };
     },
   },
   watch: {
@@ -79,6 +97,9 @@ export const ContentCrudView = {
       } else if (hash.includes('posts')) {
         this.resourceName = 'posts';
         this.resourceTitle = 'Articles de Blog & Publications';
+      } else if (hash.includes('ngrafix')) {
+        this.resourceName = 'ngrafix';
+        this.resourceTitle = 'Studio Créatif NGRAFIX';
       } else {
         this.resourceName = 'divisions';
         this.resourceTitle = 'Divisions Technologiques';
@@ -113,6 +134,9 @@ export const ContentCrudView = {
       }
       if (this.resourceName === 'posts') {
         return `${it.author_name || 'Byt3Lab'} • ${this.formatDate(it.published_at)}`;
+      }
+      if (this.resourceName === 'ngrafix') {
+        return `${(it.discipline || 'branding').toUpperCase()} • ${it.client_name || 'Studio'}`;
       }
       return it.maturity_status === 'active' ? 'Opérationnelle' : (it.maturity_status || 'Active');
     },
@@ -195,6 +219,7 @@ export const ContentCrudView = {
         contract_type: 'CDI',
         location: 'Douala, Cameroun',
         icon: 'code',
+        discipline: 'branding',
         excerpt_fr: '',
         excerpt_en: '',
         content_fr: '',
@@ -202,14 +227,22 @@ export const ContentCrudView = {
       };
       this.listsText = {
         expertise_list: '',
+        expertise_list_en: '',
         technologies_list: '',
+        technologies_list_en: '',
         services_list: '',
+        services_list_en: '',
         industries_list: '',
+        industries_list_en: '',
         related_slugs: '',
         features_list: '',
+        features_list_en: '',
         problems_list: '',
+        problems_list_en: '',
         benefits_list: '',
+        benefits_list_en: '',
         requirements: '',
+        requirements_en: '',
       };
       this.quillFr = null;
       this.quillEn = null;
@@ -230,15 +263,23 @@ export const ContentCrudView = {
 
       const toLines = (arr) => Array.isArray(arr) ? arr.join('\n') : (arr || '');
       this.listsText = {
-        expertise_list: toLines(item.expertise_list),
-        technologies_list: toLines(item.technologies_list),
-        services_list: toLines(item.services_list),
-        industries_list: toLines(item.industries_list),
+        expertise_list: toLines(item.expertise_list_fr || item.expertise_list),
+        expertise_list_en: toLines(item.expertise_list_en),
+        technologies_list: toLines(item.technologies_list_fr || item.technologies_list),
+        technologies_list_en: toLines(item.technologies_list_en),
+        services_list: toLines(item.services_list_fr || item.services_list),
+        services_list_en: toLines(item.services_list_en),
+        industries_list: toLines(item.industries_list_fr || item.industries_list),
+        industries_list_en: toLines(item.industries_list_en),
         related_slugs: toLines(item.related_slugs),
-        features_list: toLines(item.features_list),
-        problems_list: toLines(item.problems_list),
-        benefits_list: toLines(item.benefits_list),
-        requirements: toLines(item.requirements),
+        features_list: toLines(item.features_list_fr || item.features_list),
+        features_list_en: toLines(item.features_list_en),
+        problems_list: toLines(item.problems_list_fr || item.problems_list),
+        problems_list_en: toLines(item.problems_list_en),
+        benefits_list: toLines(item.benefits_list_fr || item.benefits_list),
+        benefits_list_en: toLines(item.benefits_list_en),
+        requirements: toLines(item.requirements_fr || item.requirements),
+        requirements_en: toLines(item.requirements_en),
       };
       this.quillFr = null;
       this.quillEn = null;
@@ -275,16 +316,24 @@ export const ContentCrudView = {
 
       if (this.resourceName === 'divisions') {
         payload.expertise_list = toArr(this.listsText.expertise_list);
+        payload.expertise_list_en = toArr(this.listsText.expertise_list_en);
         payload.technologies_list = toArr(this.listsText.technologies_list);
+        payload.technologies_list_en = toArr(this.listsText.technologies_list_en);
         payload.services_list = toArr(this.listsText.services_list);
+        payload.services_list_en = toArr(this.listsText.services_list_en);
         payload.industries_list = toArr(this.listsText.industries_list);
+        payload.industries_list_en = toArr(this.listsText.industries_list_en);
         payload.related_slugs = toArr(this.listsText.related_slugs);
       } else if (this.resourceName === 'solutions') {
         payload.features_list = toArr(this.listsText.features_list);
+        payload.features_list_en = toArr(this.listsText.features_list_en);
         payload.problems_list = toArr(this.listsText.problems_list);
+        payload.problems_list_en = toArr(this.listsText.problems_list_en);
         payload.benefits_list = toArr(this.listsText.benefits_list);
+        payload.benefits_list_en = toArr(this.listsText.benefits_list_en);
       } else if (this.resourceName === 'jobs') {
         payload.requirements = toArr(this.listsText.requirements);
+        payload.requirements_en = toArr(this.listsText.requirements_en);
       }
 
       const id = this.isEditing ? this.formData.id : null;

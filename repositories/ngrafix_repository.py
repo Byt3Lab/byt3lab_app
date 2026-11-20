@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labNgrafixModel
 
 
@@ -34,7 +35,7 @@ class NgrafixRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labNgrafixModel:
-        item = Byt3labNgrafixModel(**data)
+        item = Byt3labNgrafixModel(**sanitize_model_data(Byt3labNgrafixModel, data))
         session.add(item)
         await session.flush()
         return item
@@ -44,7 +45,7 @@ class NgrafixRepository:
         stmt = (
             update(Byt3labNgrafixModel)
             .where(Byt3labNgrafixModel.id == item_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labNgrafixModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, item_id)

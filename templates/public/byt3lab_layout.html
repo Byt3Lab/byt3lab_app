@@ -9,7 +9,7 @@
     <!-- Bootstrap 5 Grid & Utilities -->
     <link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'bootstrap-5', 'css', 'bootstrap.min.css']}) }}">
     <!-- Design System BYT3LAB Stylesheet (Compilée depuis SCSS) -->
-    <link rel="stylesheet" href="{{ _url('static', {'module': 'byt3lab', 'path': ['css', 'byt3lab.css']}) }}">
+    <link rel="stylesheet" href="{{ _url('static', {'module': 'byt3lab_app', 'path': ['css', 'byt3lab.css']}) }}">
 </head>
 <body class="{% if is_ngrafix %}b-ngrafix-page{% endif %}">
 
@@ -22,6 +22,6 @@
     {% include "public/byt3lab_footer.html" %}
 
     <!-- Script interactif BYT3LAB (Compilé depuis TypeScript) -->
-    <script type="module" src="{{ _url('static', {'module': 'byt3lab', 'path': ['js', 'site.js']}) }}"></script>
+    <script type="module" src="{{ _url('static', {'module': 'byt3lab_app', 'path': ['js', 'site.js']}) }}"></script>
 </body>
 </html>

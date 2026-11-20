@@ -38,11 +38,11 @@ class PublicWebController:
 
     @classmethod
     def _get_site_prefix(cls, request: Request) -> str:
-        # Si le site est actif au niveau racine, préfixe vide, sinon /byt3lab
+        # Si le site est actif au niveau racine, préfixe vide, sinon /byt3lab_app
         ws_mgr = getattr(request.app, "website_manager", None)
-        if ws_mgr and getattr(ws_mgr, "site_active", None) == "byt3lab":
+        if ws_mgr and getattr(ws_mgr, "site_active", None) in ("byt3lab", "byt3lab_app"):
             return ""
-        return "/byt3lab"
+        return "/byt3lab_app"
 
     @classmethod
     async def _build_base_context(cls, request: Request, active_nav: str = "") -> dict:
@@ -82,7 +82,7 @@ class PublicWebController:
             "page_title": "Concevoir les technologies de demain",
         })
 
-        comp = Component(module_name="byt3lab", name="public/home", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/home", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -98,7 +98,7 @@ class PublicWebController:
             "divisions": [d.to_dict(lang=lang) for d in divisions],
             "page_title": "Divisions Technologiques",
         })
-        comp = Component(module_name="byt3lab", name="public/technologies", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/technologies", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -118,7 +118,7 @@ class PublicWebController:
             "related_solutions": [s.to_dict(lang=lang) for s in related_solutions],
             "page_title": division.title_en if lang == "en" else division.title_fr,
         })
-        comp = Component(module_name="byt3lab", name="public/division_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/division_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -134,7 +134,7 @@ class PublicWebController:
             "solutions": [s.to_dict(lang=lang) for s in solutions],
             "page_title": "Produits & Solutions",
         })
-        comp = Component(module_name="byt3lab", name="public/produits", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/produits", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -152,7 +152,7 @@ class PublicWebController:
             "solution": solution.to_dict(lang=lang),
             "page_title": solution.title_en if lang == "en" else solution.title_fr,
         })
-        comp = Component(module_name="byt3lab", name="public/solution_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/solution_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -168,7 +168,7 @@ class PublicWebController:
             "services": [s.to_dict(lang=lang) for s in services],
             "page_title": "Services d'Ingénierie",
         })
-        comp = Component(module_name="byt3lab", name="public/services", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/services", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -186,7 +186,7 @@ class PublicWebController:
             "service": service.to_dict(lang=lang),
             "page_title": service.title_en if lang == "en" else service.title_fr,
         })
-        comp = Component(module_name="byt3lab", name="public/service_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/service_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -202,7 +202,7 @@ class PublicWebController:
             "projects": [p.to_dict(lang=lang) for p in projects],
             "page_title": "Réalisations & Portfolio",
         })
-        comp = Component(module_name="byt3lab", name="public/realisations", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/realisations", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -220,7 +220,7 @@ class PublicWebController:
             "project": project.to_dict(lang=lang),
             "page_title": project.title_en if lang == "en" else project.title_fr,
         })
-        comp = Component(module_name="byt3lab", name="public/project_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/project_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -237,7 +237,7 @@ class PublicWebController:
             "ngrafix_items": [i.to_dict(lang=lang) for i in ngrafix_items],
             "page_title": "NGRAFIX — Studio Créatif & Brand Experience",
         })
-        comp = Component(module_name="byt3lab", name="public/ngrafix", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/ngrafix", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -246,7 +246,7 @@ class PublicWebController:
     async def recherche_innovation(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request, active_nav="recherche-innovation")
         ctx["page_title"] = "Recherche & Innovation"
-        comp = Component(module_name="byt3lab", name="public/recherche_innovation", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/recherche_innovation", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -255,7 +255,7 @@ class PublicWebController:
     async def a_propos(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request, active_nav="a-propos")
         ctx["page_title"] = "À Propos du Groupe"
-        comp = Component(module_name="byt3lab", name="public/a_propos", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/a_propos", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -271,7 +271,7 @@ class PublicWebController:
             "team_members": [m.to_dict(lang=lang) for m in members],
             "page_title": "Équipe & Gouvernance",
         })
-        comp = Component(module_name="byt3lab", name="public/equipe", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/equipe", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -289,7 +289,7 @@ class PublicWebController:
             "member": member.to_dict(lang=lang),
             "page_title": member.name,
         })
-        comp = Component(module_name="byt3lab", name="public/team_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/team_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -305,7 +305,7 @@ class PublicWebController:
             "jobs": [j.to_dict(lang=lang) for j in jobs],
             "page_title": "Carrières & Recrutement",
         })
-        comp = Component(module_name="byt3lab", name="public/carriere", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/carriere", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -323,7 +323,7 @@ class PublicWebController:
             "job": job.to_dict(lang=lang),
             "page_title": job.title_en if lang == "en" else job.title_fr,
         })
-        comp = Component(module_name="byt3lab", name="public/job_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/job_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -339,7 +339,7 @@ class PublicWebController:
             "partners": [p.to_dict(lang=lang) for p in partners],
             "page_title": "Partenaires & Alliances",
         })
-        comp = Component(module_name="byt3lab", name="public/partenaires", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/partenaires", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -352,7 +352,7 @@ class PublicWebController:
             "prefilled_subject": subject,
             "page_title": "Contact & Siège",
         })
-        comp = Component(module_name="byt3lab", name="public/contact", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/contact", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -368,7 +368,7 @@ class PublicWebController:
             "posts": [p.to_dict(lang=lang) for p in posts],
             "page_title": "Blog & Actualités Technologiques",
         })
-        comp = Component(module_name="byt3lab", name="public/blog", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/blog", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -386,7 +386,7 @@ class PublicWebController:
             "post": post.to_dict(lang=lang),
             "page_title": post.title_en if lang == "en" else post.title_fr,
         })
-        comp = Component(module_name="byt3lab", name="public/post_detail", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/post_detail", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)
 
@@ -395,6 +395,6 @@ class PublicWebController:
     async def not_found(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request)
         ctx["page_title"] = "Page Non Trouvée (404)"
-        comp = Component(module_name="byt3lab", name="public/not_found", context=ctx)
+        comp = Component(module_name="byt3lab_app", name="public/not_found", context=ctx)
         page = Page(ctx["page_title"], comp)
         return await response.render_page(page)

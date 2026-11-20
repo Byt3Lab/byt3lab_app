@@ -64,6 +64,11 @@ export const router = new MelodiRouter({
       component: createContentCrudView('posts', 'Articles de Blog & Publications'),
     },
     {
+      path: '/ngrafix',
+      name: 'byt3lab-ngrafix',
+      component: createContentCrudView('ngrafix', 'Studio Créatif NGRAFIX'),
+    },
+    {
       path: '*',
       name: 'byt3lab-fallback',
       component: DashboardView,

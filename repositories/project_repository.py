@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labProjectModel
 
 
@@ -29,7 +30,7 @@ class ProjectRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labProjectModel:
-        project = Byt3labProjectModel(**data)
+        project = Byt3labProjectModel(**sanitize_model_data(Byt3labProjectModel, data))
         session.add(project)
         await session.flush()
         return project
@@ -39,7 +40,7 @@ class ProjectRepository:
         stmt = (
             update(Byt3labProjectModel)
             .where(Byt3labProjectModel.id == project_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labProjectModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, project_id)

@@ -141,9 +141,10 @@ class ContentService:
                 else:
                     await DivisionRepository.create(session, div_data)
 
-        # 2. PRODUITS & SOLUTIONS (3 offres fondatrices bilingues avec HTML riche Quill)
+        # 2. PRODUITS & SOLUTIONS (Socle MELODI ERP + Produits Verticaux SOKO, SUKU & BWS)
         existing_solutions = await SolutionRepository.get_all(session, published_only=False)
-        if not existing_solutions or force:
+        existing_slugs = {s.slug for s in existing_solutions}
+        if not existing_solutions or "soko" not in existing_slugs or force:
             solutions_data = [
                 {
                     "slug": "melodi-erp",
@@ -152,59 +153,119 @@ class ContentService:
                     "solution_type": "software",
                     "status": STATUS_ACTIVE,
                     "division_slug": "logiciel-numerique",
-                    "badge_fr": "Progiciel Phare",
-                    "badge_en": "Flagship ERP",
-                    "tagline_fr": "Progiciel de gestion intégré modulaire pour piloter l'ensemble de vos activités d'entreprise.",
-                    "tagline_en": "Modular, extensible enterprise resource planning platform engineered for scalable business operations.",
+                    "badge_fr": "Socle ERP Fondateur",
+                    "badge_en": "Foundational ERP Core",
+                    "tagline_fr": "Le socle progiciel de base modulaire pour concevoir et propulser des produits métiers spécialisés (SOKO, SUKU, etc.).",
+                    "tagline_en": "The foundational modular ERP core engineered to build and power specialized vertical products (SOKO, SUKU, etc.).",
                     "accent_color": "#1D7FD8",
                     "order_num": 1,
-                    "excerpt_fr": "Plateforme ERP modulaire complète : commerce, stocks multi-dépôts, trésorerie, comptabilité OHADA, gestion de projet, point de vente et intelligence d'affaires.",
-                    "excerpt_en": "Complete modular ERP: sales, multi-warehouse inventory, treasury, OHADA accounting, project management, POS, and business intelligence.",
-                    "content_fr": """<h3>Une plateforme ERP modulaire conçue pour la souveraineté et la performance</h3>
-<p><strong>MELODI ERP</strong> est un progiciel de gestion intégré de nouvelle génération développé pour répondre aux exigences réelles des entreprises en Afrique et à l'international. Contrairement aux ERP monolithiques rigides, MELODI repose sur une architecture modulaire novatrice : chaque module (commerce, stock, trésorerie, comptabilité, paie) fonctionne comme une brique autonome et hautement intégrée.</p>
-<h4>Périmètre fonctionnel couvert :</h4>
+                    "excerpt_fr": "Socle applicatif modulaire de nouvelle génération : noyau asynchrone, gestion des permissions RBAC, multi-sociétés, comptabilité OHADA et bus d'événements permettant de développer des solutions métiers ciblées comme SOKO (commerce) et SUKU (éducation).",
+                    "excerpt_en": "Next-generation modular application core: asynchronous engine, RBAC security, multi-company foundation, OHADA accounting, and event bus powering vertical products like SOKO (commerce) and SUKU (education).",
+                    "content_fr": """<h3>Le Socle Technologique &amp; Progiciel de Base pour vos Produits Métiers</h3>
+<p><strong>MELODI ERP</strong> est le socle fondateur de l'écosystème logiciel BYT3LAB. Conçu comme une véritable plateforme d'architecture modulaire (<em>Core Engine</em>), MELODI fournit les fondations critiques communes à toute organisation moderne — authentification, RBAC granulaire, multi-devises, multi-agences, bus d'événements asynchrone et conformité comptable OHADA — afin de bâtir rapidement des produits spécialisés par secteur d'activité.</p>
+<h4>Des Produits Verticaux Propulsés par le Socle MELODI :</h4>
 <ul>
-  <li><strong>Gestion commerciale &amp; Point de Vente (POS) :</strong> Traitement des devis, facturation conforme, gestion des remises et terminaux de caisse synchronisés hors-ligne.</li>
-  <li><strong>Stocks multi-dépôts &amp; Inventaires :</strong> Suivi précis des réapprovisionnements, valorisation des inventaires en temps réel et alertes de rupture.</li>
-  <li><strong>Comptabilité &amp; États financiers OHADA :</strong> Plan comptable SYSCOHADA intégré, journaux automatisés, balance générale et télédéclarations fiscales.</li>
-  <li><strong>Trésorerie &amp; Rapprochement bancaire :</strong> Gestion des flux de liquidités, intégration Mobile Money (Orange Money, MTN MoMo) et visibilité prévisionnelle.</li>
+  <li><strong>SOKO (Gestion Commerciale &amp; POS) :</strong> Notre suite dédiée au commerce, à la distribution, aux stocks multi-dépôts, à la facturation et aux terminaux de caisse tactiles.</li>
+  <li><strong>SUKU (Gestion Scolaire &amp; EdTech) :</strong> Notre plateforme intégrée dédiée aux écoles, collèges, lycées et instituts supérieurs.</li>
+  <li><strong>Extensions Sur-Mesure :</strong> Un moteur ouvert par hooks et API permettant aux entreprises d'assembler leurs propres modules métiers sans repartir de zéro.</li>
 </ul>
-<p>Grâce à son moteur asynchrone ultra-performant et sa connectivité API universelle, MELODI ERP s'adapte à votre rythme d'expansion sans rupture technologique.</p>""",
-                    "content_en": """<h3>A Modular Enterprise ERP Platform Engineered for Scalability and Control</h3>
-<p><strong>MELODI ERP</strong> is a next-generation enterprise resource planning suite built to overcome the rigid constraints of legacy software. Designed around a plug-and-play modular architecture, MELODI empowers organizations to activate only the business capabilities they need today, and seamlessly scale tomorrow.</p>
-<h4>Core Capabilities &amp; Business Pillars:</h4>
+<p>Grâce à son moteur asynchrone haute performance et son architecture <em>API-First</em>, MELODI ERP garantit une souveraineté totale des données, un déploiement hybride (Cloud ou local) et une évolutivité sans limite.</p>""",
+                    "content_en": """<h3>The Foundational Modular ERP Core Powering Domain-Specific Products</h3>
+<p><strong>MELODI ERP</strong> is the foundational software engine of the BYT3LAB ecosystem. Designed as an extensible <em>Core Engine</em>, MELODI provides the unified enterprise backbone — authentication, granular RBAC permissions, multi-currency, multi-branch isolation, asynchronous event bus, and OHADA accounting — enabling rapid development of vertical products tailored to specific industries.</p>
+<h4>Vertical Products Built on the MELODI Core:</h4>
 <ul>
-  <li><strong>Commerce &amp; Point-of-Sale (POS):</strong> Quotation management, automated invoicing, customer credit controls, and offline-resilient cash registers.</li>
-  <li><strong>Multi-Warehouse Inventory:</strong> Real-time replenishment tracking, stock valuation, batch traceability, and automated reorder triggers.</li>
-  <li><strong>OHADA &amp; International Financial Accounting:</strong> Full chart of accounts automation, audited general ledgers, trial balance, and compliant financial statements.</li>
-  <li><strong>Treasury &amp; Mobile Banking:</strong> Cash flow forecasting, multi-bank reconciliations, and direct Mobile Money gateway integrations.</li>
+  <li><strong>SOKO (Commercial Management &amp; POS):</strong> Our dedicated commerce, multi-warehouse inventory, invoicing, and offline-resilient Point-of-Sale suite.</li>
+  <li><strong>SUKU (School Management &amp; EdTech):</strong> Our integrated academic lifecycle platform for primary schools, high schools, and higher education campuses.</li>
+  <li><strong>Custom Vertical Extensions:</strong> A hook-based, API-first architecture allowing organizations to deploy custom modules without reinventing core infrastructure.</li>
 </ul>
-<p>Engineered with a high-throughput asynchronous engine and API-first foundation, MELODI ERP guarantees zero-downtime scalability for high-growth enterprises.</p>""",
+<p>Built on a high-throughput asynchronous engine, MELODI ERP guarantees full data sovereignty, hybrid deployment (Sovereign Cloud or On-Premises), and seamless scalability.</p>""",
                     "features_list": [
-                        "Gestion commerciale complète (Devis, Commandes, Facturation, Règlements)",
-                        "Gestion des stocks multi-dépôts et inventaires en direct",
-                        "Trésorerie d'entreprise & Rapprochement bancaire",
-                        "Comptabilité générale & États financiers conformes OHADA",
-                        "Ressources humaines & Paie",
-                        "Gestion de projet et suivi des feuilles de temps",
-                        "Point de vente (POS) tactile multi-terminaux",
-                        "Tableaux de bord analytiques et KPIs en temps réel",
+                        "Architecture modulaire hot-pluggable servant de socle à des produits verticaux (SOKO, SUKU)",
+                        "Noyau asynchrone Python / PostgreSQL haute performance et API-First",
+                        "Sécurité RBAC granulaire par rôles, permissions et multi-agences",
+                        "Bus d'événements persistant et système de hooks inter-modules découplé",
+                        "Comptabilité générale & États financiers conformes SYSCOHADA",
+                        "Trésorerie unifiée, devises multiples et passerelles de paiement",
+                        "Interface hybride réactive (MelodiJS) & support hors-ligne synchronisé",
+                        "Déploiement souverain (Cloud BWS ou Serveur local d'entreprise)",
                     ],
                     "problems_list": [
-                        "Données dispersées sur des tableurs et logiciels disparates non connectés",
-                        "Manque de visibilité immédiate sur les flux de trésorerie et la rentabilité",
-                        "Processus manuels générant des erreurs de saisie et retards de facturation",
-                        "Difficulté à faire évoluer les outils informatiques lors de la croissance",
+                        "Rigidité des progiciels monolithiques impossibles à adapter à un secteur précis",
+                        "Duplication coûteuse des briques de base (utilisateurs, sécurité, comptabilité) sur chaque projet",
+                        "Manque de souveraineté et dépendance vis-à-vis de licences étrangères fermées",
+                        "Difficulté à unifier les flux entre plusieurs activités ou filiales",
                     ],
                     "benefits_list": [
-                        "Plateforme unifiée centralisant l'intégralité des flux opérationnels",
-                        "Architecture modulaire hot-pluggable adaptée au rythme de croissance",
-                        "Traçabilité totale et prise de décision basée sur des données fiables",
-                        "Éditeur technologique local réactif garantissant un support de proximité",
+                        "Un socle unique et éprouvé pour propulser SOKO, SUKU et vos applications sur-mesure",
+                        "Réduction drastique des délais de développement de nouveaux produits métiers",
+                        "Traçabilité totale et interopérabilité native entre tous les modules activés",
+                        "Accompagnement direct et support de proximité par les ingénieurs BYT3LAB",
                     ],
-                    "button_label_fr": "Découvrir MELODI ERP",
-                    "button_label_en": "Discover MELODI ERP",
+                    "button_label_fr": "Découvrir le socle MELODI",
+                    "button_label_en": "Explore MELODI Core",
                     "button_url": "https://melodi.byt3lab.com",
+                    "is_published": True,
+                },
+                {
+                    "slug": "soko",
+                    "title_fr": "SOKO",
+                    "title_en": "SOKO",
+                    "solution_type": "software",
+                    "status": STATUS_ACTIVE,
+                    "division_slug": "logiciel-numerique",
+                    "badge_fr": "Gestion Commerciale & POS",
+                    "badge_en": "Commercial & POS Suite",
+                    "tagline_fr": "Notre module de gestion commerciale, stocks multi-dépôts, facturation et caisse tactile (POS) bâti sur le socle MELODI ERP.",
+                    "tagline_en": "Our commercial management, multi-warehouse inventory, invoicing, and POS suite powered by the MELODI ERP core.",
+                    "accent_color": "#10B981",
+                    "order_num": 2,
+                    "excerpt_fr": "Produit de gestion commerciale complet propulsé par MELODI ERP : devis, commandes, facturation conforme, caisse POS tactile hors-ligne, stocks multi-entrepôts et suivi des règlements.",
+                    "excerpt_en": "Complete commercial management product powered by MELODI ERP: quotations, orders, compliant invoicing, offline-ready POS registers, multi-warehouse stock, and payment tracking.",
+                    "content_fr": """<h3>La Suite de Gestion Commerciale &amp; Point de Vente propulsée par MELODI ERP</h3>
+<p><strong>SOKO</strong> est le produit spécialisé de BYT3LAB dédié au pilotage de l'activité commerciale, du négoce, de la distribution et de la vente au détail (Retail). Développé directement sur le <strong>socle technologique MELODI ERP</strong>, SOKO combine la puissance d'un ERP comptable et financier à la rapidité d'exécution d'une caisse moderne.</p>
+<h4>Périmètre fonctionnel de SOKO :</h4>
+<ul>
+  <li><strong>Cycle de Vente &amp; Facturation :</strong> Élaboration rapide de devis, bons de commande, bons de livraison, factures proforma/définitives et avoirs avec gestion fine des remises et taxes.</li>
+  <li><strong>Terminal Point de Vente (POS) Tactile :</strong> Interface d'encaissement fluide adaptée aux boutiques, supermarchés et points de distribution, avec mode résilient hors-ligne et synchronisation automatique.</li>
+  <li><strong>Gestion des Stocks Multi-Dépôts :</strong> Suivi en temps réel des entrées/sorties, transferts inter-magasins, alertes de seuil critique, valorisation et inventaires tournants par code-barres.</li>
+  <li><strong>Suivi Clients &amp; Encaissements :</strong> Gestion des comptes clients, plafonds de crédit, échéanciers, relances et intégration directe Mobile Money (Orange Money, MTN MoMo).</li>
+</ul>
+<p>Parce qu'il repose nativement sur le socle MELODI ERP, chaque vente effectuée dans SOKO alimente automatiquement votre trésorerie et votre comptabilité sans double saisie.</p>""",
+                    "content_en": """<h3>The Commercial Management &amp; Point-of-Sale Suite Powered by MELODI ERP</h3>
+<p><strong>SOKO</strong> is BYT3LAB's specialized vertical product engineered for retail, wholesale distribution, and commercial operations. Built directly on the <strong>MELODI ERP foundation</strong>, SOKO combines enterprise-grade financial and inventory control with lightning-fast counter checkout.</p>
+<h4>Core Capabilities of SOKO:</h4>
+<ul>
+  <li><strong>End-to-End Sales &amp; Invoicing:</strong> Quotations, sales orders, delivery notes, compliant tax invoicing, credit notes, and multi-tier pricing rules.</li>
+  <li><strong>Touchscreen Point-of-Sale (POS):</strong> High-speed checkout interface built for retail stores and distribution counters, featuring offline continuity and automatic sync.</li>
+  <li><strong>Multi-Warehouse Inventory Control:</strong> Real-time stock movements, inter-branch transfers, barcode inventory audits, and low-stock alerts.</li>
+  <li><strong>Customer Accounts &amp; Payments:</strong> Credit limit enforcement, installment tracking, and native Mobile Money &amp; bank payment reconciliation.</li>
+</ul>
+<p>Because SOKO runs natively on the MELODI ERP core, every transaction automatically updates your general ledger and treasury dashboards in real time.</p>""",
+                    "features_list": [
+                        "Terminal Point de Vente (POS) tactile avec continuité hors-ligne",
+                        "Gestion des devis, commandes, livraisons et facturation certifiée",
+                        "Gestion avancée des stocks multi-dépôts & transferts inter-agences",
+                        "Lecteur code-barres, étiquetage et inventaires rapides",
+                        "Gestion des prix multi-niveaux, promotions et remises clients",
+                        "Suivi des créances clients, règlements partiels et Mobile Money",
+                        "Intégration comptable et trésorerie native via le socle MELODI ERP",
+                        "Rapports de marge, chiffre d'affaires et rotation des stocks en direct",
+                    ],
+                    "problems_list": [
+                        "Écarts récurrents d'inventaire et ruptures de stock non détectées à temps",
+                        "Pertes financières liées aux encaissements manuels non rapprochés",
+                        "Interruptions de vente aux caisses lors des coupures d'accès Internet",
+                        "Saisie comptable manuelle fastidieuse en fin de journée ou de mois",
+                    ],
+                    "benefits_list": [
+                        "Zéro rupture de service en caisse grâce à l'architecture résiliente MELODI",
+                        "Visibilité immédiate sur les marges par produit, boutique ou vendeur",
+                        "Comptabilisation automatique des ventes et encaissements sans double saisie",
+                        "Évolutivité garantie vers d'autres modules du socle MELODI ERP",
+                    ],
+                    "button_label_fr": "Découvrir SOKO",
+                    "button_label_en": "Explore SOKO",
+                    "button_url": "https://soko.byt3lab.com",
                     "is_published": True,
                 },
                 {
@@ -216,14 +277,14 @@ class ContentService:
                     "division_slug": "logiciel-numerique",
                     "badge_fr": "Écosystème Éducatif",
                     "badge_en": "EdTech Solution",
-                    "tagline_fr": "Plateforme technologique intégrée dédiée à la gestion des établissements scolaires et académiques.",
-                    "tagline_en": "Comprehensive educational ecosystem for schools, academies, and university campus management.",
+                    "tagline_fr": "Plateforme technologique intégrée dédiée à la gestion des établissements scolaires et académiques, propulsée par le socle MELODI ERP.",
+                    "tagline_en": "Comprehensive educational ecosystem for schools and campuses, powered by the MELODI ERP foundational core.",
                     "accent_color": "#1E9E6A",
-                    "order_num": 2,
-                    "excerpt_fr": "Gestion complète de la vie scolaire : inscriptions, scolarité, bulletins électroniques, emplois du temps et portail parents.",
-                    "excerpt_en": "Full academic lifecycle management: admissions, tuition fees, digital report cards, schedules, and parent portals.",
-                    "content_fr": """<h3>L'écosystème numérique tout-en-un pour établissements scolaires et campus</h3>
-<p><strong>SUKU</strong> digitalise l'intégralité de la vie académique et administrative des établissements scolaires, collèges, lycées et instituts universitaires. La plateforme connecte en temps réel la direction générale, le corps professoral, les apprenants et les parents d'élèves au sein d'une interface intuitive et sécurisée.</p>
+                    "order_num": 3,
+                    "excerpt_fr": "Solution métier de gestion scolaire bâtie sur le socle MELODI ERP : inscriptions, scolarité, bulletins électroniques, emplois du temps et portail parents.",
+                    "excerpt_en": "Vertical school management solution built on the MELODI ERP core: admissions, tuition fees, digital report cards, schedules, and parent portals.",
+                    "content_fr": """<h3>L'écosystème numérique tout-en-un pour établissements scolaires (Propulsé par le socle MELODI ERP)</h3>
+<p><strong>SUKU</strong> est le produit métier spécialisé pour le secteur éducatif, conçu directement sur l'architecture du <strong>socle MELODI ERP</strong>. Elle digitalise l'intégralité de la vie académique, financière et administrative des établissements scolaires, collèges, lycées et instituts universitaires. La plateforme connecte en temps réel la direction générale, le corps professoral, les apprenants et les parents d'élèves au sein d'une interface intuitive et sécurisée.</p>
 <h4>Fonctionnalités clés de SUKU :</h4>
 <ul>
   <li><strong>Gestion des scolarités &amp; Encaissements sécurisés :</strong> Collecte des droits d'inscription par Mobile Money, suivi des impayés et reçus électroniques horodatés.</li>

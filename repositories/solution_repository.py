@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labSolutionModel
 
 
@@ -40,7 +41,7 @@ class SolutionRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labSolutionModel:
-        solution = Byt3labSolutionModel(**data)
+        solution = Byt3labSolutionModel(**sanitize_model_data(Byt3labSolutionModel, data))
         session.add(solution)
         await session.flush()
         return solution
@@ -50,7 +51,7 @@ class SolutionRepository:
         stmt = (
             update(Byt3labSolutionModel)
             .where(Byt3labSolutionModel.id == solution_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labSolutionModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, solution_id)

@@ -17,6 +17,16 @@ export const DashboardView = {
     error() {
       return this.$store.state.error;
     },
+    userPerms() {
+      return (window as any).__BYT3LAB_PERMS__ || {
+        read: true,
+        write: true,
+        publish: true,
+        delete: true,
+        settings: true,
+        admin: true,
+      };
+    },
   },
   methods: {
     formatDate(d) {

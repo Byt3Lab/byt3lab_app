@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labTeamModel
 
 
@@ -29,7 +30,7 @@ class TeamRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labTeamModel:
-        member = Byt3labTeamModel(**data)
+        member = Byt3labTeamModel(**sanitize_model_data(Byt3labTeamModel, data))
         session.add(member)
         await session.flush()
         return member
@@ -39,7 +40,7 @@ class TeamRepository:
         stmt = (
             update(Byt3labTeamModel)
             .where(Byt3labTeamModel.id == member_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labTeamModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, member_id)

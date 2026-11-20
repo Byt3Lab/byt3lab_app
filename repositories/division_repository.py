@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labDivisionModel
 
 
@@ -29,7 +30,7 @@ class DivisionRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labDivisionModel:
-        division = Byt3labDivisionModel(**data)
+        division = Byt3labDivisionModel(**sanitize_model_data(Byt3labDivisionModel, data))
         session.add(division)
         await session.flush()
         return division
@@ -39,7 +40,7 @@ class DivisionRepository:
         stmt = (
             update(Byt3labDivisionModel)
             .where(Byt3labDivisionModel.id == division_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labDivisionModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, division_id)

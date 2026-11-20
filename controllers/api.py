@@ -1,5 +1,5 @@
 from __future__ import annotations
-from core.routing import Request, Response
+from core.routing import Request, Response, require_permission
 from ..services.contact_service import ContactService
 from ..services.settings_service import SettingsService
 from ..repositories.division_repository import DivisionRepository
@@ -98,8 +98,9 @@ class By3labAPIController:
 
     # --- ROUTES ADMIN SPA ---
 
-    @classmethod
-    async def get_admin_dashboard(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def get_admin_dashboard(request: Request, response: Response):
         """GET /api/admin/byt3lab/dashboard"""
         async with request.app.db.get_session() as session:
             divisions = await DivisionRepository.get_all(session, published_only=False)
@@ -110,6 +111,7 @@ class By3labAPIController:
             team = await TeamRepository.get_all(session, published_only=False)
             jobs = await JobRepository.get_all(session, published_only=False)
             posts = await PostRepository.get_all(session, published_only=False)
+            ngrafix = await NgrafixRepository.get_all(session, published_only=False)
             messages = await MessageRepository.get_all(session)
             unread_count = await MessageRepository.count_unread(session)
 
@@ -127,6 +129,7 @@ class By3labAPIController:
                         "team": len(team),
                         "jobs": len(jobs),
                         "posts": len(posts),
+                        "ngrafix": len(ngrafix),
                         "messages": len(messages),
                         "unread_messages": unread_count,
                     },
@@ -136,8 +139,9 @@ class By3labAPIController:
 
     # --- MESSAGES (INBOX) ---
 
-    @classmethod
-    async def list_admin_messages(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_messages(request: Request, response: Response):
         """GET /api/admin/byt3lab/messages"""
         status_filter = getattr(request, "args", {}).get("status")
         async with request.app.db.get_session() as session:
@@ -158,8 +162,9 @@ class By3labAPIController:
                 }
             })
 
-    @classmethod
-    async def update_admin_message_status(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def update_admin_message_status(request: Request, response: Response):
         """PUT /api/admin/byt3lab/messages/<id>/status"""
         msg_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -174,8 +179,9 @@ class By3labAPIController:
                 return response.render_json({"success": True, "data": updated.to_dict()})
             return response.render_json({"success": False, "message": "Message introuvable."}, 404)
 
-    @classmethod
-    async def delete_admin_message(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_message(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/messages/<id>"""
         msg_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -185,15 +191,17 @@ class By3labAPIController:
 
     # --- REGLAGES (SETTINGS) ---
 
-    @classmethod
-    async def get_admin_settings(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def get_admin_settings(request: Request, response: Response):
         """GET /api/admin/byt3lab/settings"""
         async with request.app.db.get_session() as session:
             raw = await SettingsService.get_admin_settings(session)
             return response.render_json({"success": True, "data": raw})
 
-    @classmethod
-    async def save_admin_settings(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:settings")
+    async def save_admin_settings(request: Request, response: Response):
         """POST /api/admin/byt3lab/settings"""
         data = request.json or {}
         async with request.app.db.get_session() as session:
@@ -204,15 +212,17 @@ class By3labAPIController:
 
     # --- DIVISIONS CRUD ---
 
-    @classmethod
-    async def list_admin_divisions(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_divisions(request: Request, response: Response):
         """GET /api/admin/byt3lab/divisions"""
         async with request.app.db.get_session() as session:
             items = await DivisionRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_division(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_division(request: Request, response: Response):
         """POST /api/admin/byt3lab/divisions & PUT /api/admin/byt3lab/divisions/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -224,8 +234,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_division(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_division(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/divisions/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -235,15 +246,17 @@ class By3labAPIController:
 
     # --- SOLUTIONS CRUD ---
 
-    @classmethod
-    async def list_admin_solutions(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_solutions(request: Request, response: Response):
         """GET /api/admin/byt3lab/solutions"""
         async with request.app.db.get_session() as session:
             items = await SolutionRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_solution(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_solution(request: Request, response: Response):
         """POST /api/admin/byt3lab/solutions & PUT /api/admin/byt3lab/solutions/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -255,8 +268,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_solution(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_solution(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/solutions/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -266,15 +280,17 @@ class By3labAPIController:
 
     # --- SERVICES CRUD ---
 
-    @classmethod
-    async def list_admin_services(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_services(request: Request, response: Response):
         """GET /api/admin/byt3lab/services"""
         async with request.app.db.get_session() as session:
             items = await ServiceRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_service(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_service(request: Request, response: Response):
         """POST /api/admin/byt3lab/services & PUT /api/admin/byt3lab/services/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -286,8 +302,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_service(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_service(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/services/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -297,15 +314,17 @@ class By3labAPIController:
 
     # --- PROJETS CRUD ---
 
-    @classmethod
-    async def list_admin_projects(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_projects(request: Request, response: Response):
         """GET /api/admin/byt3lab/projects"""
         async with request.app.db.get_session() as session:
             items = await ProjectRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_project(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_project(request: Request, response: Response):
         """POST /api/admin/byt3lab/projects & PUT /api/admin/byt3lab/projects/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -317,8 +336,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_project(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_project(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/projects/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -328,15 +348,17 @@ class By3labAPIController:
 
     # --- PARTENAIRES CRUD ---
 
-    @classmethod
-    async def list_admin_partners(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_partners(request: Request, response: Response):
         """GET /api/admin/byt3lab/partners"""
         async with request.app.db.get_session() as session:
             items = await PartnerRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_partner(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_partner(request: Request, response: Response):
         """POST /api/admin/byt3lab/partners & PUT /api/admin/byt3lab/partners/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -348,8 +370,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_partner(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_partner(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/partners/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -359,15 +382,17 @@ class By3labAPIController:
 
     # --- EQUIPE CRUD ---
 
-    @classmethod
-    async def list_admin_team(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_team(request: Request, response: Response):
         """GET /api/admin/byt3lab/team"""
         async with request.app.db.get_session() as session:
             items = await TeamRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_team(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_team(request: Request, response: Response):
         """POST /api/admin/byt3lab/team & PUT /api/admin/byt3lab/team/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -379,8 +404,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_team(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_team(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/team/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -390,15 +416,17 @@ class By3labAPIController:
 
     # --- CARRIERE / EMPLOIS CRUD ---
 
-    @classmethod
-    async def list_admin_jobs(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_jobs(request: Request, response: Response):
         """GET /api/admin/byt3lab/jobs"""
         async with request.app.db.get_session() as session:
             items = await JobRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_job(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_job(request: Request, response: Response):
         """POST /api/admin/byt3lab/jobs & PUT /api/admin/byt3lab/jobs/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -410,8 +438,9 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_job(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_job(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/jobs/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
@@ -421,15 +450,17 @@ class By3labAPIController:
 
     # --- ARTICLES BLOG CRUD ---
 
-    @classmethod
-    async def list_admin_posts(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_posts(request: Request, response: Response):
         """GET /api/admin/byt3lab/posts"""
         async with request.app.db.get_session() as session:
             items = await PostRepository.get_all(session, published_only=False)
             return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
 
-    @classmethod
-    async def save_admin_post(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_post(request: Request, response: Response):
         """POST /api/admin/byt3lab/posts & PUT /api/admin/byt3lab/posts/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         data = request.json or {}
@@ -441,11 +472,47 @@ class By3labAPIController:
             await session.commit()
             return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
 
-    @classmethod
-    async def delete_admin_post(cls, request: Request, response: Response):
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_post(request: Request, response: Response):
         """DELETE /api/admin/byt3lab/posts/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
             ok = await PostRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+
+    # --- NGRAFIX STUDIO CRUD ---
+
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_ngrafix(request: Request, response: Response):
+        """GET /api/admin/byt3lab_app/ngrafix"""
+        async with request.app.db.get_session() as session:
+            items = await NgrafixRepository.get_all(session, published_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_ngrafix(request: Request, response: Response):
+        """POST /api/admin/byt3lab_app/ngrafix & PUT /api/admin/byt3lab_app/ngrafix/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        data = request.json or {}
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await NgrafixRepository.update(session, item_id, data)
+            else:
+                item = await NgrafixRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_ngrafix(request: Request, response: Response):
+        """DELETE /api/admin/byt3lab_app/ngrafix/<id>"""
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await NgrafixRepository.delete(session, item_id)
             await session.commit()
             return response.render_json({"success": ok})

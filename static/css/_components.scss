@@ -630,11 +630,12 @@ img, svg {
     font-weight: 700;
 }
 
+.b-hero .b-hero__subtitle,
 .b-hero__subtitle {
     font-size: clamp(1.05rem, 1.4vw, 1.25rem);
-    color: var(--c-gray-300);
+    color: #E2E8F0 !important;
     line-height: 1.65;
-    max-width: 620px;
+    max-width: 680px;
     margin-bottom: 2.25rem;
 }
 

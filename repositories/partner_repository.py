@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labPartnerModel
 
 
@@ -34,7 +35,7 @@ class PartnerRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labPartnerModel:
-        partner = Byt3labPartnerModel(**data)
+        partner = Byt3labPartnerModel(**sanitize_model_data(Byt3labPartnerModel, data))
         session.add(partner)
         await session.flush()
         return partner
@@ -44,7 +45,7 @@ class PartnerRepository:
         stmt = (
             update(Byt3labPartnerModel)
             .where(Byt3labPartnerModel.id == partner_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labPartnerModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, partner_id)

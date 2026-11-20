@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import List, Optional
 from sqlalchemy import select, update, delete
+from .utils import sanitize_model_data
 from ..models.models import Byt3labPostModel
 
 
@@ -29,7 +30,7 @@ class PostRepository:
 
     @classmethod
     async def create(cls, session, data: dict) -> Byt3labPostModel:
-        post = Byt3labPostModel(**data)
+        post = Byt3labPostModel(**sanitize_model_data(Byt3labPostModel, data))
         session.add(post)
         await session.flush()
         return post
@@ -39,7 +40,7 @@ class PostRepository:
         stmt = (
             update(Byt3labPostModel)
             .where(Byt3labPostModel.id == post_id)
-            .values(**data)
+            .values(**sanitize_model_data(Byt3labPostModel, data))
         )
         await session.execute(stmt)
         return await cls.get_by_id(session, post_id)

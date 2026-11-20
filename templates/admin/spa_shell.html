@@ -1,6 +1,9 @@
 <!-- Quill WYSIWYG Assets (AGENTS.md §8.9 & §8.10) -->
 <link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'quill', 'quill.snow.css']}) }}">
 <script src="{{ _url('static', {'module': 'base', 'path': ['libs', 'quill', 'quill.js']}) }}"></script>
+<script>
+  window.__BYT3LAB_PERMS__ = {{ user_perms_json|default('{"read":true,"write":true,"publish":true,"delete":true,"settings":true,"admin":true}')|safe }};
+</script>
 
 <div class="container-fluid py-3">
   <!-- Ancrage racine de la SPA d'administration BYT3LAB -->
@@ -46,7 +49,7 @@
         <a href="/" target="_blank" class="ds-btn ds-btn-outline-secondary">
           <span>{{ t('admin_view_public_site', 'Voir le site public') }} &rarr;</span>
         </a>
-        <button type="button" class="ds-btn ds-btn-primary" @click="goTo('/settings')">
+        <button v-if="userPerms && userPerms.settings" type="button" class="ds-btn ds-btn-primary" @click="goTo('/settings')">
           {{ t('admin_settings', 'Réglages du site') }}
         </button>
       </div>
@@ -86,7 +89,7 @@
         <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/solutions')">
           <div class="text-muted small fw-bold text-uppercase">🚀 Solutions & Produits</div>
           <div class="fs-2 fw-bold my-1">[[ counts.solutions || 0 ]]</div>
-          <div class="small text-muted">MELODI, SUKU, BWS</div>
+          <div class="small text-muted">Socle MELODI, SOKO, SUKU, BWS</div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4 col-xl-3">
@@ -129,6 +132,13 @@
           <div class="text-muted small fw-bold text-uppercase">📰 Blog</div>
           <div class="fs-2 fw-bold my-1">[[ counts.posts || 0 ]]</div>
           <div class="small text-muted">Publications R&D</div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4 col-xl-2">
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/ngrafix')">
+          <div class="text-muted small fw-bold text-uppercase">🎨 NGRAFIX</div>
+          <div class="fs-2 fw-bold my-1">[[ counts.ngrafix || 0 ]]</div>
+          <div class="small text-muted">Studio Créatif</div>
         </div>
       </div>
     </div>
@@ -471,7 +481,7 @@
         <router-link to="/" class="ds-btn ds-btn-outline-secondary">
           &larr; Tableau de bord
         </router-link>
-        <button type="button" class="ds-btn ds-btn-primary" @click="openCreate">
+        <button v-if="userPerms && userPerms.write" type="button" class="ds-btn ds-btn-primary" @click="openCreate">
           + Ajouter un élément
         </button>
       </div>
@@ -528,9 +538,9 @@
               <td style="text-align: right;">
                 <div class="btn-group btn-group-sm">
                   <button type="button" class="ds-btn ds-btn-sm ds-btn-outline-primary btn-edit" @click="openEdit(it)">
-                    Modifier
+                    [[ userPerms && userPerms.write ? 'Modifier' : 'Consulter' ]]
                   </button>
-                  <button type="button" class="ds-btn ds-btn-sm ds-btn-outline-danger btn-delete" @click="deleteItem(it.id)">
+                  <button v-if="userPerms && userPerms.delete" type="button" class="ds-btn ds-btn-sm ds-btn-outline-danger btn-delete" @click="deleteItem(it.id)">
                     Supprimer
                   </button>
                 </div>
@@ -620,9 +630,38 @@
                   <label class="form-label small fw-bold">Secteur / Domaine d'application (FR) :</label>
                   <input type="text" class="form-control" v-model="formData.domain_fr" placeholder="Ex: Commerce & Distribution">
                 </div>
+                <div class="col-md-4" v-if="resourceName === 'ngrafix'">
+                  <label class="form-label small fw-bold">Discipline NGRAFIX * :</label>
+                  <select class="form-select" v-model="formData.discipline">
+                    <option value="branding">Identité de marque & Logos</option>
+                    <option value="creative_design">Design créatif & UI/UX</option>
+                    <option value="digital_exp">Expérience digitale & Web</option>
+                    <option value="production">Production média</option>
+                  </select>
+                </div>
                 <div class="col-md-4" v-if="resourceName === 'solutions'">
                   <label class="form-label small fw-bold">Badge Marketing (FR) :</label>
                   <input type="text" class="form-control" v-model="formData.badge_fr" placeholder="Ex: Progiciel Phare">
+                </div>
+
+                <!-- Champs spécifiques Emplois (FR) -->
+                <div class="col-md-4" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Département (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.department_fr" placeholder="Ex: Software & Digital">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Expérience requise (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.experience_fr" placeholder="Ex: Confirmé (3+ ans)">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Échéance de recrutement (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.deadline_fr" placeholder="Ex: Recrutement continu">
+                </div>
+
+                <!-- Impact opérationnel pour Projets (FR) -->
+                <div class="col-12" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">Impact Opérationnel Mesuré (FR) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.impact_fr" placeholder="Ex: Réduction de 45% des délais de traitement..."></textarea>
                 </div>
 
                 <!-- Tagline solution -->
@@ -665,6 +704,44 @@
                     <div id="quill-editor-fr"></div>
                   </div>
                 </div>
+
+                <!-- LISTES DYNAMIQUES (FR) — Divisions -->
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Domaines d'expertise (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.expertise_list" placeholder="Ingénierie logicielle&#10;ERP & Progiciels"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Technologies clés (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.technologies_list" placeholder="Python & AsyncIO&#10;PostgreSQL"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Services associés (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.services_list"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Secteurs industriels cibles (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.industries_list"></textarea>
+                </div>
+
+                <!-- LISTES DYNAMIQUES (FR) — Solutions -->
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Fonctionnalités clés (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.features_list" placeholder="Gestion commerciale&#10;Stocks multi-dépôts"></textarea>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Problématiques résolues (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.problems_list" placeholder="Données dispersées&#10;Pertes financières"></textarea>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Bénéfices client (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.benefits_list" placeholder="Plateforme unifiée&#10;Visibilité temps réel"></textarea>
+                </div>
+
+                <!-- LISTE DYNAMIQUE (FR) — Emplois -->
+                <div class="col-12" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Compétences & Exigences requises (FR, 1 par ligne) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.requirements" placeholder="Maîtrise de Python 3.10+&#10;Bonne maîtrise de PostgreSQL"></textarea>
+                </div>
               </div>
             </div>
 
@@ -702,6 +779,26 @@
                   <input type="text" class="form-control" v-model="formData.badge_en" placeholder="Flagship ERP">
                 </div>
 
+                <!-- Specific Jobs fields (EN) -->
+                <div class="col-md-4" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Department (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.department_en" placeholder="Ex: Software & Digital">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Required Experience (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.experience_en" placeholder="Ex: Experienced (3+ years)">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Application Deadline (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.deadline_en" placeholder="Ex: Continuous recruitment">
+                </div>
+
+                <!-- Operational Impact for Projects (EN) -->
+                <div class="col-12" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">Measured Operational Impact (EN) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.impact_en" placeholder="Ex: 45% reduction in order processing delays..."></textarea>
+                </div>
+
                 <div class="col-12" v-if="resourceName === 'solutions'">
                   <label class="form-label small fw-bold">Tagline (EN) :</label>
                   <input type="text" class="form-control" v-model="formData.tagline_en">
@@ -734,6 +831,44 @@
                     <div id="quill-editor-en"></div>
                   </div>
                 </div>
+
+                <!-- DYNAMIC LISTS (EN) — Divisions -->
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Areas of Expertise (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.expertise_list_en" placeholder="Software Engineering&#10;Enterprise ERP"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Key Technologies (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.technologies_list_en" placeholder="Python & AsyncIO&#10;PostgreSQL"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Associated Services (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.services_list_en"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'divisions'">
+                  <label class="form-label small fw-bold">Target Industries (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.industries_list_en"></textarea>
+                </div>
+
+                <!-- DYNAMIC LISTS (EN) — Solutions -->
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Key Features (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.features_list_en" placeholder="Sales management&#10;Multi-warehouse stock"></textarea>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Problems Solved (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.problems_list_en" placeholder="Scattered data&#10;Financial leaks"></textarea>
+                </div>
+                <div class="col-md-4" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">Client Benefits (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="4" v-model="listsText.benefits_list_en" placeholder="Unified platform&#10;Real-time visibility"></textarea>
+                </div>
+
+                <!-- DYNAMIC LIST (EN) — Jobs -->
+                <div class="col-12" v-if="resourceName === 'jobs'">
+                  <label class="form-label small fw-bold">Required Skills & Qualifications (EN, 1 per line) :</label>
+                  <textarea class="form-control" rows="3" v-model="listsText.requirements_en" placeholder="Proficiency in Python 3.10+&#10;Strong PostgreSQL experience"></textarea>
+                </div>
               </div>
             </div>
 
@@ -741,7 +876,7 @@
             <div v-show="activeFormTab === 'meta'">
               <div class="row g-3">
                 <!-- Slug (identifiant URL) -->
-                <div class="col-md-6" v-if="resourceName !== 'partners'">
+                <div class="col-md-6" v-if="!['partners', 'ngrafix'].includes(resourceName)">
                   <label class="form-label small fw-bold">Slug URL (minuscules, sans espace) * :</label>
                   <input type="text" class="form-control font-monospace" v-model="formData.slug" required>
                 </div>
@@ -848,56 +983,62 @@
                   <input type="text" class="form-control" v-model="formData.cover_image">
                 </div>
 
-                <!-- Image pour projets -->
-                <div class="col-md-12" v-if="resourceName === 'projects'">
+                <!-- Image pour services -->
+                <div class="col-md-6" v-if="resourceName === 'services'">
                   <label class="form-label small fw-bold">URL de l'image d'illustration :</label>
-                  <input type="text" class="form-control" v-model="formData.image_url">
+                  <input type="text" class="form-control" v-model="formData.featured_image" placeholder="https://...">
                 </div>
 
-                <!-- LISTES DYNAMIQUES JSON (Divisions) -->
-                <div class="col-md-6" v-if="resourceName === 'divisions'">
-                  <label class="form-label small fw-bold">Domaines d'expertise (1 par ligne) :</label>
-                  <textarea class="form-control" rows="3" v-model="listsText.expertise_list" placeholder="Ingénierie logicielle&#10;ERP & Progiciels"></textarea>
+                <!-- Champs complets pour projets / portfolio -->
+                <div class="col-md-6" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">URL de l'image d'illustration :</label>
+                  <input type="text" class="form-control" v-model="formData.image_url" placeholder="https://...">
                 </div>
-                <div class="col-md-6" v-if="resourceName === 'divisions'">
-                  <label class="form-label small fw-bold">Technologies clés (1 par ligne) :</label>
-                  <textarea class="form-control" rows="3" v-model="listsText.technologies_list" placeholder="Python & AsyncIO&#10;PostgreSQL"></textarea>
+                <div class="col-md-6" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">Lien externe / Ressource du projet (URL) :</label>
+                  <input type="url" class="form-control" v-model="formData.url" placeholder="https://...">
                 </div>
-                <div class="col-md-6" v-if="resourceName === 'divisions'">
-                  <label class="form-label small fw-bold">Services associés (1 par ligne) :</label>
-                  <textarea class="form-control" rows="3" v-model="listsText.services_list"></textarea>
-                </div>
-                <div class="col-md-6" v-if="resourceName === 'divisions'">
-                  <label class="form-label small fw-bold">Secteurs industriels cibles (1 par ligne) :</label>
-                  <textarea class="form-control" rows="3" v-model="listsText.industries_list"></textarea>
+                <div class="col-12" v-if="resourceName === 'projects'">
+                  <label class="form-label small fw-bold">Stack technologique (séparée par « / ») :</label>
+                  <input type="text" class="form-control" v-model="formData.stack" placeholder="Python / PostgreSQL / MelodiJS / Docker">
                 </div>
 
-                <!-- LISTES DYNAMIQUES JSON (Solutions) -->
-                <div class="col-md-4" v-if="resourceName === 'solutions'">
-                  <label class="form-label small fw-bold">Fonctionnalités clés (1 par ligne) :</label>
-                  <textarea class="form-control" rows="4" v-model="listsText.features_list" placeholder="Gestion commerciale&#10;Stocks multi-dépôts"></textarea>
+                <!-- Champs complets pour équipe / team -->
+                <div class="col-md-6" v-if="resourceName === 'team'">
+                  <label class="form-label small fw-bold">Domaine / Pôle d'expertise :</label>
+                  <input type="text" class="form-control" v-model="formData.domain" placeholder="Ex: Direction / Architecture">
                 </div>
-                <div class="col-md-4" v-if="resourceName === 'solutions'">
-                  <label class="form-label small fw-bold">Problématiques résolues (1 par ligne) :</label>
-                  <textarea class="form-control" rows="4" v-model="listsText.problems_list" placeholder="Données dispersées&#10;Pertes financières"></textarea>
+                <div class="col-md-6" v-if="resourceName === 'team'">
+                  <label class="form-label small fw-bold">URL de la photo de profil :</label>
+                  <input type="text" class="form-control" v-model="formData.photo_url" placeholder="https://...">
                 </div>
-                <div class="col-md-4" v-if="resourceName === 'solutions'">
-                  <label class="form-label small fw-bold">Bénéfices pour le client (1 par ligne) :</label>
-                  <textarea class="form-control" rows="4" v-model="listsText.benefits_list" placeholder="Plateforme unifiée&#10;Visibilité temps réel"></textarea>
+                <div class="col-md-6" v-if="resourceName === 'team'">
+                  <label class="form-label small fw-bold">Profil LinkedIn (URL) :</label>
+                  <input type="url" class="form-control" v-model="formData.linkedin" placeholder="https://linkedin.com/in/...">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'team'">
+                  <label class="form-label small fw-bold">Profil GitHub (URL) :</label>
+                  <input type="url" class="form-control" v-model="formData.github" placeholder="https://github.com/...">
                 </div>
 
-                <!-- LISTE DYNAMIQUE JSON (Exigences de poste pour jobs) -->
-                <div class="col-12" v-if="resourceName === 'jobs'">
-                  <label class="form-label small fw-bold">Compétences & Exigences requises (1 par ligne) :</label>
-                  <textarea class="form-control" rows="3" v-model="listsText.requirements" placeholder="Maîtrise de Python 3.10+&#10;Bonne maîtrise de PostgreSQL"></textarea>
+                <!-- Champs pour NGRAFIX -->
+                <div class="col-md-6" v-if="resourceName === 'ngrafix'">
+                  <label class="form-label small fw-bold">Nom du client / Marque :</label>
+                  <input type="text" class="form-control" v-model="formData.client_name" placeholder="Ex: AgroCam Groupe">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'ngrafix'">
+                  <label class="form-label small fw-bold">URL du visuel de réalisation :</label>
+                  <input type="text" class="form-control" v-model="formData.image_url" placeholder="https://...">
                 </div>
               </div>
             </div>
 
             <!-- Boutons d'action -->
             <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-              <button type="button" id="btn-cancel-modal" class="ds-btn ds-btn-secondary" @click="closeModal">Annuler</button>
-              <button type="submit" class="ds-btn ds-btn-primary" :disabled="loading">
+              <button type="button" id="btn-cancel-modal" class="ds-btn ds-btn-secondary" @click="closeModal">
+                [[ userPerms && userPerms.write ? 'Annuler' : 'Fermer' ]]
+              </button>
+              <button v-if="userPerms && userPerms.write" type="submit" class="ds-btn ds-btn-primary" :disabled="loading">
                 Enregistrer les modifications
               </button>
             </div>

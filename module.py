@@ -1,6 +1,7 @@
 from __future__ import annotations
 import logging
 from core.module import ApplicationModule, Permission
+from core.module.module import RoleDefinition
 from .models.models import (
     Byt3labDivisionModel,
     Byt3labSolutionModel,
@@ -33,14 +34,58 @@ class Byt3labModule(ApplicationModule):
 
     def _get_permissions(self):
         return [
-            Permission(self, "byt3lab_app:read", "Consulter le contenu BYT3LAB"),
-            Permission(self, "byt3lab_app:write", "Créer et modifier le contenu BYT3LAB"),
-            Permission(self, "byt3lab_app:publish", "Publier et dépublier le contenu"),
-            Permission(self, "byt3lab_app:admin", "Administration complète et réglages du site BYT3LAB"),
+            Permission(self, "byt3lab_app:read", "Consulter le tableau de bord et les contenus BYT3LAB"),
+            Permission(self, "byt3lab_app:write", "Créer et modifier les contenus (services, produits, portfolio, etc.)"),
+            Permission(self, "byt3lab_app:publish", "Publier et dépublier le contenu sur le site public"),
+            Permission(self, "byt3lab_app:delete", "Supprimer des éléments de contenu"),
+            Permission(self, "byt3lab_app:settings", "Modifier les coordonnées et réglages généraux du site"),
+            Permission(self, "byt3lab_app:admin", "Administration complète et gestion du module BYT3LAB"),
+        ]
+
+    def _get_roles(self):
+        mod_dir = getattr(self, "dirname", None) or "byt3lab_app"
+        return [
+            RoleDefinition(
+                module=self,
+                slug="byt3lab_reader",
+                name="Lecteur BYT3LAB",
+                description="Accès en lecture seule au tableau de bord, statistiques et contenus du module BYT3LAB.",
+                permissions=[
+                    f"{mod_dir}.byt3lab_app:read",
+                ],
+                is_system=True,
+            ),
+            RoleDefinition(
+                module=self,
+                slug="byt3lab_editor",
+                name="Éditeur BYT3LAB",
+                description="Gestion éditoriale complète : création, modification et publication des produits, services, réalisations, offres et articles.",
+                permissions=[
+                    f"{mod_dir}.byt3lab_app:read",
+                    f"{mod_dir}.byt3lab_app:write",
+                    f"{mod_dir}.byt3lab_app:publish",
+                ],
+                is_system=True,
+            ),
+            RoleDefinition(
+                module=self,
+                slug="byt3lab_admin",
+                name="Administrateur BYT3LAB",
+                description="Contrôle total du module BYT3LAB : contenus, suppressions, réglages généraux et administration.",
+                permissions=[
+                    f"{mod_dir}.byt3lab_app:read",
+                    f"{mod_dir}.byt3lab_app:write",
+                    f"{mod_dir}.byt3lab_app:publish",
+                    f"{mod_dir}.byt3lab_app:delete",
+                    f"{mod_dir}.byt3lab_app:settings",
+                    f"{mod_dir}.byt3lab_app:admin",
+                ],
+                is_system=True,
+            ),
         ]
 
     async def run_dev_migrations(self):
-        """Crée automatiquement les tables SQL du module via app.db.create_all."""
+        """Crée automatiquement les tables SQL du module via app.db.create_all et applique les colonnes manquantes."""
         await self.app.db.create_all([
             Byt3labDivisionModel,
             Byt3labSolutionModel,
@@ -55,6 +100,44 @@ class Byt3labModule(ApplicationModule):
             Byt3labSettingModel,
         ])
 
+        # Migration additive idempotente pour les nouvelles colonnes
+        from sqlalchemy import text
+        from .models.models import Byt3labTables
+        alter_statements = [
+            f"ALTER TABLE {Byt3labTables.SERVICES} ADD COLUMN IF NOT EXISTS featured_image VARCHAR(300)",
+            f"ALTER TABLE {Byt3labTables.PROJECTS} ADD COLUMN IF NOT EXISTS url VARCHAR(300)",
+            f"ALTER TABLE {Byt3labTables.PROJECTS} ADD COLUMN IF NOT EXISTS stack VARCHAR(250)",
+            f"ALTER TABLE {Byt3labTables.PROJECTS} ADD COLUMN IF NOT EXISTS impact_fr TEXT",
+            f"ALTER TABLE {Byt3labTables.PROJECTS} ADD COLUMN IF NOT EXISTS impact_en TEXT",
+            f"ALTER TABLE {Byt3labTables.TEAM} ADD COLUMN IF NOT EXISTS linkedin VARCHAR(300)",
+            f"ALTER TABLE {Byt3labTables.TEAM} ADD COLUMN IF NOT EXISTS github VARCHAR(300)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS department_fr VARCHAR(100)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS department_en VARCHAR(100)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS experience_fr VARCHAR(100)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS experience_en VARCHAR(100)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS deadline_fr VARCHAR(100)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS deadline_en VARCHAR(100)",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS order_num INTEGER DEFAULT 0",
+            f"ALTER TABLE {Byt3labTables.DIVISIONS} ADD COLUMN IF NOT EXISTS expertise_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.DIVISIONS} ADD COLUMN IF NOT EXISTS technologies_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.DIVISIONS} ADD COLUMN IF NOT EXISTS services_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.DIVISIONS} ADD COLUMN IF NOT EXISTS industries_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS features_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS problems_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS benefits_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS requirements_en JSON",
+        ]
+        try:
+            async with self.app.db.get_session() as session:
+                for sql in alter_statements:
+                    try:
+                        await session.execute(text(sql))
+                    except Exception:
+                        pass
+                await session.commit()
+        except Exception as e:
+            logger.debug("Migration additive BYT3LAB: %s", e)
+
         # Seeding des données initiales si nécessaire
         try:
             async with self.app.db.get_session() as session:
@@ -64,8 +147,9 @@ class Byt3labModule(ApplicationModule):
             logger.warning("Échec du seed initial BYT3LAB: %s", e)
 
     async def load(self):
-        # 1. Enregistrement des permissions RBAC
+        # 1. Enregistrement des permissions RBAC et des 3 rôles par défaut
         self.permissions = self._get_permissions()
+        self.roles = self._get_roles()
 
         # 2. Migrations automatiques en mode développement
         if self.app and hasattr(self.app, "server") and hasattr(self.app.server, "app") and self.app.server.app.debug:
@@ -147,6 +231,12 @@ class Byt3labModule(ApplicationModule):
             router.add_route("/admin/posts", By3labAPIController.save_admin_post, methods=["POST"])
             router.add_route("/admin/posts/<id>", By3labAPIController.save_admin_post, methods=["PUT"])
             router.add_route("/admin/posts/<id>", By3labAPIController.delete_admin_post, methods=["DELETE"])
+
+            # Admin NGRAFIX
+            router.add_route("/admin/ngrafix", By3labAPIController.list_admin_ngrafix, methods=["GET"])
+            router.add_route("/admin/ngrafix", By3labAPIController.save_admin_ngrafix, methods=["POST"])
+            router.add_route("/admin/ngrafix/<id>", By3labAPIController.save_admin_ngrafix, methods=["PUT"])
+            router.add_route("/admin/ngrafix/<id>", By3labAPIController.delete_admin_ngrafix, methods=["DELETE"])
 
         # 5. Enregistrement des routes publiques du site Web MPA
         self.router.add_route("", PublicWebController.home, methods=["GET"])

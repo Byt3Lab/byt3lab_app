@@ -53,9 +53,13 @@ class Byt3labDivisionModel(Model):
     vision_fr = Column(Text, nullable=True)
     vision_en = Column(Text, nullable=True)
     expertise_list = Column(JSON, default=list)
+    expertise_list_en = Column(JSON, default=list)
     technologies_list = Column(JSON, default=list)
+    technologies_list_en = Column(JSON, default=list)
     services_list = Column(JSON, default=list)
+    services_list_en = Column(JSON, default=list)
     industries_list = Column(JSON, default=list)
+    industries_list_en = Column(JSON, default=list)
     related_slugs = Column(JSON, default=list)
     is_published = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
@@ -81,10 +85,18 @@ class Byt3labDivisionModel(Model):
             "vision": self.vision_en if is_en and self.vision_en else self.vision_fr,
             "vision_fr": self.vision_fr,
             "vision_en": self.vision_en,
-            "expertise_list": self.expertise_list or [],
-            "technologies_list": self.technologies_list or [],
-            "services_list": self.services_list or [],
-            "industries_list": self.industries_list or [],
+            "expertise_list": (self.expertise_list_en if is_en and self.expertise_list_en else self.expertise_list) or [],
+            "expertise_list_fr": self.expertise_list or [],
+            "expertise_list_en": self.expertise_list_en or [],
+            "technologies_list": (self.technologies_list_en if is_en and self.technologies_list_en else self.technologies_list) or [],
+            "technologies_list_fr": self.technologies_list or [],
+            "technologies_list_en": self.technologies_list_en or [],
+            "services_list": (self.services_list_en if is_en and self.services_list_en else self.services_list) or [],
+            "services_list_fr": self.services_list or [],
+            "services_list_en": self.services_list_en or [],
+            "industries_list": (self.industries_list_en if is_en and self.industries_list_en else self.industries_list) or [],
+            "industries_list_fr": self.industries_list or [],
+            "industries_list_en": self.industries_list_en or [],
             "related_slugs": self.related_slugs or [],
             "is_published": self.is_published,
             "created_at": self.created_at.isoformat() if self.created_at else None,
@@ -114,8 +126,11 @@ class Byt3labSolutionModel(Model):
     content_fr = Column(Text, nullable=True)
     content_en = Column(Text, nullable=True)
     features_list = Column(JSON, default=list)
+    features_list_en = Column(JSON, default=list)
     problems_list = Column(JSON, default=list)
+    problems_list_en = Column(JSON, default=list)
     benefits_list = Column(JSON, default=list)
+    benefits_list_en = Column(JSON, default=list)
     button_label_fr = Column(String(100), default="Découvrir")
     button_label_en = Column(String(100), default="Explore")
     button_url = Column(String(300), nullable=True)
@@ -148,9 +163,15 @@ class Byt3labSolutionModel(Model):
             "content": self.content_en if is_en and self.content_en else self.content_fr,
             "content_fr": self.content_fr,
             "content_en": self.content_en,
-            "features_list": self.features_list or [],
-            "problems_list": self.problems_list or [],
-            "benefits_list": self.benefits_list or [],
+            "features_list": (self.features_list_en if is_en and self.features_list_en else self.features_list) or [],
+            "features_list_fr": self.features_list or [],
+            "features_list_en": self.features_list_en or [],
+            "problems_list": (self.problems_list_en if is_en and self.problems_list_en else self.problems_list) or [],
+            "problems_list_fr": self.problems_list or [],
+            "problems_list_en": self.problems_list_en or [],
+            "benefits_list": (self.benefits_list_en if is_en and self.benefits_list_en else self.benefits_list) or [],
+            "benefits_list_fr": self.benefits_list or [],
+            "benefits_list_en": self.benefits_list_en or [],
             "button_label": self.button_label_en if is_en and self.button_label_en else self.button_label_fr,
             "button_label_fr": self.button_label_fr,
             "button_label_en": self.button_label_en,
@@ -175,6 +196,7 @@ class Byt3labServiceModel(Model):
     content_en = Column(Text, nullable=True)
     division_slug = Column(String(100), nullable=True)
     icon = Column(String(50), default="briefcase")
+    featured_image = Column(String(300), nullable=True)
     order_num = Column(Integer, default=0)
     status = Column(String(50), default=STATUS_ACTIVE)
     is_published = Column(Boolean, default=True)
@@ -197,6 +219,7 @@ class Byt3labServiceModel(Model):
             "content_en": self.content_en,
             "division_slug": self.division_slug,
             "icon": self.icon or "briefcase",
+            "featured_image": self.featured_image or "",
             "order_num": self.order_num or 0,
             "status": self.status,
             "is_published": self.is_published,
@@ -218,6 +241,10 @@ class Byt3labProjectModel(Model):
     content_fr = Column(Text, nullable=True)
     content_en = Column(Text, nullable=True)
     image_url = Column(String(300), nullable=True)
+    url = Column(String(300), nullable=True)
+    stack = Column(String(250), nullable=True)
+    impact_fr = Column(Text, nullable=True)
+    impact_en = Column(Text, nullable=True)
     order_num = Column(Integer, default=0)
     is_published = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
@@ -241,6 +268,11 @@ class Byt3labProjectModel(Model):
             "content_fr": self.content_fr,
             "content_en": self.content_en,
             "image_url": self.image_url or "",
+            "url": self.url or "",
+            "stack": self.stack or "",
+            "impact": self.impact_en if is_en and self.impact_en else self.impact_fr,
+            "impact_fr": self.impact_fr or "",
+            "impact_en": self.impact_en or "",
             "order_num": self.order_num or 0,
             "is_published": self.is_published,
         }
@@ -324,6 +356,8 @@ class Byt3labTeamModel(Model):
     bio_fr = Column(Text, nullable=True)
     bio_en = Column(Text, nullable=True)
     photo_url = Column(String(300), nullable=True)
+    linkedin = Column(String(300), nullable=True)
+    github = Column(String(300), nullable=True)
     order_num = Column(Integer, default=0)
     is_published = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
@@ -342,6 +376,8 @@ class Byt3labTeamModel(Model):
             "bio_fr": self.bio_fr,
             "bio_en": self.bio_en,
             "photo_url": self.photo_url or "",
+            "linkedin": self.linkedin or "",
+            "github": self.github or "",
             "order_num": self.order_num or 0,
             "is_published": self.is_published,
         }
@@ -356,11 +392,19 @@ class Byt3labJobModel(Model):
     title_fr = Column(String(200), nullable=False)
     title_en = Column(String(200), nullable=False)
     division_slug = Column(String(100), nullable=True)
+    department_fr = Column(String(100), nullable=True)
+    department_en = Column(String(100), nullable=True)
     location = Column(String(100), default="Douala / Yaoundé — Cameroun")
     contract_type = Column(String(50), default="CDI / Plein temps")
+    experience_fr = Column(String(100), nullable=True)
+    experience_en = Column(String(100), nullable=True)
+    deadline_fr = Column(String(100), nullable=True)
+    deadline_en = Column(String(100), nullable=True)
     description_fr = Column(Text, nullable=True)
     description_en = Column(Text, nullable=True)
     requirements = Column(JSON, default=list)
+    requirements_en = Column(JSON, default=list)
+    order_num = Column(Integer, default=0)
     is_published = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
@@ -374,12 +418,24 @@ class Byt3labJobModel(Model):
             "title_fr": self.title_fr,
             "title_en": self.title_en,
             "division_slug": self.division_slug,
+            "department": self.department_en if is_en and self.department_en else self.department_fr,
+            "department_fr": self.department_fr or "",
+            "department_en": self.department_en or "",
             "location": self.location,
             "contract_type": self.contract_type,
+            "experience": self.experience_en if is_en and self.experience_en else self.experience_fr,
+            "experience_fr": self.experience_fr or "",
+            "experience_en": self.experience_en or "",
+            "deadline": self.deadline_en if is_en and self.deadline_en else self.deadline_fr,
+            "deadline_fr": self.deadline_fr or "",
+            "deadline_en": self.deadline_en or "",
             "description": self.description_en if is_en and self.description_en else self.description_fr,
             "description_fr": self.description_fr,
             "description_en": self.description_en,
-            "requirements": self.requirements or [],
+            "requirements": (self.requirements_en if is_en and self.requirements_en else self.requirements) or [],
+            "requirements_fr": self.requirements or [],
+            "requirements_en": self.requirements_en or [],
+            "order_num": self.order_num or 0,
             "is_published": self.is_published,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
