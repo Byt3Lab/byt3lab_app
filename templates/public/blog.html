@@ -1,69 +1,207 @@
 {% extends "public/byt3lab_layout.html" %}
+{% import "public/byt3lab_macros.html" as m %}
 
 {% block content %}
-<div class="component-blog-body bg-white text-dark">
-    <!-- BYT3LAB-CONTENT-START -->
-    
-    <!-- Hero / Title Header -->
-    <section class="py-5 text-center position-relative overflow-hidden" style="background: radial-gradient(circle at top right, rgba(2, 132, 199, 0.08), transparent 60%), #ffffff; border-bottom: 1px solid #e2e8f0;">
-        <div class="container py-5 position-relative" style="z-index: 2;">
-            <span class="text-uppercase tracking-wider fw-bold font-monospace d-block mb-2" style="color: #0284c7;">Notre Journal Technologique</span>
-            <h1 class="f-nasalization display-4 fw-bold mb-3" style="color: #0f172a;">Le Blog Byt3lab</h1>
-            <p class="lead mx-auto" style="max-width: 700px; color: #475569;">
-                Découvrez nos actualités, nos dossiers techniques sur l'intelligence artificielle, l'ingénierie et l'avenir de la tech en Afrique.
-            </p>
-        </div>
-    </section>
+{% set is_en = (current_lang == 'en') %}
 
-    <!-- Blog Posts Section -->
-    <section class="py-5" style="background: #f8fafc;">
-        <div class="container py-5">
-            {% if posts and posts|length > 0 %}
-                <div class="row g-4 text-start">
-                    {% for post in posts %}
-                        <div class="col-md-6 col-lg-4">
-                            <article class="card h-100 rounded-4 overflow-hidden border" style="background: #ffffff; border-color: #e2e8f0 !important; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03); transition: transform 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='none'">
-                                <div class="position-relative" style="height: 220px; overflow: hidden;">
-                                    {% if post.image_url %}
-                                        <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover" />
-                                    {% else %}
-                                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600" alt="{{ post.title }}" class="w-100 h-100 object-fit-cover" />
-                                    {% endif %}
-                                    <span class="badge position-absolute top-0 start-0 m-3 py-2 px-3 rounded-pill" style="background: #0284c7; color: #ffffff;">
-                                        {{ post.category|default('Tech') }}
-                                    </span>
-                                </div>
-                                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                                    <div>
-                                        <div class="small mb-2 font-monospace" style="color: #64748b;">{{ post.published_at|default('') }}</div>
-                                        <h3 class="h4 fw-bold mb-3" style="line-height: 1.4; color: #0f172a;">
-                                            <a href="{{ site_prefix }}/blog/{{ post.slug }}" class="text-decoration-none" style="color: #0f172a;">{{ post.title }}</a>
-                                        </h3>
-                                        <p class="small mb-4" style="color: #475569;">
-                                            {{ post.excerpt|truncate(120) }}
-                                        </p>
-                                    </div>
-                                    <a href="{{ site_prefix }}/blog/{{ post.slug }}" class="text-decoration-none fw-bold d-inline-flex align-items-center gap-1 small" style="color: #0284c7;">
-                                        Lire l'article
-                                        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-                                    </a>
-                                </div>
-                            </article>
+<!-- Hero Éditorial Blog (Deep Navy High-Contrast) -->
+<section class="b-blog-hero">
+    <div class="container">
+        <div class="row align-items-end g-4">
+            <div class="col-lg-8">
+                <span class="b-blog-hero__eyebrow">
+                    {{ 'BYT3LAB TECH JOURNAL' if is_en else 'JOURNAL TECHNOLOGIQUE BYT3LAB' }}
+                </span>
+                <h1 class="b-blog-hero__title mt-2 mb-3">
+                    {% if active_category %}
+                        {{ active_category.name }}
+                    {% elif active_tag %}
+                        #{{ active_tag }}
+                    {% else %}
+                        {{ 'Engineering, ERP & AI Insights' if is_en else 'Ingénierie, ERP &amp; Intelligence Artificielle' }}
+                    {% endif %}
+                </h1>
+                <p class="b-blog-hero__lead mb-0">
+                    {{ active_category.description if active_category and active_category.description else (
+                        'Deep-dive articles on modular ERP architecture (MELODI, SOKO, SUKU), sovereign cloud infrastructure, and applied AI in Africa.'
+                        if is_en else
+                        'Dossiers techniques sur l\'architecture ERP modulaire (MELODI, SOKO, SUKU), l\'infrastructure cloud souveraine et l\'IA appliquée en Afrique.'
+                    ) }}
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{{ site_prefix }}/blog/rss.xml" class="b-blog-rss-btn" target="_blank" rel="noopener">
+                    {{ m.byt3lab_icon('globe', 16) }}
+                    <span>{{ 'RSS Feed' if is_en else 'Flux RSS' }}</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Barre de recherche & Filtres Catégories -->
+        <div class="b-blog-toolbar mt-4 pt-4">
+            <form action="{{ site_prefix }}/blog/" method="GET" class="b-blog-search">
+                <input type="search" name="q" value="{{ search_query|default('') }}" class="b-blog-search__input"
+                       placeholder="{{ 'Search articles, topics, tags...' if is_en else 'Rechercher un article, sujet, tag...' }}">
+                <button type="submit" class="b-btn b-btn--primary b-btn--sm">
+                    {{ 'Search' if is_en else 'Rechercher' }}
+                </button>
+            </form>
+
+            <div class="b-blog-cats mt-3">
+                <a href="{{ site_prefix }}/blog/" class="b-blog-cat-pill {% if not active_category_slug and not active_tag %}is-active{% endif %}">
+                    {{ 'All Articles' if is_en else 'Tous les articles' }}
+                </a>
+                {% for cat in categories %}
+                <a href="{{ site_prefix }}/blog/categorie/{{ cat.slug }}/"
+                   class="b-blog-cat-pill {% if active_category_slug == cat.slug %}is-active{% endif %}">
+                    <span class="b-blog-cat-dot" style="background: {{ cat.color }};"></span>
+                    <span>{{ cat.name }}</span>
+                    <span class="b-blog-cat-count">{{ cat.posts_count }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Corps du Blog -->
+<section class="b-section" style="background: var(--c-gray-50); padding: 56px 0 72px;">
+    <div class="container">
+
+        {% if search_query or active_tag %}
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 bg-white px-4 py-3 rounded-3 border">
+            <div class="small text-muted">
+                <strong>{{ total_posts }}</strong> {{ 'result(s) found' if is_en else 'résultat(s) trouvé(s)' }}
+                {% if search_query %} — « {{ search_query }} »{% endif %}
+                {% if active_tag %} — #{{ active_tag }}{% endif %}
+            </div>
+            <a href="{{ site_prefix }}/blog/" class="small fw-bold text-decoration-none">
+                {{ 'Reset filters' if is_en else 'Réinitialiser les filtres' }} &times;
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Article à la une (Featured) -->
+        {% if featured_post %}
+        <article class="b-blog-featured mb-5">
+            <div class="row g-0 align-items-stretch">
+                <div class="col-lg-6">
+                    <a href="{{ site_prefix }}/blog/{{ featured_post.slug }}/" class="b-blog-featured__img-wrap">
+                        {% if featured_post.cover_image %}
+                        <img src="{{ featured_post.cover_image }}" alt="{{ featured_post.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-blog-cover-fallback" style="{% if featured_post.cover_image %}display: none;{% endif %} --cat-accent: {{ featured_post.category_color }};">
+                            <span class="b-blog-cover-fallback__grid"></span>
+                            <span class="b-blog-cover-fallback__label">{{ featured_post.category }}</span>
+                            <span class="b-blog-cover-fallback__mark">BYT3LAB</span>
                         </div>
-                    {% endfor %}
+                        <span class="b-blog-featured__badge">
+                            {{ 'Featured' if is_en else 'À la une' }}
+                        </span>
+                    </a>
                 </div>
-            {% else %}
-                <div class="py-5 text-center">
-                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background: rgba(2, 132, 199, 0.08); color: #0284c7;">
-                        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M3 20h.01M3 16h.01M3 12h.01M3 8h.01M3 4h.01M7 4h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+                <div class="col-lg-6 p-4 p-lg-5 d-flex flex-column justify-content-between bg-white">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                            <span class="b-blog-pill" style="background: {{ featured_post.category_color }};">
+                                {{ featured_post.category }}
+                            </span>
+                            <span class="small text-muted font-monospace">
+                                {{ featured_post.published_at }} &bull; {{ featured_post.reading_time_min }} min {{ 'read' if is_en else 'de lecture' }}
+                            </span>
+                        </div>
+                        <h2 class="h3 fw-bold mb-3" style="line-height: 1.3;">
+                            <a href="{{ site_prefix }}/blog/{{ featured_post.slug }}/" class="text-decoration-none" style="color: var(--c-navy-950);">
+                                {{ featured_post.title }}
+                            </a>
+                        </h2>
+                        <p class="text-muted mb-4" style="line-height: 1.65;">{{ featured_post.summary|default('')|truncate(220) }}</p>
                     </div>
-                    <h3 class="h4 fw-bold mb-2" style="color: #0f172a;">Aucun article publié</h3>
-                    <p style="color: #64748b;">Revenez bientôt pour découvrir nos premiers articles !</p>
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="b-blog-author-avatar b-blog-author-avatar--sm">{{ (featured_post.author_name or 'B')[:1]|upper }}</span>
+                            <span class="small fw-semibold text-muted">{{ featured_post.author_name }}</span>
+                        </div>
+                        <a href="{{ site_prefix }}/blog/{{ featured_post.slug }}/" class="b-btn b-btn--sm b-btn--primary">
+                            {{ 'Read article' if is_en else 'Lire l\'article' }} &rarr;
+                        </a>
+                    </div>
                 </div>
-            {% endif %}
-        </div>
-    </section>
+            </div>
+        </article>
+        {% endif %}
 
-    <!-- BYT3LAB-CONTENT-END -->
-</div>
+        <!-- Grille des Articles -->
+        {% if posts and posts|length > 0 %}
+        <div class="row g-4">
+            {% for post in posts %}
+            {% if not featured_post or post.id != featured_post.id %}
+            <div class="col-md-6 col-lg-4">
+                <article class="b-blog-card h-100">
+                    <a href="{{ site_prefix }}/blog/{{ post.slug }}/" class="b-blog-card__img-wrap">
+                        {% if post.cover_image %}
+                        <img src="{{ post.cover_image }}" alt="{{ post.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-blog-cover-fallback" style="{% if post.cover_image %}display: none;{% endif %} --cat-accent: {{ post.category_color }};">
+                            <span class="b-blog-cover-fallback__grid"></span>
+                            <span class="b-blog-cover-fallback__label">{{ post.category }}</span>
+                            <span class="b-blog-cover-fallback__mark">BYT3LAB</span>
+                        </div>
+                        <span class="b-blog-pill b-blog-card__cat" style="background: {{ post.category_color }};">
+                            {{ post.category }}
+                        </span>
+                    </a>
+                    <div class="b-blog-card__body">
+                        <div>
+                            <div class="b-blog-card__meta">
+                                <span>{{ post.published_at }}</span>
+                                <span>&bull;</span>
+                                <span>{{ post.reading_time_min }} min {{ 'read' if is_en else 'de lecture' }}</span>
+                            </div>
+                            <h3 class="b-blog-card__title">
+                                <a href="{{ site_prefix }}/blog/{{ post.slug }}/">{{ post.title }}</a>
+                            </h3>
+                            <p class="b-blog-card__excerpt">{{ post.summary|default('')|truncate(130) }}</p>
+                        </div>
+                        <div class="b-blog-card__footer">
+                            <span class="small fw-medium text-muted">{{ post.author_name }}</span>
+                            <a href="{{ site_prefix }}/blog/{{ post.slug }}/" class="b-blog-card__link">
+                                {{ 'Read' if is_en else 'Lire' }} &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <nav class="b-blog-pagination mt-5" aria-label="Pagination">
+            {% for p in range(1, total_pages + 1) %}
+            <a href="{{ site_prefix }}/blog/?page={{ p }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if active_category_slug %}&categorie={{ active_category_slug|urlencode }}{% endif %}"
+               class="b-blog-page-btn {% if p == current_page %}is-active{% endif %}">
+                {{ p }}
+            </a>
+            {% endfor %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5 bg-white rounded-4 border p-5">
+            <h3 class="h4 fw-bold mb-2">{{ 'No articles found' if is_en else 'Aucun article trouvé' }}</h3>
+            <p class="text-muted mb-3">
+                {{ 'Try another keyword or browse all categories.' if is_en else 'Essayez un autre mot-clé ou parcourez toutes nos catégories.' }}
+            </p>
+            <a href="{{ site_prefix }}/blog/" class="b-btn b-btn--sm b-btn--primary">
+                {{ 'View all articles' if is_en else 'Voir tous les articles' }}
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
 {% endblock %}

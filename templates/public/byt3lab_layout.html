@@ -5,6 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page_title }} | BYT3LAB Technology &amp; Innovation Group</title>
     <meta name="description" content="{{ meta_description|default('BYT3LAB est un groupe technologique et d\'innovation camerounais à vocation africaine.') }}">
+
+    {% if canonical_url %}
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="alternate" hreflang="fr" href="{{ alt_fr_full }}">
+    <link rel="alternate" hreflang="en" href="{{ alt_en_full }}">
+    <link rel="alternate" hreflang="x-default" href="{{ alt_fr_full }}">
+    {% endif %}
+    <link rel="alternate" type="application/rss+xml" title="BYT3LAB Blog RSS" href="{{ base_prefix }}/lg-{{ current_lang }}/blog/rss.xml">
+
+    <!-- OpenGraph & Twitter Cards -->
+    <meta property="og:type" content="{{ og_type|default('website') }}">
+    <meta property="og:title" content="{{ page_title }} | BYT3LAB">
+    <meta property="og:description" content="{{ meta_description|default('BYT3LAB est un groupe technologique et d\'innovation camerounais à vocation africaine.') }}">
+    {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
+    <meta property="og:locale" content="{{ 'en_US' if current_lang == 'en' else 'fr_FR' }}">
+    {% if og_image %}<meta property="og:image" content="{{ og_image }}">{% endif %}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_title }} | BYT3LAB">
+    <meta name="twitter:description" content="{{ meta_description|default('BYT3LAB Technology & Innovation Group') }}">
+
+    {% if json_ld %}
+    <script type="application/ld+json">{{ json_ld|safe }}</script>
+    {% endif %}
     
     <!-- Bootstrap 5 Grid & Utilities -->
     <link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'bootstrap-5', 'css', 'bootstrap.min.css']}) }}">

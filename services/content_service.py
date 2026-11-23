@@ -10,6 +10,7 @@ from ..repositories.team_repository import TeamRepository
 from ..repositories.job_repository import JobRepository
 from ..repositories.project_repository import ProjectRepository
 from ..repositories.post_repository import PostRepository
+from ..repositories.blog_category_repository import BlogCategoryRepository
 from ..repositories.message_repository import MessageRepository
 from ..config import (
     STATUS_ACTIVE,
@@ -877,7 +878,57 @@ class ContentService:
                 else:
                     await JobRepository.create(session, j_data)
 
-        # 8. ARTICLES DE BLOG & RECHERCHE (2 publications bilingues avec HTML riche Quill)
+        # 8. CATÉGORIES BLOG PAR DÉFAUT
+        existing_blog_cats = await BlogCategoryRepository.get_all(session, active_only=False)
+        if not existing_blog_cats or force:
+            default_cats = [
+                {
+                    "slug": "ingenierie-erp",
+                    "name_fr": "Ingénierie & ERP",
+                    "name_en": "Engineering & ERP",
+                    "description_fr": "Architecture modulaire, MELODI ERP, SOKO, SUKU et bonnes pratiques Python/PostgreSQL.",
+                    "description_en": "Modular architecture, MELODI ERP, SOKO, SUKU and Python/PostgreSQL best practices.",
+                    "color": "#0284c7",
+                    "order_num": 1,
+                    "is_active": True,
+                },
+                {
+                    "slug": "ia-data",
+                    "name_fr": "IA & Data Science",
+                    "name_en": "AI & Data Science",
+                    "description_fr": "Intelligence artificielle appliquée, automatisation et analytique décisionnelle.",
+                    "description_en": "Applied artificial intelligence, automation and decision analytics.",
+                    "color": "#7c3aed",
+                    "order_num": 2,
+                    "is_active": True,
+                },
+                {
+                    "slug": "cloud-infrastructure",
+                    "name_fr": "Cloud & Infrastructure",
+                    "name_en": "Cloud & Infrastructure",
+                    "description_fr": "Hébergement haute disponibilité, BWS, réseaux d'entreprise et souveraineté numérique.",
+                    "description_en": "High-availability hosting, BWS, enterprise networking and digital sovereignty.",
+                    "color": "#059669",
+                    "order_num": 3,
+                    "is_active": True,
+                },
+                {
+                    "slug": "actualites-groupe",
+                    "name_fr": "Actualités Groupe",
+                    "name_en": "Group News",
+                    "description_fr": "Annonces officielles, partenariats stratégiques et événements Byt3Lab.",
+                    "description_en": "Official announcements, strategic partnerships and Byt3Lab events.",
+                    "color": "#ea580c",
+                    "order_num": 4,
+                    "is_active": True,
+                },
+            ]
+            for c_data in default_cats:
+                existing_cat = await BlogCategoryRepository.get_by_slug(session, c_data["slug"])
+                if not existing_cat:
+                    await BlogCategoryRepository.create(session, c_data)
+
+        # 8b. ARTICLES DE BLOG & RECHERCHE (2 publications bilingues avec HTML riche Quill)
         existing_posts = await PostRepository.get_all(session, published_only=False)
         if not existing_posts or force:
             posts_data = [

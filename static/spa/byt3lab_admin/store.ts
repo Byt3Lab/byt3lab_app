@@ -14,6 +14,7 @@ export const store = new MelodiStore({
     team: [],
     jobs: [],
     posts: [],
+    blogCategories: [],
     ngrafix: [],
     settings: {},
     loading: false,
@@ -65,6 +66,9 @@ export const store = new MelodiStore({
     },
     SET_POSTS(state, data) {
       state.posts = Array.isArray(data) ? data : [];
+    },
+    SET_BLOG_CATEGORIES(state, data) {
+      state.blogCategories = Array.isArray(data) ? data : [];
     },
     SET_NGRAFIX(state, data) {
       state.ngrafix = Array.isArray(data) ? data : [];
@@ -188,7 +192,7 @@ export const store = new MelodiStore({
         const items = (res && Array.isArray(res.data))
           ? res.data
           : (res && res.data && Array.isArray(res.data.data) ? res.data.data : []);
-        const mutationName = `SET_${resourceName.toUpperCase()}`;
+        const mutationName = `SET_${resourceName.toUpperCase().replace(/-/g, '_')}`;
         commit(mutationName, items);
       } catch (e) {
         commit('SET_ERROR', e.message);

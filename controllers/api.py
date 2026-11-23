@@ -2,6 +2,7 @@ from __future__ import annotations
 from core.routing import Request, Response, require_permission
 from ..services.contact_service import ContactService
 from ..services.settings_service import SettingsService
+from ..services.blog_service import BlogService
 from ..repositories.division_repository import DivisionRepository
 from ..repositories.solution_repository import SolutionRepository
 from ..repositories.service_repository import ServiceRepository
@@ -11,6 +12,7 @@ from ..repositories.ngrafix_repository import NgrafixRepository
 from ..repositories.team_repository import TeamRepository
 from ..repositories.job_repository import JobRepository
 from ..repositories.post_repository import PostRepository
+from ..repositories.blog_category_repository import BlogCategoryRepository
 from ..repositories.message_repository import MessageRepository
 
 
@@ -463,7 +465,16 @@ class By3labAPIController:
     async def save_admin_post(request: Request, response: Response):
         """POST /api/admin/byt3lab/posts & PUT /api/admin/byt3lab/posts/<id>"""
         item_id = int((request.params or {}).get("id") or 0)
-        data = request.json or {}
+        data = dict(request.json or {})
+        if "category_id" in data:
+            raw_cat = data["category_id"]
+            data["category_id"] = int(raw_cat) if raw_cat not in (None, "", 0, "0") else None
+        if not data.get("reading_time_min"):
+            data["reading_time_min"] = BlogService.compute_reading_time(
+                data.get("content_fr") or "",
+                data.get("content_en") or "",
+                data.get("summary_fr") or "",
+            )
         async with request.app.db.get_session() as session:
             if item_id:
                 item = await PostRepository.update(session, item_id, data)
@@ -479,6 +490,72 @@ class By3labAPIController:
         item_id = int((request.params or {}).get("id") or 0)
         async with request.app.db.get_session() as session:
             ok = await PostRepository.delete(session, item_id)
+            await session.commit()
+            return response.render_json({"success": ok})
+
+    # --- CATÉGORIES BLOG ---
+
+    @classmethod
+    async def list_public_posts(cls, request: Request, response: Response):
+        """GET /api/byt3lab_app/posts"""
+        query = getattr(request, "query", {}) or getattr(request, "args", {}) or {}
+        lang = query.get("lang") if query.get("lang") in ("fr", "en") else ((request.session or {}).get("lang") or "fr")
+        q = str(query.get("q") or "").strip()
+        category = str(query.get("categorie") or query.get("category") or "").strip()
+        tag = str(query.get("tag") or "").strip()
+        try:
+            page = max(1, int(query.get("page") or 1))
+            per_page = max(1, min(50, int(query.get("per_page") or 9)))
+        except Exception:
+            page, per_page = 1, 9
+        async with request.app.db.get_session() as session:
+            posts, total = await PostRepository.search_paginated(
+                session, q=q, category_slug=category, tag=tag, page=page, per_page=per_page, published_only=True
+            )
+            return response.render_json({
+                "success": True,
+                "data": [p.to_dict(lang=lang) for p in posts],
+                "meta": {"total": total, "page": page, "per_page": per_page},
+            })
+
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:read")
+    async def list_admin_blog_categories(request: Request, response: Response):
+        async with request.app.db.get_session() as session:
+            items = await BlogCategoryRepository.get_all(session, active_only=False)
+            return response.render_json({"success": True, "data": [i.to_dict(lang="fr") for i in items]})
+
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:write")
+    async def save_admin_blog_category(request: Request, response: Response):
+        item_id = int((request.params or {}).get("id") or 0)
+        data = dict(request.json or {})
+        if not data.get("name_fr") and data.get("title_fr"):
+            data["name_fr"] = data["title_fr"]
+        if not data.get("name_en") and data.get("title_en"):
+            data["name_en"] = data["title_en"]
+        if not data.get("name_en") and data.get("name_fr"):
+            data["name_en"] = data["name_fr"]
+        if "description_fr" not in data and data.get("content_fr"):
+            data["description_fr"] = data["content_fr"]
+        if "description_en" not in data and data.get("content_en"):
+            data["description_en"] = data["content_en"]
+        if "is_active" not in data and "is_published" in data:
+            data["is_active"] = bool(data["is_published"])
+        async with request.app.db.get_session() as session:
+            if item_id:
+                item = await BlogCategoryRepository.update(session, item_id, data)
+            else:
+                item = await BlogCategoryRepository.create(session, data)
+            await session.commit()
+            return response.render_json({"success": True, "data": item.to_dict(lang="fr") if item else None})
+
+    @staticmethod
+    @require_permission("byt3lab_app.byt3lab_app:delete")
+    async def delete_admin_blog_category(request: Request, response: Response):
+        item_id = int((request.params or {}).get("id") or 0)
+        async with request.app.db.get_session() as session:
+            ok = await BlogCategoryRepository.delete(session, item_id)
             await session.commit()
             return response.render_json({"success": ok})
 

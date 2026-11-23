@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const formData = new FormData(form);
-            const actionUrl = form.getAttribute('action') || '/api/byt3lab/contact';
+            const actionUrl = form.getAttribute('action') || '/api/byt3lab_app/contact';
 
             try {
                 const response = await fetch(actionUrl, {
@@ -266,4 +266,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+});
+
+// Bouton Copier le lien sur les articles de blog
+document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement)?.closest('[data-copy-url]') as HTMLElement | null;
+    if (!btn) return;
+    const url = btn.getAttribute('data-copy-url') || window.location.href;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = '✓';
+            setTimeout(() => { btn.textContent = orig; }, 1800);
+        }).catch(() => {});
+    }
 });

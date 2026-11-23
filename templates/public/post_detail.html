@@ -1,53 +1,127 @@
 {% extends "public/byt3lab_layout.html" %}
 
 {% block content %}
-<div class="bg-white text-dark py-5" style="background-color: #ffffff !important;">
-    <div class="container py-5">
-        <article class="mx-auto" style="max-width: 800px;">
-            
-            <!-- Category and Date -->
-            <header class="entry-header mb-4 text-start">
-                <div class="mb-3 d-flex gap-2">
-                    <span class="badge px-3 py-2 rounded-pill font-monospace" style="background: rgba(2, 132, 199, 0.1); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.2);">
-                        {{ post.category|default('Tech') }}
-                    </span>
-                </div>
-                <h1 class="f-nasalization display-4 fw-bold mb-3" style="line-height: 1.2; color: #0f172a;">{{ post.title }}</h1>
-                
-                <div class="font-monospace small d-flex align-items-center gap-3" style="color: #64748b;">
-                    <span>{{ t('post_published_on', 'Publié le') }} {{ post.published_at|default('') }}</span>
-                    <span>•</span>
-                    <span>{{ t('post_by_author', 'Par BYT3LAB') }}</span>
-                </div>
-            </header>
+{% set is_en = (current_lang == 'en') %}
 
-            <!-- Featured Image -->
-            {% if post.cover_image or post.image_url %}
-                <div class="featured-image mb-5 rounded-4 overflow-hidden shadow-sm border" style="border-color: #e2e8f0 !important;">
-                    <img src="{{ post.cover_image or post.image_url }}" alt="{{ post.title }}" class="w-100 h-auto object-fit-cover" style="max-height: 480px;" />
-                </div>
-            {% endif %}
-
-            <!-- Article Content -->
-            <div class="entry-content text-start fs-5 lh-lg" style="letter-spacing: 0.2px; color: #334155;">
-                {% if post.content %}
-                    {{ post.content|safe }}
-                {% elif post.summary %}
-                    <p>{{ post.summary }}</p>
+<article class="b-blog-article bg-white">
+    <!-- En-tête Article -->
+    <header class="b-blog-article__header">
+        <div class="container" style="max-width: 860px;">
+            <nav class="b-breadcrumb mb-3" aria-label="Breadcrumb">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <a href="{{ site_prefix }}/blog/">Blog</a>
+                {% if post.category_slug %}
+                <span>/</span>
+                <a href="{{ site_prefix }}/blog/categorie/{{ post.category_slug }}/">{{ post.category }}</a>
                 {% endif %}
+            </nav>
+
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+                <span class="b-blog-pill" style="background: {{ post.category_color }};">
+                    {{ post.category }}
+                </span>
+                <span class="small text-muted font-monospace">
+                    {{ post.published_at }} &bull; {{ post.reading_time_min }} min {{ 'read' if is_en else 'de lecture' }}
+                    &bull; {{ post.views_count }} {{ 'views' if is_en else 'vues' }}
+                </span>
             </div>
 
-            <footer class="entry-footer mt-5 pt-4 border-top" style="border-color: #e2e8f0 !important;">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div class="tags-links small" style="color: #64748b;">
-                    </div>
-                    <a href="{{ site_prefix }}/blog" class="a-button a-button--outline btn btn-outline-primary py-2 px-4 fw-bold text-uppercase" style="border-radius: 8px; border-color: #0284c7; color: #0284c7;">
-                        ← {{ t('post_back_link', 'Retour au blog') }}
-                    </a>
-                </div>
-            </footer>
+            <h1 class="b-blog-article__title">{{ post.title }}</h1>
 
-        </article>
+            {% if post.summary %}
+            <p class="b-blog-article__lead">{{ post.summary }}</p>
+            {% endif %}
+
+            <div class="b-blog-article__author mt-4">
+                <div class="b-blog-author-avatar">{{ (post.author_name or 'B')[:1]|upper }}</div>
+                <div>
+                    <div class="fw-bold small" style="color: var(--c-navy-950);">{{ post.author_name }}</div>
+                    <div class="text-muted" style="font-size: 0.78rem;">BYT3LAB Technology &amp; Innovation Group</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Image de couverture avec fallback visuel élégant -->
+    {% if post.cover_image %}
+    <div class="container my-4" style="max-width: 920px;">
+        <div class="b-blog-article__cover">
+            <img src="{{ post.cover_image }}" alt="{{ post.title }}"
+                 onerror="this.parentElement.style.display='none';">
+        </div>
     </div>
-</div>
+    {% endif %}
+
+    <!-- Corps de l'article -->
+    <div class="container py-4 pb-5" style="max-width: 860px;">
+        <div class="b-prose">
+            {% if post.content %}
+                {{ post.content|safe }}
+            {% elif post.summary %}
+                <p>{{ post.summary }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Tags & Partage Social -->
+        <div class="b-blog-article__meta-bar mt-5 pt-4 border-top">
+            <div class="b-blog-tags">
+                {% for tag in post.tags_list %}
+                <a href="{{ site_prefix }}/blog/tag/{{ tag|urlencode }}/" class="b-blog-tag">#{{ tag }}</a>
+                {% endfor %}
+            </div>
+
+            <div class="b-blog-share">
+                <span class="small fw-bold text-muted me-2">{{ 'Share:' if is_en else 'Partager :' }}</span>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ canonical_url|urlencode }}"
+                   target="_blank" rel="noopener noreferrer" class="b-blog-share-btn">LinkedIn</a>
+                <a href="https://twitter.com/intent/tweet?text={{ post.title|urlencode }}&url={{ canonical_url|urlencode }}"
+                   target="_blank" rel="noopener noreferrer" class="b-blog-share-btn">X</a>
+                <a href="https://wa.me/?text={{ (post.title ~ ' ' ~ canonical_url)|urlencode }}"
+                   target="_blank" rel="noopener noreferrer" class="b-blog-share-btn">WhatsApp</a>
+                <button type="button" class="b-blog-share-btn" data-copy-url="{{ canonical_url }}">
+                    {{ 'Copy link' if is_en else 'Copier le lien' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Articles Similaires -->
+        {% if related_posts and related_posts|length > 0 %}
+        <section class="mt-5 pt-4 border-top">
+            <h2 class="h4 fw-bold mb-4" style="color: var(--c-navy-950);">
+                {{ 'Related Articles' if is_en else 'Articles similaires' }}
+            </h2>
+            <div class="row g-4">
+                {% for rp in related_posts %}
+                <div class="col-md-4">
+                    <article class="b-blog-card h-100">
+                        <div class="b-blog-card__body">
+                            <div>
+                                <div class="b-blog-card__meta">
+                                    <span>{{ rp.category }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ rp.reading_time_min }} min</span>
+                                </div>
+                                <h3 class="h6 fw-bold mb-2">
+                                    <a href="{{ site_prefix }}/blog/{{ rp.slug }}/" class="text-decoration-none" style="color: var(--c-navy-950);">{{ rp.title }}</a>
+                                </h3>
+                            </div>
+                            <a href="{{ site_prefix }}/blog/{{ rp.slug }}/" class="b-blog-card__link">
+                                {{ 'Read' if is_en else 'Lire' }} &rarr;
+                            </a>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <div class="mt-5">
+            <a href="{{ site_prefix }}/blog/" class="b-btn b-btn--sm b-btn--secondary">
+                &larr; {{ 'Back to Blog' if is_en else 'Retour au blog' }}
+            </a>
+        </div>
+    </div>
+</article>
 {% endblock %}

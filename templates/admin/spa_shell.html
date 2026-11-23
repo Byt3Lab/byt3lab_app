@@ -131,7 +131,7 @@
         <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/posts')">
           <div class="text-muted small fw-bold text-uppercase">📰 Blog</div>
           <div class="fs-2 fw-bold my-1">[[ counts.posts || 0 ]]</div>
-          <div class="small text-muted">Publications R&D</div>
+          <div class="small text-muted">Articles &amp; Actualités</div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4 col-xl-2">
@@ -481,6 +481,9 @@
         <router-link to="/" class="ds-btn ds-btn-outline-secondary">
           &larr; Tableau de bord
         </router-link>
+        <button v-if="resourceName === 'posts'" type="button" class="ds-btn ds-btn-outline-primary" @click="goTo('/blog-categories')">
+          Catégories Blog
+        </button>
         <button v-if="userPerms && userPerms.write" type="button" class="ds-btn ds-btn-primary" @click="openCreate">
           + Ajouter un élément
         </button>
@@ -973,14 +976,67 @@
                   <input type="text" class="form-control" v-model="formData.location" placeholder="Douala / Yaoundé (Hybride)">
                 </div>
 
-                <!-- Auteur & image pour blog posts -->
+                <!-- Champs complets pour blog posts -->
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Catégorie du Blog :</label>
+                  <select class="form-select" v-model="formData.category_id">
+                    <option value="">— Sans catégorie —</option>
+                    <option v-for="cat in blogCategories" :key="cat.id" :value="cat.id">[[ cat.name_fr ]]</option>
+                  </select>
+                </div>
+                <div class="col-md-6 d-flex align-items-end pb-1" v-if="resourceName === 'posts'">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="post-featured-toggle" v-model="formData.is_featured">
+                    <label class="form-check-label small fw-bold" for="post-featured-toggle">Article à la une (Featured)</label>
+                  </div>
+                </div>
                 <div class="col-md-6" v-if="resourceName === 'posts'">
                   <label class="form-label small fw-bold">Nom de l'auteur :</label>
-                  <input type="text" class="form-control" v-model="formData.author_name">
+                  <input type="text" class="form-control" v-model="formData.author_name" placeholder="Byt3Lab Editorial">
                 </div>
                 <div class="col-md-6" v-if="resourceName === 'posts'">
                   <label class="form-label small fw-bold">URL de l'image de couverture :</label>
-                  <input type="text" class="form-control" v-model="formData.cover_image">
+                  <input type="text" class="form-control" v-model="formData.cover_image" placeholder="https://...">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Tags FR (séparés par des virgules) :</label>
+                  <input type="text" class="form-control" v-model="formData.tags_fr" placeholder="MELODI ERP, Python, Souveraineté">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Tags EN (comma-separated) :</label>
+                  <input type="text" class="form-control" v-model="formData.tags_en" placeholder="MELODI ERP, Python, Sovereignty">
+                </div>
+                <div class="col-12 mt-2 pt-2 border-top" v-if="resourceName === 'posts'">
+                  <div class="small fw-bold text-primary mb-2">Référencement SEO (OpenGraph &amp; Meta)</div>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Meta Title (FR) :</label>
+                  <input type="text" class="form-control" v-model="formData.meta_title_fr" placeholder="Titre SEO (max 65 car.)">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Meta Title (EN) :</label>
+                  <input type="text" class="form-control" v-model="formData.meta_title_en" placeholder="SEO Title (max 65 chars)">
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Meta Description (FR) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.meta_description_fr" placeholder="Description pour Google (150 car.)"></textarea>
+                </div>
+                <div class="col-md-6" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Meta Description (EN) :</label>
+                  <textarea class="form-control" rows="2" v-model="formData.meta_description_en" placeholder="Google snippet (150 chars)"></textarea>
+                </div>
+                <div class="col-12" v-if="resourceName === 'posts'">
+                  <label class="form-label small fw-bold">Image OpenGraph (og:image URL) :</label>
+                  <input type="text" class="form-control" v-model="formData.og_image" placeholder="Laisser vide pour utiliser l'image de couverture">
+                </div>
+
+                <!-- Couleur pour catégories du blog -->
+                <div class="col-md-6" v-if="resourceName === 'blog-categories'">
+                  <label class="form-label small fw-bold">Couleur du badge :</label>
+                  <div class="d-flex gap-2 align-items-center">
+                    <input type="color" class="form-control form-control-color" v-model="formData.color">
+                    <input type="text" class="form-control font-monospace" v-model="formData.color">
+                  </div>
                 </div>
 
                 <!-- Image pour services -->

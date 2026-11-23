@@ -34,8 +34,12 @@ export const ContentCrudView = {
     };
   },
   computed: {
+    blogCategories() {
+      return this.$store.state.blogCategories || [];
+    },
     items() {
-      const all = this.$store.state[this.resourceName] || [];
+      const stateKey = this.resourceName === 'blog-categories' ? 'blogCategories' : this.resourceName;
+      const all = this.$store.state[stateKey] || [];
       if (!this.searchQuery) return all;
       const q = this.searchQuery.toLowerCase();
       return all.filter(it =>
@@ -94,6 +98,9 @@ export const ContentCrudView = {
       } else if (hash.includes('jobs')) {
         this.resourceName = 'jobs';
         this.resourceTitle = "Offres d'Emploi & Carrières";
+      } else if (hash.includes('blog-categories')) {
+        this.resourceName = 'blog-categories';
+        this.resourceTitle = 'Catégories du Blog';
       } else if (hash.includes('posts')) {
         this.resourceName = 'posts';
         this.resourceTitle = 'Articles de Blog & Publications';
@@ -106,6 +113,9 @@ export const ContentCrudView = {
       }
       this.closeModal();
       this.$store.dispatch('fetchResource', this.resourceName);
+      if (this.resourceName === 'posts') {
+        this.$store.dispatch('fetchResource', 'blog-categories');
+      }
       if (this.resourceName !== 'divisions' && (!this.divisions || this.divisions.length === 0)) {
         this.$store.dispatch('fetchResource', 'divisions');
       }
@@ -133,7 +143,10 @@ export const ContentCrudView = {
         return `${it.contract_type || 'CDI'} • ${it.location || 'Cameroun'}`;
       }
       if (this.resourceName === 'posts') {
-        return `${it.author_name || 'Byt3Lab'} • ${this.formatDate(it.published_at)}`;
+        return `${it.category || 'Blog'} • ${it.reading_time_min || 3} min • ${it.views_count || 0} vues`;
+      }
+      if (this.resourceName === 'blog-categories') {
+        return `${it.color || '#0284c7'} • Ordre ${it.order_num || 1}`;
       }
       if (this.resourceName === 'ngrafix') {
         return `${(it.discipline || 'branding').toUpperCase()} • ${it.client_name || 'Studio'}`;
@@ -215,6 +228,17 @@ export const ContentCrudView = {
         status: 'active',
         solution_type: 'software',
         accent_color: '#1D7FD8',
+        color: '#0284c7',
+        is_active: true,
+        category_id: '',
+        tags_fr: '',
+        tags_en: '',
+        is_featured: false,
+        og_image: '',
+        meta_title_fr: '',
+        meta_title_en: '',
+        meta_description_fr: '',
+        meta_description_en: '',
         category: 'technologie',
         contract_type: 'CDI',
         location: 'Douala, Cameroun',

@@ -11,6 +11,7 @@ from .models.models import (
     Byt3labNgrafixModel,
     Byt3labTeamModel,
     Byt3labJobModel,
+    Byt3labBlogCategoryModel,
     Byt3labPostModel,
     Byt3labMessageModel,
     Byt3labSettingModel,
@@ -95,6 +96,7 @@ class Byt3labModule(ApplicationModule):
             Byt3labNgrafixModel,
             Byt3labTeamModel,
             Byt3labJobModel,
+            Byt3labBlogCategoryModel,
             Byt3labPostModel,
             Byt3labMessageModel,
             Byt3labSettingModel,
@@ -126,6 +128,17 @@ class Byt3labModule(ApplicationModule):
             f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS problems_list_en JSON",
             f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS benefits_list_en JSON",
             f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS requirements_en JSON",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS category_id INTEGER REFERENCES {Byt3labTables.BLOG_CATEGORIES}(id) ON DELETE SET NULL",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS tags_fr VARCHAR(300)",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS tags_en VARCHAR(300)",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS reading_time_min INTEGER DEFAULT 3",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS is_featured BOOLEAN DEFAULT FALSE",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS views_count INTEGER DEFAULT 0",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS meta_title_fr VARCHAR(250)",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS meta_title_en VARCHAR(250)",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS meta_description_fr TEXT",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS meta_description_en TEXT",
+            f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS og_image VARCHAR(300)",
         ]
         try:
             async with self.app.db.get_session() as session:
@@ -171,6 +184,7 @@ class Byt3labModule(ApplicationModule):
             router.add_route("/divisions", By3labAPIController.list_divisions, methods=["GET"])
             router.add_route("/solutions", By3labAPIController.list_solutions, methods=["GET"])
             router.add_route("/settings", By3labAPIController.get_settings, methods=["GET"])
+            router.add_route("/posts", By3labAPIController.list_public_posts, methods=["GET"])
 
             # Admin Dashboard
             router.add_route("/admin/dashboard", By3labAPIController.get_admin_dashboard, methods=["GET"])
@@ -232,65 +246,65 @@ class Byt3labModule(ApplicationModule):
             router.add_route("/admin/posts/<id>", By3labAPIController.save_admin_post, methods=["PUT"])
             router.add_route("/admin/posts/<id>", By3labAPIController.delete_admin_post, methods=["DELETE"])
 
+            # Admin Blog Categories
+            router.add_route("/admin/blog-categories", By3labAPIController.list_admin_blog_categories, methods=["GET"])
+            router.add_route("/admin/blog-categories", By3labAPIController.save_admin_blog_category, methods=["POST"])
+            router.add_route("/admin/blog-categories/<id>", By3labAPIController.save_admin_blog_category, methods=["PUT"])
+            router.add_route("/admin/blog-categories/<id>", By3labAPIController.delete_admin_blog_category, methods=["DELETE"])
+
             # Admin NGRAFIX
             router.add_route("/admin/ngrafix", By3labAPIController.list_admin_ngrafix, methods=["GET"])
             router.add_route("/admin/ngrafix", By3labAPIController.save_admin_ngrafix, methods=["POST"])
             router.add_route("/admin/ngrafix/<id>", By3labAPIController.save_admin_ngrafix, methods=["PUT"])
             router.add_route("/admin/ngrafix/<id>", By3labAPIController.delete_admin_ngrafix, methods=["DELETE"])
 
-        # 5. Enregistrement des routes publiques du site Web MPA
-        self.router.add_route("", PublicWebController.home, methods=["GET"])
-        self.router.add_route("/", PublicWebController.home, methods=["GET"])
+        # 5. Enregistrement des routes publiques du site Web MPA (bilingue SEO /lg-fr/... & /lg-en/... + routes directes)
+        def _add_seo_route(path: str, handler):
+            clean_path = path if path.startswith("/") else f"/{path}"
+            if clean_path == "/":
+                self.router.add_route("", handler, methods=["GET"])
+                self.router.add_route("/", handler, methods=["GET"])
+                for lp in ("/lg-fr", "/lg-en"):
+                    self.router.add_route(lp, handler, methods=["GET"])
+                    self.router.add_route(f"{lp}/", handler, methods=["GET"])
+            else:
+                no_slash = clean_path.rstrip("/")
+                with_slash = f"{no_slash}/"
+                self.router.add_route(no_slash, handler, methods=["GET"])
+                self.router.add_route(with_slash, handler, methods=["GET"])
+                for lp in ("/lg-fr", "/lg-en"):
+                    self.router.add_route(f"{lp}{no_slash}", handler, methods=["GET"])
+                    self.router.add_route(f"{lp}{with_slash}", handler, methods=["GET"])
 
-        self.router.add_route("/technologies", PublicWebController.technologies, methods=["GET"])
-        self.router.add_route("/technologies/", PublicWebController.technologies, methods=["GET"])
-        self.router.add_route("/technologies/<slug>", PublicWebController.division_detail, methods=["GET"])
-        self.router.add_route("/technologies/<slug>/", PublicWebController.division_detail, methods=["GET"])
+        _add_seo_route("/", PublicWebController.home)
+        _add_seo_route("/technologies", PublicWebController.technologies)
+        _add_seo_route("/technologies/<slug>", PublicWebController.division_detail)
+        _add_seo_route("/produits", PublicWebController.produits)
+        _add_seo_route("/produits/<slug>", PublicWebController.solution_detail)
+        _add_seo_route("/services", PublicWebController.services)
+        _add_seo_route("/services/<slug>", PublicWebController.service_detail)
+        _add_seo_route("/realisations", PublicWebController.realisations)
+        _add_seo_route("/realisations/<slug>", PublicWebController.project_detail)
+        _add_seo_route("/ngrafix", PublicWebController.ngrafix)
+        _add_seo_route("/a-propos", PublicWebController.a_propos)
+        _add_seo_route("/equipe", PublicWebController.equipe)
+        _add_seo_route("/equipe/<slug>", PublicWebController.team_detail)
+        _add_seo_route("/carriere", PublicWebController.carriere)
+        _add_seo_route("/carriere/<slug>", PublicWebController.job_detail)
+        _add_seo_route("/partenaires", PublicWebController.partenaires)
+        _add_seo_route("/contact", PublicWebController.contact)
 
-        self.router.add_route("/produits", PublicWebController.produits, methods=["GET"])
-        self.router.add_route("/produits/", PublicWebController.produits, methods=["GET"])
-        self.router.add_route("/produits/<slug>", PublicWebController.solution_detail, methods=["GET"])
-        self.router.add_route("/produits/<slug>/", PublicWebController.solution_detail, methods=["GET"])
+        _add_seo_route("/blog", PublicWebController.blog)
+        _add_seo_route("/blog/categorie/<slug>", PublicWebController.blog_category)
+        _add_seo_route("/blog/tag/<tag>", PublicWebController.blog_tag)
+        _add_seo_route("/blog/<slug>", PublicWebController.post_detail)
 
-        self.router.add_route("/services", PublicWebController.services, methods=["GET"])
-        self.router.add_route("/services/", PublicWebController.services, methods=["GET"])
-        self.router.add_route("/services/<slug>", PublicWebController.service_detail, methods=["GET"])
-        self.router.add_route("/services/<slug>/", PublicWebController.service_detail, methods=["GET"])
-
-        self.router.add_route("/realisations", PublicWebController.realisations, methods=["GET"])
-        self.router.add_route("/realisations/", PublicWebController.realisations, methods=["GET"])
-        self.router.add_route("/realisations/<slug>", PublicWebController.project_detail, methods=["GET"])
-        self.router.add_route("/realisations/<slug>/", PublicWebController.project_detail, methods=["GET"])
-
-        self.router.add_route("/ngrafix", PublicWebController.ngrafix, methods=["GET"])
-        self.router.add_route("/ngrafix/", PublicWebController.ngrafix, methods=["GET"])
-
-        self.router.add_route("/recherche-innovation", PublicWebController.recherche_innovation, methods=["GET"])
-        self.router.add_route("/recherche-innovation/", PublicWebController.recherche_innovation, methods=["GET"])
-
-        self.router.add_route("/a-propos", PublicWebController.a_propos, methods=["GET"])
-        self.router.add_route("/a-propos/", PublicWebController.a_propos, methods=["GET"])
-
-        self.router.add_route("/equipe", PublicWebController.equipe, methods=["GET"])
-        self.router.add_route("/equipe/", PublicWebController.equipe, methods=["GET"])
-        self.router.add_route("/equipe/<slug>", PublicWebController.team_detail, methods=["GET"])
-        self.router.add_route("/equipe/<slug>/", PublicWebController.team_detail, methods=["GET"])
-
-        self.router.add_route("/carriere", PublicWebController.carriere, methods=["GET"])
-        self.router.add_route("/carriere/", PublicWebController.carriere, methods=["GET"])
-        self.router.add_route("/carriere/<slug>", PublicWebController.job_detail, methods=["GET"])
-        self.router.add_route("/carriere/<slug>/", PublicWebController.job_detail, methods=["GET"])
-
-        self.router.add_route("/partenaires", PublicWebController.partenaires, methods=["GET"])
-        self.router.add_route("/partenaires/", PublicWebController.partenaires, methods=["GET"])
-
-        self.router.add_route("/contact", PublicWebController.contact, methods=["GET"])
-        self.router.add_route("/contact/", PublicWebController.contact, methods=["GET"])
-
-        self.router.add_route("/blog", PublicWebController.blog, methods=["GET"])
-        self.router.add_route("/blog/", PublicWebController.blog, methods=["GET"])
-        self.router.add_route("/blog/<slug>", PublicWebController.post_detail, methods=["GET"])
-        self.router.add_route("/blog/<slug>/", PublicWebController.post_detail, methods=["GET"])
+        # Flux RSS & SEO techniques
+        self.router.add_route("/blog/rss.xml", PublicWebController.blog_rss, methods=["GET"])
+        self.router.add_route("/lg-fr/blog/rss.xml", PublicWebController.blog_rss, methods=["GET"])
+        self.router.add_route("/lg-en/blog/rss.xml", PublicWebController.blog_rss, methods=["GET"])
+        self.router.add_route("/sitemap.xml", PublicWebController.sitemap_xml, methods=["GET"])
+        self.router.add_route("/robots.txt", PublicWebController.robots_txt, methods=["GET"])
 
         self.router.add_route("/404", PublicWebController.not_found, methods=["GET"])
 

@@ -2,7 +2,8 @@ from __future__ import annotations
 from datetime import datetime
 from core import get_prefix_table
 from core.db.base_module_tables import BaseModuleTables
-from sqlalchemy import Column, JSON, func
+from sqlalchemy import Column, JSON, ForeignKey, func
+from sqlalchemy.orm import relationship
 from core.orm.model import (
     BaseModel as Model,
     Integer,
@@ -30,6 +31,7 @@ class Byt3labTables(BaseModuleTables):
     NGRAFIX = f"{PREFIX_TABLE}ngrafix"
     TEAM = f"{PREFIX_TABLE}team"
     JOBS = f"{PREFIX_TABLE}jobs"
+    BLOG_CATEGORIES = f"{PREFIX_TABLE}blog_categories"
     POSTS = f"{PREFIX_TABLE}posts"
     MESSAGES = f"{PREFIX_TABLE}messages"
     SETTINGS = f"{PREFIX_TABLE}settings"
@@ -441,22 +443,19 @@ class Byt3labJobModel(Model):
         }
 
 
-class Byt3labPostModel(Model):
-    """Articles du blog institutionnel et actualités du groupe."""
-    __tablename__ = Byt3labTables.POSTS
+class Byt3labBlogCategoryModel(Model):
+    """Catégories bilingues des articles du blog Byt3Lab."""
+    __tablename__ = Byt3labTables.BLOG_CATEGORIES
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     slug = Column(String(150), unique=True, nullable=False, index=True)
-    title_fr = Column(String(250), nullable=False)
-    title_en = Column(String(250), nullable=False)
-    summary_fr = Column(Text, nullable=True)
-    summary_en = Column(Text, nullable=True)
-    content_fr = Column(Text, nullable=True)
-    content_en = Column(Text, nullable=True)
-    cover_image = Column(String(300), nullable=True)
-    author_name = Column(String(100), default="Byt3Lab Editorial")
-    published_at = Column(DateTime(timezone=True), default=func.now())
-    is_published = Column(Boolean, default=True)
+    name_fr = Column(String(150), nullable=False)
+    name_en = Column(String(150), nullable=False)
+    description_fr = Column(Text, nullable=True)
+    description_en = Column(Text, nullable=True)
+    color = Column(String(30), default="#0284c7")
+    order_num = Column(Integer, default=1)
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
 
@@ -465,18 +464,94 @@ class Byt3labPostModel(Model):
         return {
             "id": self.id,
             "slug": self.slug,
+            "name": self.name_en if is_en and self.name_en else self.name_fr,
+            "name_fr": self.name_fr,
+            "name_en": self.name_en,
+            "title_fr": self.name_fr,
+            "title_en": self.name_en,
+            "description": self.description_en if is_en and self.description_en else (self.description_fr or ""),
+            "description_fr": self.description_fr or "",
+            "description_en": self.description_en or "",
+            "color": self.color or "#0284c7",
+            "order_num": self.order_num or 1,
+            "is_active": self.is_active,
+            "is_published": self.is_active,
+        }
+
+
+class Byt3labPostModel(Model):
+    """Articles du blog institutionnel et actualités du groupe."""
+    __tablename__ = Byt3labTables.POSTS
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    slug = Column(String(150), unique=True, nullable=False, index=True)
+    category_id = Column(Integer, ForeignKey(f"{Byt3labTables.BLOG_CATEGORIES}.id", ondelete="SET NULL"), nullable=True, index=True)
+    title_fr = Column(String(250), nullable=False)
+    title_en = Column(String(250), nullable=False)
+    summary_fr = Column(Text, nullable=True)
+    summary_en = Column(Text, nullable=True)
+    content_fr = Column(Text, nullable=True)
+    content_en = Column(Text, nullable=True)
+    tags_fr = Column(String(300), nullable=True)
+    tags_en = Column(String(300), nullable=True)
+    cover_image = Column(String(300), nullable=True)
+    og_image = Column(String(300), nullable=True)
+    author_name = Column(String(100), default="Byt3Lab Editorial")
+    reading_time_min = Column(Integer, default=3)
+    is_featured = Column(Boolean, default=False)
+    views_count = Column(Integer, default=0)
+    meta_title_fr = Column(String(250), nullable=True)
+    meta_title_en = Column(String(250), nullable=True)
+    meta_description_fr = Column(Text, nullable=True)
+    meta_description_en = Column(Text, nullable=True)
+    published_at = Column(DateTime(timezone=True), default=func.now())
+    is_published = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), default=func.now())
+    updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
+
+    category = relationship("Byt3labBlogCategoryModel", lazy="joined")
+
+    def to_dict(self, lang: str = "fr") -> dict:
+        is_en = lang == "en"
+        raw_tags = (self.tags_en if is_en and self.tags_en else self.tags_fr) or ""
+        tags_list = [t.strip() for t in raw_tags.split(",") if t.strip()]
+        cat = self.category
+        cat_name = (cat.name_en if is_en and cat.name_en else cat.name_fr) if cat else ("Tech" if is_en else "Technologie")
+        return {
+            "id": self.id,
+            "slug": self.slug,
+            "category_id": self.category_id,
+            "category": cat_name,
+            "category_slug": cat.slug if cat else "",
+            "category_color": (cat.color or "#0284c7") if cat else "#0284c7",
             "title": self.title_en if is_en and self.title_en else self.title_fr,
             "title_fr": self.title_fr,
             "title_en": self.title_en,
             "summary": self.summary_en if is_en and self.summary_en else self.summary_fr,
             "summary_fr": self.summary_fr,
             "summary_en": self.summary_en,
+            "excerpt": (self.summary_en if is_en and self.summary_en else self.summary_fr) or "",
             "content": self.content_en if is_en and self.content_en else self.content_fr,
             "content_fr": self.content_fr,
             "content_en": self.content_en,
+            "tags_fr": self.tags_fr or "",
+            "tags_en": self.tags_en or "",
+            "tags_list": tags_list,
             "cover_image": self.cover_image or "",
+            "image_url": self.cover_image or "",
+            "og_image": self.og_image or self.cover_image or "",
             "author_name": self.author_name or "Byt3Lab",
+            "reading_time_min": self.reading_time_min or 3,
+            "is_featured": bool(self.is_featured),
+            "views_count": self.views_count or 0,
+            "meta_title_fr": self.meta_title_fr or "",
+            "meta_title_en": self.meta_title_en or "",
+            "meta_title": (self.meta_title_en if is_en and self.meta_title_en else self.meta_title_fr) or (self.title_en if is_en and self.title_en else self.title_fr),
+            "meta_description_fr": self.meta_description_fr or "",
+            "meta_description_en": self.meta_description_en or "",
+            "meta_description": (self.meta_description_en if is_en and self.meta_description_en else self.meta_description_fr) or (self.summary_en if is_en and self.summary_en else self.summary_fr) or "",
             "published_at": self.published_at.strftime("%d/%m/%Y") if self.published_at else "",
+            "published_at_iso": self.published_at.isoformat() if self.published_at else "",
             "is_published": self.is_published,
         }
 
