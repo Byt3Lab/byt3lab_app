@@ -1,5 +1,6 @@
-<!-- Quill WYSIWYG Assets (AGENTS.md §8.9 & §8.10) -->
+<!-- Quill WYSIWYG & Admin Console Assets -->
 <link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'quill', 'quill.snow.css']}) }}">
+<link rel="stylesheet" href="{{ _url('static', {'module': 'byt3lab_app', 'path': ['css', 'byt3lab_admin.css']}) }}">
 <script src="{{ _url('static', {'module': 'base', 'path': ['libs', 'quill', 'quill.js']}) }}"></script>
 <script>
   window.__BYT3LAB_PERMS__ = {{ user_perms_json|default('{"read":true,"write":true,"publish":true,"delete":true,"settings":true,"admin":true}')|safe }};
@@ -79,17 +80,17 @@
         </div>
       </div>
       <div class="col-sm-6 col-md-4 col-xl-3">
-        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/divisions')">
-          <div class="text-muted small fw-bold text-uppercase">🏛️ Divisions</div>
+        <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/poles')">
+          <div class="text-muted small fw-bold text-uppercase">🧭 Nos 4 Pôles</div>
           <div class="fs-2 fw-bold my-1">[[ counts.divisions || 0 ]]</div>
-          <div class="small text-muted">Axes fondateurs</div>
+          <div class="small text-muted">Software · Web Services · Equipment · ngrafix</div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4 col-xl-3">
         <div class="ds-card p-3 shadow-sm h-100" style="cursor: pointer;" @click="goTo('/solutions')">
           <div class="text-muted small fw-bold text-uppercase">🚀 Solutions & Produits</div>
           <div class="fs-2 fw-bold my-1">[[ counts.solutions || 0 ]]</div>
-          <div class="small text-muted">Socle MELODI, SOKO, SUKU, BWS</div>
+          <div class="small text-muted">Socle MELODI, ASSO, SUKU, BWS</div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4 col-xl-3">
@@ -557,11 +558,11 @@
       </div>
     </div>
 
-    <!-- MODAL DE CRÉATION & MODIFICATION SUR-MESURE -->
+    <!-- MODAL DE CRÉATION & MODIFICATION SUR-MESURE (Responsive PC & Mobile) -->
     <div v-if="showModal" class="modal-backdrop fade show" style="z-index: 1050;"></div>
-    <div v-if="showModal" class="modal fade show d-block" tabindex="-1" style="z-index: 1055;">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content ds-card p-4 border shadow">
+    <div v-if="showModal" class="modal fade show d-block byt3lab-admin-modal" tabindex="-1" style="z-index: 1055;">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content ds-card p-3 p-md-4 border shadow">
           <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
             <h5 class="fw-bold m-0">
               [[ isEditing ? 'Modifier' : 'Ajouter' ]] : [[ resourceTitle ]]
@@ -695,17 +696,27 @@
                   <textarea class="form-control" rows="2" v-model="formData.excerpt_fr"></textarea>
                 </div>
 
-                <!-- Description / Contenu complet avec éditeur WYSIWYG Quill -->
+                <!-- Description / Contenu complet avec éditeur WYSIWYG Quill ou HTML personnalisé -->
                 <div class="col-12">
-                  <label class="form-label small fw-bold d-flex justify-content-between align-items-center mb-1">
-                    <span>Description complète / Contenu détaillé (FR) :</span>
-                    <span class="badge bg-light text-primary border" style="font-size: 0.75rem;">
-                      <span style="color: #10b981;">●</span> Éditeur WYSIWYG Quill
-                    </span>
-                  </label>
-                  <div class="quill-editor-wrapper">
+                  <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
+                    <label class="form-label small fw-bold mb-0">Description complète / Contenu détaillé (FR) :</label>
+                    <div class="d-flex gap-1">
+                      <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size: 0.75rem;" @click="insertYoutubeSnippet('fr')">
+                        + Vidéo YouTube
+                      </button>
+                      <button type="button" class="btn btn-xs py-0 px-2" style="font-size: 0.75rem;"
+                              :class="htmlModeFr ? 'btn-primary' : 'btn-outline-primary'"
+                              @click="toggleHtmlMode('fr')">
+                        [[ htmlModeFr ? 'Mode Visuel (Quill)' : '&lt;/&gt; Code HTML' ]]
+                      </button>
+                    </div>
+                  </div>
+                  <div class="quill-editor-wrapper" v-show="!htmlModeFr">
                     <div id="quill-editor-fr"></div>
                   </div>
+                  <textarea v-show="htmlModeFr" class="form-control font-monospace" rows="10"
+                            v-model="formData.content_fr"
+                            placeholder="<p>Code HTML personnalisé, &lt;iframe&gt; YouTube, &lt;video&gt;...</p>"></textarea>
                 </div>
 
                 <!-- LISTES DYNAMIQUES (FR) — Divisions -->
@@ -822,17 +833,27 @@
                   <textarea class="form-control" rows="2" v-model="formData.excerpt_en"></textarea>
                 </div>
 
-                <!-- Detailed Content with Quill WYSIWYG Editor -->
+                <!-- Detailed Content with Quill WYSIWYG or Custom HTML -->
                 <div class="col-12">
-                  <label class="form-label small fw-bold d-flex justify-content-between align-items-center mb-1">
-                    <span>Detailed Content (EN) :</span>
-                    <span class="badge bg-light text-primary border" style="font-size: 0.75rem;">
-                      <span style="color: #10b981;">●</span> Quill WYSIWYG Editor
-                    </span>
-                  </label>
-                  <div class="quill-editor-wrapper">
+                  <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-2">
+                    <label class="form-label small fw-bold mb-0">Detailed Content (EN) :</label>
+                    <div class="d-flex gap-1">
+                      <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2" style="font-size: 0.75rem;" @click="insertYoutubeSnippet('en')">
+                        + YouTube Video
+                      </button>
+                      <button type="button" class="btn btn-xs py-0 px-2" style="font-size: 0.75rem;"
+                              :class="htmlModeEn ? 'btn-primary' : 'btn-outline-primary'"
+                              @click="toggleHtmlMode('en')">
+                        [[ htmlModeEn ? 'Visual Mode (Quill)' : '&lt;/&gt; HTML Code' ]]
+                      </button>
+                    </div>
+                  </div>
+                  <div class="quill-editor-wrapper" v-show="!htmlModeEn">
                     <div id="quill-editor-en"></div>
                   </div>
+                  <textarea v-show="htmlModeEn" class="form-control font-monospace" rows="10"
+                            v-model="formData.content_en"
+                            placeholder="<p>Custom HTML code, YouTube &lt;iframe&gt;, &lt;video&gt;...</p>"></textarea>
                 </div>
 
                 <!-- DYNAMIC LISTS (EN) — Divisions -->
@@ -878,10 +899,10 @@
             <!-- ================= ONGLET 3 : MÉTADONNÉES & LISTES SUR-MESURE ================= -->
             <div v-show="activeFormTab === 'meta'">
               <div class="row g-3">
-                <!-- Slug (identifiant URL) -->
-                <div class="col-md-6" v-if="!['partners', 'ngrafix'].includes(resourceName)">
-                  <label class="form-label small fw-bold">Slug URL (minuscules, sans espace) * :</label>
-                  <input type="text" class="form-control font-monospace" v-model="formData.slug" required>
+                <!-- Slug (identifiant URL, auto-généré si laissé vide) -->
+                <div class="col-md-6" v-if="!['partners', 'ngrafix', 'team'].includes(resourceName)">
+                  <label class="form-label small fw-bold">Slug URL (auto-généré si vide) :</label>
+                  <input type="text" class="form-control font-monospace" v-model="formData.slug" placeholder="ex: mon-element">
                 </div>
 
                 <!-- Ordre d'affichage -->
@@ -898,11 +919,11 @@
                   </div>
                 </div>
 
-                <!-- Rattaché à une division (pour solutions, services, jobs) -->
+                <!-- Rattaché à un pôle (pour solutions, services, jobs) -->
                 <div class="col-md-6" v-if="['solutions', 'services', 'jobs'].includes(resourceName)">
-                  <label class="form-label small fw-bold">Division de rattachement :</label>
+                  <label class="form-label small fw-bold">Pôle de rattachement :</label>
                   <select class="form-select" v-model="formData.division_slug">
-                    <option value="">-- Aucune division spécifique --</option>
+                    <option value="">-- Aucun pôle spécifique --</option>
                     <option v-for="d in divisions" :key="d.slug" :value="d.slug">
                       [[ d.title_fr || d.title ]]
                     </option>
@@ -1039,6 +1060,12 @@
                   </div>
                 </div>
 
+                <!-- Image pour solutions -->
+                <div class="col-md-6" v-if="resourceName === 'solutions'">
+                  <label class="form-label small fw-bold">URL de l'image d'illustration :</label>
+                  <input type="text" class="form-control" v-model="formData.image_url" placeholder="https://...">
+                </div>
+
                 <!-- Image pour services -->
                 <div class="col-md-6" v-if="resourceName === 'services'">
                   <label class="form-label small fw-bold">URL de l'image d'illustration :</label>
@@ -1061,8 +1088,8 @@
 
                 <!-- Champs complets pour équipe / team -->
                 <div class="col-md-6" v-if="resourceName === 'team'">
-                  <label class="form-label small fw-bold">Domaine / Pôle d'expertise :</label>
-                  <input type="text" class="form-control" v-model="formData.domain" placeholder="Ex: Direction / Architecture">
+                  <label class="form-label small fw-bold">Pôle d'expertise :</label>
+                  <input type="text" class="form-control" v-model="formData.domain" placeholder="Ex: software, web-services, equipment, ngrafix">
                 </div>
                 <div class="col-md-6" v-if="resourceName === 'team'">
                   <label class="form-label small fw-bold">URL de la photo de profil :</label>

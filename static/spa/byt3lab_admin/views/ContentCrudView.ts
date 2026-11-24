@@ -4,7 +4,7 @@ export const ContentCrudView = {
   data() {
     return {
       resourceName: 'divisions',
-      resourceTitle: 'Divisions Technologiques',
+      resourceTitle: 'Nos 4 Pôles',
       showModal: false,
       isEditing: false,
       activeFormTab: 'fr',
@@ -12,6 +12,8 @@ export const ContentCrudView = {
       formData: {},
       quillFr: null,
       quillEn: null,
+      htmlModeFr: false,
+      htmlModeEn: false,
       listsText: {
         expertise_list: '',
         expertise_list_en: '',
@@ -109,7 +111,7 @@ export const ContentCrudView = {
         this.resourceTitle = 'Studio Créatif NGRAFIX';
       } else {
         this.resourceName = 'divisions';
-        this.resourceTitle = 'Divisions Technologiques';
+        this.resourceTitle = 'Nos 4 Pôles (Software, Web Services, Equipment, ngrafix)';
       }
       this.closeModal();
       this.$store.dispatch('fetchResource', this.resourceName);
@@ -163,6 +165,31 @@ export const ContentCrudView = {
           this.quillEn.update();
         }
       }, 50);
+    },
+
+    toggleHtmlMode(lang) {
+      if (lang === 'fr') {
+        this.htmlModeFr = !this.htmlModeFr;
+        if (!this.htmlModeFr && this.quillFr && this.quillFr.root) {
+          this.quillFr.root.innerHTML = this.formData.content_fr || '';
+        }
+      } else {
+        this.htmlModeEn = !this.htmlModeEn;
+        if (!this.htmlModeEn && this.quillEn && this.quillEn.root) {
+          this.quillEn.root.innerHTML = this.formData.content_en || '';
+        }
+      }
+    },
+
+    insertYoutubeSnippet(lang) {
+      const snippet = '\n<div class="b-embed-video"><iframe src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video" allowfullscreen></iframe></div>\n';
+      if (lang === 'fr') {
+        this.htmlModeFr = true;
+        this.formData.content_fr = (this.formData.content_fr || '') + snippet;
+      } else {
+        this.htmlModeEn = true;
+        this.formData.content_en = (this.formData.content_en || '') + snippet;
+      }
     },
 
     initQuillEditors() {
@@ -270,6 +297,8 @@ export const ContentCrudView = {
       };
       this.quillFr = null;
       this.quillEn = null;
+      this.htmlModeFr = false;
+      this.htmlModeEn = false;
       this.showModal = true;
       setTimeout(() => this.initQuillEditors(), 80);
     },
@@ -307,6 +336,8 @@ export const ContentCrudView = {
       };
       this.quillFr = null;
       this.quillEn = null;
+      this.htmlModeFr = false;
+      this.htmlModeEn = false;
       this.showModal = true;
       setTimeout(() => this.initQuillEditors(), 80);
     },
@@ -319,23 +350,49 @@ export const ContentCrudView = {
     },
 
     async saveItem() {
-      if (this.quillFr && this.quillFr.root) {
+      if (!this.htmlModeFr && this.quillFr && this.quillFr.root) {
         const htmlFr = this.quillFr.root.innerHTML;
         this.formData.content_fr = htmlFr === '<p><br></p>' ? '' : htmlFr;
       }
-      if (this.quillEn && this.quillEn.root) {
+      if (!this.htmlModeEn && this.quillEn && this.quillEn.root) {
         const htmlEn = this.quillEn.root.innerHTML;
         this.formData.content_en = htmlEn === '<p><br></p>' ? '' : htmlEn;
       }
 
       const toArr = (txt) => (txt || '').split('\n').map(s => s.trim()).filter(Boolean);
 
+      const slugify = (str) =>
+        (str || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+
+      const titleFr = this.formData.title_fr || this.formData.title_en || '';
+      const titleEn = this.formData.title_en || titleFr;
+      const roleFr = this.formData.role_fr || this.formData.role_en || '';
+      const roleEn = this.formData.role_en || roleFr;
+      const excerptFr = this.formData.excerpt_fr || this.formData.summary_fr || '';
+      const excerptEn = this.formData.excerpt_en || this.formData.summary_en || excerptFr;
+      const contentFr = this.formData.content_fr || this.formData.description_fr || '';
+      const contentEn = this.formData.content_en || this.formData.description_en || contentFr;
+
       const payload = {
         ...this.formData,
-        summary_fr: this.formData.excerpt_fr || this.formData.summary_fr || '',
-        summary_en: this.formData.excerpt_en || this.formData.summary_en || '',
-        description_fr: this.formData.content_fr || this.formData.description_fr || '',
-        description_en: this.formData.content_en || this.formData.description_en || '',
+        slug: this.formData.slug || slugify(titleFr || this.formData.name || ''),
+        title_fr: titleFr,
+        title_en: titleEn,
+        role_fr: roleFr,
+        role_en: roleEn,
+        excerpt_fr: excerptFr,
+        excerpt_en: excerptEn,
+        summary_fr: excerptFr,
+        summary_en: excerptEn,
+        content_fr: contentFr,
+        content_en: contentEn,
+        description_fr: contentFr,
+        description_en: contentEn,
       };
 
       if (this.resourceName === 'divisions') {

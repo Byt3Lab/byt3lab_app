@@ -1,7 +1,5 @@
-{% extends "public/byt3lab_layout.html" %}
-{% import "public/byt3lab_macros.html" as m %}
+{% import "public/byt3lab_macros.html" as m with context %}
 
-{% block content %}
 {% set is_en = (current_lang == 'en') %}
 
 <!-- Hero Éditorial Blog (Deep Navy High-Contrast) -->
@@ -23,9 +21,9 @@
                 </h1>
                 <p class="b-blog-hero__lead mb-0">
                     {{ active_category.description if active_category and active_category.description else (
-                        'Deep-dive articles on modular ERP architecture (MELODI, SOKO, SUKU), sovereign cloud infrastructure, and applied AI in Africa.'
+                        'Deep-dive articles on modular ERP architecture (MELODI, ASSO, SUKU), sovereign cloud infrastructure, and applied AI in Africa.'
                         if is_en else
-                        'Dossiers techniques sur l\'architecture ERP modulaire (MELODI, SOKO, SUKU), l\'infrastructure cloud souveraine et l\'IA appliquée en Afrique.'
+                        'Dossiers techniques sur l\'architecture ERP modulaire (MELODI, ASSO, SUKU), l\'infrastructure cloud souveraine et l\'IA appliquée en Afrique.'
                     ) }}
                 </p>
             </div>
@@ -204,4 +202,3 @@
 
     </div>
 </section>
-{% endblock %}

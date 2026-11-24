@@ -1,0 +1,162 @@
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% set is_en = (current_lang == 'en') %}
+
+<div class="b-pole-theme b-pole-theme--equipment">
+    <!-- Hero Equipment : Graphite & Energy Amber/Emerald -->
+    <section class="b-pole-hero b-pole-hero--equipment">
+        <div class="b-container b-container--wide">
+            <div class="b-breadcrumb b-breadcrumb--light">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <a href="{{ site_prefix }}/poles/">{{ 'Our Poles' if is_en else 'Nos Pôles' }}</a>
+                <span>/</span>
+                <span>Byt3Lab Equipment</span>
+            </div>
+
+            <div class="row align-items-center g-5 mt-1">
+                <div class="col-lg-7">
+                    <span class="b-pole-badge b-pole-badge--equipment">EQUIP &middot; IT HARDWARE, SECURITY &amp; ENERGY</span>
+                    <h1 class="b-pole-hero__title mt-3">Byt3Lab Equipment</h1>
+                    <p class="b-pole-hero__lead">
+                        {{ 'End-to-end provider and integrator of IT hardware, enterprise networks, security surveillance and backup energy—available for purchase or via Equipment as a Service.'
+                           if is_en else
+                           'Fournisseur et intégrateur de solutions complètes en équipements informatiques, réseaux, sécurité et énergie — à l\'achat ou en formule Equipment as a Service.' }}
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="{{ site_prefix }}/contact/?pole=equipment" class="b-btn b-btn--lg b-btn--primary" style="background: #d97706; border-color: #d97706;">
+                            {{ 'Request an equipment quote' if is_en else 'Demander un devis équipement' }} &rarr;
+                        </a>
+                        <a href="#eaas" class="b-btn b-btn--lg b-btn--ghost">
+                            Equipment as a Service (EaaS)
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="b-eq-highlight">
+                        <div class="b-eq-highlight__label">{{ 'TURNKEY BUSINESS MODEL' if is_en else 'APPROCHE CLÉ EN MAIN' }}</div>
+                        <div class="b-eq-highlight__grid">
+                            <div><strong>IT</strong><span>{{ 'Workstations & Servers' if is_en else 'Postes & Serveurs' }}</span></div>
+                            <div><strong>NET</strong><span>{{ 'Wi-Fi & Cabling' if is_en else 'Réseaux & Câblage' }}</span></div>
+                            <div><strong>SEC</strong><span>{{ 'CCTV & Access Control' if is_en else 'Vidéo IP & Accès' }}</span></div>
+                            <div><strong>PWR</strong><span>{{ 'UPS & Solar Backup' if is_en else 'Onduleurs & Solaire' }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4 Domaines d'équipement -->
+    <section class="b-section">
+        <div class="b-container b-container--wide">
+            <div class="b-section__head">
+                <span class="b-eyebrow" style="color: #d97706;">{{ 'Turnkey Infrastructure' if is_en else 'Solutions Complètes' }}</span>
+                <h2 class="b-title">{{ 'More than a hardware store: complete integrated environments' if is_en else 'Bien plus qu\'un fournisseur : des environnements clés en main' }}</h2>
+                <p class="b-lead">
+                    {{ 'Entrust Byt3Lab Equipment with your entire office infrastructure: workstations, servers, networking, video surveillance and backup power.'
+                       if is_en else
+                       'Confiez à Byt3Lab Equipment l\'équipement et l\'installation complète de votre entreprise : postes de travail, serveurs, réseau, vidéosurveillance et autonomie énergétique.' }}
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="b-card h-100" style="border-left: 4px solid #1e293b;">
+                        <h3 class="h5 fw-bold mb-3">{{ 'A. IT Equipment' if is_en else 'A. Équipements informatiques' }}</h3>
+                        <ul class="b-pole-card__list mb-0">
+                            <li>{{ 'Desktop computers & professional laptops' if is_en else 'Ordinateurs de bureau & ordinateurs portables' }}</li>
+                            <li>{{ 'Enterprise servers & storage solutions' if is_en else 'Serveurs & solutions de stockage' }}</li>
+                            <li>{{ 'Printers, scanners & office equipment' if is_en else 'Imprimantes, scanners & équipements professionnels' }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="b-card h-100" style="border-left: 4px solid #0284c7;">
+                        <h3 class="h5 fw-bold mb-3">{{ 'B. Networks & Telecommunications' if is_en else 'B. Réseaux et télécommunications' }}</h3>
+                        <ul class="b-pole-card__list mb-0">
+                            <li>{{ 'Routers, switches & enterprise Wi-Fi access points' if is_en else 'Routeurs, switches & points d\'accès Wi-Fi' }}</li>
+                            <li>{{ 'Structured cabling & corporate networks' if is_en else 'Câblage informatique & réseaux d\'entreprise' }}</li>
+                            <li>{{ 'IP telephony, multi-site interconnection & connectivity' if is_en else 'Téléphonie IP, interconnexion de sites & connectivité' }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="b-card h-100" style="border-left: 4px solid #059669;">
+                        <h3 class="h5 fw-bold mb-3">{{ 'C. Security & Surveillance' if is_en else 'C. Sécurité et surveillance' }}</h3>
+                        <ul class="b-pole-card__list mb-0">
+                            <li>{{ 'IP video surveillance & NVR recorders' if is_en else 'Vidéosurveillance, caméras IP & enregistreurs NVR' }}</li>
+                            <li>{{ 'Physical access control systems' if is_en else 'Contrôle d\'accès aux locaux' }}</li>
+                            <li>{{ 'Network security & IT protection solutions' if is_en else 'Sécurité des réseaux & protection informatique' }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="b-card h-100" style="border-left: 4px solid #d97706;">
+                        <h3 class="h5 fw-bold mb-3">{{ 'D. Energy & Backup Power' if is_en else 'D. Équipements énergétiques' }}</h3>
+                        <ul class="b-pole-card__list mb-0">
+                            <li>{{ 'UPS systems, batteries & backup generators' if is_en else 'Onduleurs, batteries & groupes électrogènes' }}</li>
+                            <li>{{ 'Solar installations & energy storage systems' if is_en else 'Installations solaires & stockage énergétique' }}</li>
+                            <li>{{ 'Business continuity power solutions' if is_en else 'Solutions d\'alimentation de secours' }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipment as a Service + Services Associés -->
+    <section class="b-section b-section--alt" id="eaas">
+        <div class="b-container b-container--wide">
+            <div class="b-strategic-box mb-5" style="border-left: 6px solid #d97706;">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-8">
+                        <span class="b-eyebrow" style="color: #d97706;">{{ 'Flexible Acquisition Model' if is_en else 'Formule Phare' }}</span>
+                        <h2 class="b-title mt-2">Equipment as a Service (EaaS)</h2>
+                        <p class="b-lead mb-3">
+                            {{ 'Access professional IT, network, security and energy equipment without bearing the immediate upfront acquisition cost.'
+                               if is_en else
+                               'Permettez à votre entreprise d\'accéder à des équipements professionnels sans supporter immédiatement le coût de leur acquisition.' }}
+                        </p>
+                        <p class="text-muted mb-0">
+                            {{ 'Choose between outright purchase or leasing with an integrated preventive and corrective maintenance contract.'
+                               if is_en else
+                               'Choisissez d\'acheter vos équipements ou de les louer avec un contrat de maintenance et d\'assistance technique inclus.' }}
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="{{ site_prefix }}/contact/?pole=equipment&need=Equipment%20as%20a%20Service%20(EaaS)" class="b-btn b-btn--lg b-btn--primary" style="background: #d97706; border-color: #d97706;">
+                            {{ 'Request EaaS quote' if is_en else 'Demander un devis EaaS' }} &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="b-section__head">
+                <span class="b-eyebrow" style="color: #d97706;">{{ 'Associated Services' if is_en else 'E. Services Associés' }}</span>
+                <h2 class="b-title">{{ 'Full lifecycle management' if is_en else 'Accompagnement complet du matériel' }}</h2>
+            </div>
+
+            <div class="row g-3">
+                {% set eq_services = [
+                    ('Vente d\'équipements', 'Equipment sales'),
+                    ('Location d\'équipements (EaaS)', 'Equipment leasing (EaaS)'),
+                    ('Installation sur site', 'On-site installation'),
+                    ('Configuration & mise en réseau', 'Configuration & networking'),
+                    ('Maintenance préventive', 'Preventive maintenance'),
+                    ('Maintenance corrective', 'Corrective maintenance'),
+                    ('Assistance technique', 'Technical support'),
+                    ('Gestion de parc informatique', 'IT fleet management')
+                ] %}
+                {% for fr_s, en_s in eq_services %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="b-activity-pill h-100">
+                        {{ m.byt3lab_icon('check-circle', 18) }}
+                        <span>{{ en_s if is_en else fr_s }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>

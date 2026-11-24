@@ -136,6 +136,7 @@ class Byt3labSolutionModel(Model):
     button_label_fr = Column(String(100), default="Découvrir")
     button_label_en = Column(String(100), default="Explore")
     button_url = Column(String(300), nullable=True)
+    image_url = Column(String(300), nullable=True)
     is_published = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
@@ -178,6 +179,7 @@ class Byt3labSolutionModel(Model):
             "button_label_fr": self.button_label_fr,
             "button_label_en": self.button_label_en,
             "button_url": self.button_url or "",
+            "image_url": self.image_url or "",
             "is_published": self.is_published,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,

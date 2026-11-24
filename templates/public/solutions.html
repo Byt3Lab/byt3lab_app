@@ -1,0 +1,205 @@
+{% import "public/byt3lab_macros.html" as m with context %}
+{% set is_en = (current_lang == 'en') %}
+
+<!-- Hero Solutions (Style Apple aligné 4 Pôles) -->
+<section class="b-hero b-hero--apple b-hero--subpage">
+    <div class="b-hero__pattern" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--1" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--2" aria-hidden="true"></div>
+
+    <div class="b-container b-container--wide b-hero__container">
+        <div style="max-width: 820px;">
+            <nav class="b-breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <span>Solutions</span>
+            </nav>
+
+            <div class="b-hero__eyebrow" data-reveal="hero">
+                <span class="b-hero__eyebrow-dot"></span>
+                <span>{{ 'Client-Centric Solutions · 4 Complementary Poles' if is_en else 'Solutions Orientées Besoins · 4 Pôles Complémentaires' }}</span>
+            </div>
+
+            <h1 class="b-hero__title" data-reveal="hero" data-reveal-delay="1">
+                {% if is_en %}
+                Concrete <span class="b-hero__title-accent">technological solutions</span> built around your business needs.
+                {% else %}
+                Des <span class="b-hero__title-accent">solutions concrètes</span> construites autour de vos besoins.
+                {% endif %}
+            </h1>
+
+            <p class="b-hero__subtitle" data-reveal="hero" data-reveal-delay="2">
+                {{ 'Start from your operational objective—digitalizing workflows, deploying MELODI ERP, hosting applications, equipping offices or building your brand—and discover how our poles mobilize together.'
+                   if is_en else
+                   'Partez de votre objectif opérationnel — digitaliser votre activité, déployer MELODI ERP, héberger vos applications, équiper vos bureaux ou renforcer votre image — et identifiez les pôles mobilisés.' }}
+            </p>
+
+            <div class="b-hero__actions" data-reveal="hero" data-reveal-delay="3">
+                <a href="#besoins" class="b-btn b-btn--lg b-btn--primary b-btn--hero-primary">
+                    <span>{{ 'Explore business needs' if is_en else 'Identifier votre besoin' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 17) }}
+                </a>
+                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--hero-ghost">
+                    <span>{{ 'Request a tailored quote' if is_en else 'Demander un devis sur mesure' }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 1. Matrice Besoins Clients Filtrable par Pôle -->
+<section class="b-section" id="besoins">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'By Business Objective' if is_en else 'Par Objectif Métier' }}</span>
+            <h2 class="b-title">{{ 'What challenge are you looking to solve?' if is_en else 'Quel défi souhaitez-vous relever ?' }}</h2>
+            <p class="b-lead">
+                {{ 'Filter by pole or browse our cross-functional scenarios to request a scoped proposal.'
+                   if is_en else
+                   'Filtrez par pôle ou parcourez nos scénarios transversaux pour obtenir une proposition adaptée.' }}
+            </p>
+        </div>
+
+        <div class="b-filter-bar justify-content-center mb-5" data-portfolio-filters data-reveal data-reveal-delay="1">
+            <button type="button" class="b-filter-btn is-active" data-filter="all">{{ 'All Needs' if is_en else 'Tous les besoins' }}</button>
+            <button type="button" class="b-filter-btn" data-filter="software">Byt3Lab Software</button>
+            <button type="button" class="b-filter-btn" data-filter="web-services">Web Services</button>
+            <button type="button" class="b-filter-btn" data-filter="equipment">Equipment &amp; EaaS</button>
+            <button type="button" class="b-filter-btn" data-filter="ngrafix">ngrafix</button>
+        </div>
+
+        <div class="row g-4" data-portfolio-grid>
+            {% set client_needs = [
+                ('Je souhaite informatiser mon entreprise', 'I want to computerize my business',
+                 'Audit de vos processus, déploiement d\'outils métier, postes de travail et réseau local clé en main.',
+                 'Workflow audit, business software deployment, workstations and turnkey local networking.',
+                 'Software · Equipment · Web Services', 'software', 'Informatisation complète', 'layers'),
+                ('Je souhaite mettre en place un ERP', 'I want to deploy an ERP',
+                 'Déploiement modulaire de MELODI ERP, ASSO (gestion commerciale) ou SUKU (gestion scolaire) adapté à votre secteur.',
+                 'Modular deployment of MELODI ERP, ASSO (commercial management) or SUKU (school management) tailored to your sector.',
+                 'Byt3Lab Software · Web Services', 'software', 'Mise en place MELODI ERP', 'code'),
+                ('Je souhaite héberger mes applications', 'I want to host my applications',
+                 'Hébergement applicatif sécurisé, serveurs VPS/dédiés, administration système, sauvegardes et infogérance continue.',
+                 'Secure application hosting, VPS/dedicated servers, system administration, automated backups and managed operations.',
+                 'Byt3Lab Web Services', 'web-services', 'Hébergement & Infogérance', 'cloud'),
+                ('Je souhaite équiper mes bureaux', 'I want to equip my offices',
+                 'Fourniture et installation complète de postes, serveurs et imprimantes à l\'achat ou en Equipment as a Service.',
+                 'Turnkey supply and setup of workstations, servers and printers via purchase or Equipment as a Service.',
+                 'Byt3Lab Equipment', 'equipment', 'Équipement complet de bureaux', 'server'),
+                ('Je souhaite installer un réseau informatique', 'I want to install an IT network',
+                 'Câblage structuré, routeurs, switches, Wi-Fi d\'entreprise, téléphonie IP et interconnexion multi-sites.',
+                 'Structured cabling, routers, switches, enterprise Wi-Fi, IP telephony and multi-site links.',
+                 'Byt3Lab Equipment', 'equipment', 'Installation réseau informatique', 'cpu'),
+                ('Je souhaite sécuriser mes locaux', 'I want to secure my premises',
+                 'Vidéosurveillance IP, enregistreurs NVR, contrôle d\'accès physique et sécurisation des réseaux.',
+                 'IP video surveillance, NVR recorders, physical access control and corporate network security.',
+                 'Byt3Lab Equipment', 'equipment', 'Sécurité & Vidéosurveillance', 'shield'),
+                ('Je souhaite mettre en place une solution énergétique', 'I want a backup energy solution',
+                 'Onduleurs, batteries, installations solaires hybrides et groupes électrogènes pour la continuité de service.',
+                 'UPS systems, batteries, hybrid solar installations and backup power for business continuity.',
+                 'Byt3Lab Equipment', 'equipment', 'Solution énergétique & Solaire', 'zap'),
+                ('Je souhaite développer mon identité visuelle', 'I want to build my visual identity',
+                 'Logo, charte graphique, design UI/UX d\'interfaces, communication digitale et supports imprimés avec ngrafix.',
+                 'Logo, brand guidelines, UI/UX interface design, digital communication and print production with ngrafix.',
+                 'ngrafix', 'ngrafix', 'Identité visuelle & Design', 'palette')
+            ] %}
+            {% for fr_q, en_q, fr_d, en_d, poles_lbl, pole_slug, need_q, icon_name in client_needs %}
+            <div class="col-md-6" data-portfolio-item="{{ pole_slug }}" data-reveal data-reveal-delay="{{ ((loop.index0 % 2) + 1) }}">
+                <div class="b-need-card {% if pole_slug == 'ngrafix' %}b-need-card--ngx{% endif %} h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="b-pole-card__icon" style="width: 42px; height: 42px; {% if pole_slug == 'ngrafix' %}background: rgba(247, 134, 30, 0.14); color: var(--c-ngx-orange-dark);{% endif %}">
+                            {{ m.byt3lab_icon(icon_name, 20) }}
+                        </span>
+                        <span class="b-need-card__poles mb-0" {% if pole_slug == 'ngrafix' %}style="color: var(--c-ngx-orange-dark);"{% endif %}>{{ poles_lbl }}</span>
+                    </div>
+                    <h3 class="h5 fw-semibold mb-2" style="color: var(--c-anthracite); letter-spacing: -0.02em;">« {{ en_q if is_en else fr_q }} »</h3>
+                    <p class="text-muted small mb-4" style="line-height: 1.65;">{{ en_d if is_en else fr_d }}</p>
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto gap-2 flex-wrap">
+                        <a href="{{ site_prefix }}/poles/{{ pole_slug }}/" class="small fw-semibold text-decoration-none" {% if pole_slug == 'ngrafix' %}style="color: var(--c-ngx-orange-dark);"{% endif %}>
+                            {{ 'Explore pole' if is_en else 'Voir le pôle' }} &rarr;
+                        </a>
+                        <a href="{{ site_prefix }}/contact/?pole={{ pole_slug }}&need={{ need_q|urlencode }}" class="b-btn b-btn--sm b-btn--primary">
+                            {{ 'Request a quote' if is_en else 'Demander un devis' }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 2. Plateformes & Modules Logiciels Phares -->
+{% if solutions %}
+<section class="b-section b-section--alt" id="plateformes">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--split" data-reveal>
+            <div>
+                <span class="b-eyebrow">{{ 'Software Platforms & Modules' if is_en else 'Plateformes & Modules' }}</span>
+                <h2 class="b-title">{{ 'Our flagship platforms and vertical modules' if is_en else 'Nos plateformes et modules métier phares' }}</h2>
+            </div>
+            <a href="{{ site_prefix }}/poles/software/" class="b-btn b-btn--secondary">
+                <span>{{ 'Explore Byt3Lab Software' if is_en else 'Pôle Byt3Lab Software' }}</span>
+                {{ m.byt3lab_icon('arrow-right', 16) }}
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for sol in solutions %}
+            <div class="col-md-6 col-lg-3" data-reveal data-reveal-delay="{{ ((loop.index0 % 4) + 1) }}">
+                <article class="b-card b-card--media h-100">
+                    <div class="b-card-media">
+                        {% if sol.image_url %}
+                        <img src="{{ sol.image_url }}" alt="{{ sol.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-card-media__fallback" style="{% if sol.image_url %}display: none;{% endif %} --accent: {{ sol.accent_color|default('#1D7FD8') }};">
+                            <span>{{ sol.title }}</span>
+                        </div>
+                    </div>
+                    <div class="b-card__meta">
+                        <span class="b-tag">{{ sol.badge }}</span>
+                        {{ m.byt3lab_status_badge(sol.status) }}
+                    </div>
+                    <h3 class="b-card__title">{{ sol.title }}</h3>
+                    <p class="b-card__desc">{{ sol.tagline }}</p>
+                    <div class="b-card__footer">
+                        <a href="{{ site_prefix }}/produits/{{ sol.slug }}/" class="b-card__link">
+                            {{ 'View details' if is_en else 'Découvrir' }} &rarr;
+                        </a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- 3. CTA Final -->
+<section class="b-section b-section--tight">
+    <div class="b-container b-container--wide">
+        <div class="b-cta-banner" data-reveal="scale">
+            <div class="b-cta-banner__content">
+                <span class="b-eyebrow" style="color: var(--c-cyan-400);">CREATE &middot; DEVELOP &middot; HOST &middot; EQUIP</span>
+                <h2 class="b-cta-banner__title">
+                    {{ 'Need a combined multi-pole solution?' if is_en else 'Besoin d\'un accompagnement global multi-pôles ?' }}
+                </h2>
+                <p class="b-cta-banner__desc">
+                    {{ 'Share your objectives and our engineers will design a clear, phased roadmap connecting software, hosting, equipment and design.'
+                       if is_en else
+                       'Partagez vos objectifs et nos équipes concevront une feuille de route claire et progressive combinant logiciel, hébergement, équipements et design.' }}
+                </p>
+            </div>
+            <div class="b-cta-banner__actions d-flex flex-wrap gap-3">
+                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--primary">
+                    <span>{{ 'Discuss your project' if is_en else 'Discutons de votre projet' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 18) }}
+                </a>
+                <a href="{{ site_prefix }}/realisations/" class="b-btn b-btn--lg b-btn--hero-ghost">
+                    <span>{{ 'View our portfolio' if is_en else 'Voir nos réalisations' }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

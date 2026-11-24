@@ -1,72 +1,256 @@
-{% extends "public/byt3lab_layout.html" %}
+{% import "public/byt3lab_macros.html" as m with context %}
+{% set is_en = (current_lang == 'en') %}
 
-{% block content %}
-<!-- Hero Header -->
-<section class="b-section b-section--navy" style="padding: calc(var(--space-2xl) * 1.2) 0 var(--space-xl);">
-    <div class="b-container">
-        <div style="margin-bottom: var(--space-md);">
-            <a href="{{ site_prefix }}/realisations" style="color: var(--color-cyan); font-family: var(--font-mono); font-size: var(--text-xs); text-decoration: none; display: inline-flex; align-items: center; gap: var(--space-xs);">
-                &larr; {{ t('project_back_link', 'Retour à l\'ensemble des réalisations') }}
-            </a>
-        </div>
+<!-- =================================================================
+     1. HERO ÉTUDE DE CAS (Style Apple aligné sur solution_detail)
+     ================================================================= -->
+<section class="b-hero b-hero--apple b-hero--subpage">
+    <div class="b-hero__pattern" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--1" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--2" aria-hidden="true"></div>
 
-        <div style="display: flex; gap: var(--space-xs); align-items: center; flex-wrap: wrap; margin-bottom: var(--space-xs);">
-            <span class="b-badge b-badge--dark">{{ project.domain|default('INGÉNIERIE')|upper }}</span>
-            {% if project.stack %}
-                {% for st in project.stack.split('/') %}
-                    {% if st|trim %}
-                        <span class="b-badge b-badge--light">{{ st|trim }}</span>
-                    {% endif %}
-                {% endfor %}
+    <div class="b-container b-container--wide b-hero__container">
+        <div style="max-width: 860px;">
+            <nav class="b-breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <a href="{{ site_prefix }}/realisations/">{{ 'Portfolio' if is_en else 'Réalisations' }}</a>
+                <span>/</span>
+                <span>{{ project.title|truncate(48) }}</span>
+            </nav>
+
+            <div class="b-hero__eyebrow" data-reveal="hero">
+                <span class="b-hero__eyebrow-dot"></span>
+                <span>{{ project.domain|default('BYT3LAB CASE STUDY') }}</span>
+            </div>
+
+            <h1 class="b-hero__title" data-reveal="hero" data-reveal-delay="1">
+                {{ project.title }}
+            </h1>
+
+            {% if project.summary or project.excerpt %}
+                <p class="b-hero__subtitle" data-reveal="hero" data-reveal-delay="2">
+                    {{ project.summary or project.excerpt }}
+                </p>
             {% endif %}
-        </div>
 
-        <h1 style="color: var(--color-white); font-size: clamp(2rem, 4vw, 3rem); margin: var(--space-xs) 0 0; letter-spacing: -0.02em;">
-            {{ project.title }}
-        </h1>
+            <div class="b-hero__actions" data-reveal="hero" data-reveal-delay="3">
+                <a href="{{ site_prefix }}/contact/?need={{ ('Projet similaire : ' ~ project.title)|urlencode }}" class="b-btn b-btn--lg b-btn--primary b-btn--hero-primary">
+                    <span>{{ 'Discuss a similar project' if is_en else 'Échanger sur un projet similaire' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 17) }}
+                </a>
+                {% if project.url %}
+                    <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--lg b-btn--hero-ghost">
+                        <span>{{ 'Visit live project' if is_en else 'Consulter la ressource' }} &nearr;</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- Main Article -->
-<section class="b-section b-section--light" style="padding: var(--space-2xl) 0;">
-    <div class="b-container">
-        <article class="b-card" style="background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: clamp(1.5rem, 4vw, 3rem); max-width: 900px; margin: 0 auto;">
-            {% if project.image_url %}
-                <div style="margin-bottom: var(--space-xl); border-radius: var(--radius-md); overflow: hidden; max-height: 440px; background: var(--color-slate-lightest);">
-                    <img src="{{ project.image_url }}" alt="{{ project.title }}" style="width: 100%; height: 100%; object-fit: cover;" />
+<!-- =================================================================
+     2. CORPS PRINCIPAL EN 2 COLONNES + FICHE TECHNIQUE STICKY
+     ================================================================= -->
+<section class="b-section">
+    <div class="b-container b-container--wide">
+        <div class="row g-4 align-items-start">
+
+            <!-- Colonne Gauche : Visuel, Étude de cas riche, Impact & Stack -->
+            <div class="col-lg-8">
+
+                <!-- Visuel principal du projet (si image_url renseignée) -->
+                {% if project.image_url %}
+                <div class="mb-4 rounded-4 overflow-hidden shadow-sm border" style="max-height: 460px; background: #0F172A;" data-reveal>
+                    <img src="{{ project.image_url }}" alt="{{ project.title }}" style="width: 100%; height: 100%; max-height: 460px; object-fit: cover; display: block;"
+                         onerror="this.parentElement.style.display='none';">
                 </div>
-            {% endif %}
-
-            <div style="font-size: var(--text-md); line-height: 1.8; color: var(--color-slate-dark); margin-bottom: var(--space-xl);">
-                {% if project.content %}
-                    {{ project.content|safe }}
-                {% elif project.excerpt %}
-                    <p>{{ project.excerpt }}</p>
                 {% endif %}
-            </div>
 
-            {% if project.impact %}
-                <div style="padding: var(--space-lg); background: var(--color-slate-lightest); border-left: 4px solid var(--color-blue); border-radius: var(--radius-sm); margin-bottom: var(--space-xl);">
-                    <strong style="color: var(--color-navy); display: block; margin-bottom: var(--space-xs); font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase;">
-                        ⚡ {{ t('project_impact_title', 'Impact Opérationnel Mesuré :') }}
-                    </strong>
-                    <p style="margin: 0; color: var(--color-slate-dark); font-size: var(--text-sm); line-height: 1.6;">
+                <!-- Contenu Détaillé / HTML personnalisé & Embeds Vidéo -->
+                <article class="b-pole-card mb-4" data-reveal>
+                    <div class="b-pole-card__top mb-3">
+                        <span class="b-eyebrow mb-0">{{ 'Case Study Overview' if is_en else 'Présentation du Projet' }}</span>
+                        <span class="b-tag">{{ project.domain|default('BYT3LAB') }}</span>
+                    </div>
+                    <div class="b-prose" style="font-size: 1rem; color: var(--c-gray-700); line-height: 1.8;">
+                        {% if project.content %}
+                            {{ project.content|safe }}
+                        {% elif project.description %}
+                            {{ project.description|safe }}
+                        {% elif project.summary or project.excerpt %}
+                            <p>{{ project.summary or project.excerpt }}</p>
+                        {% endif %}
+                    </div>
+                </article>
+
+                <!-- Impact Opérationnel Mesuré -->
+                {% if project.impact %}
+                <div class="b-pole-card mb-4" style="background: var(--c-gray-50); border-left: 4px solid var(--c-blue-500);" data-reveal data-reveal-delay="1">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="b-pole-card__icon" style="width: 42px; height: 42px;">
+                            {{ m.byt3lab_icon('zap', 20) }}
+                        </span>
+                        <div>
+                            <div class="b-step-card__num mb-0">{{ 'MEASURED IMPACT' if is_en else 'IMPACT OPÉRATIONNEL MESURÉ' }}</div>
+                            <h2 class="h5 fw-semibold mb-0" style="color: var(--c-anthracite);">
+                                {{ 'Tangible results delivered' if is_en else 'Résultats concrets obtenus' }}
+                            </h2>
+                        </div>
+                    </div>
+                    <p class="mb-0" style="font-size: 0.98rem; color: var(--c-gray-700); line-height: 1.7;">
                         {{ project.impact }}
                     </p>
                 </div>
-            {% endif %}
-
-            <div style="border-top: 1px solid var(--color-border); padding-top: var(--space-lg); display: flex; gap: var(--space-md); flex-wrap: wrap;">
-                {% if project.url %}
-                    <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--primary">
-                        {{ t('project_visit_resource', 'Consulter la ressource →') }}
-                    </a>
                 {% endif %}
-                <a href="{{ site_prefix }}/contact" class="b-btn b-btn--outline">
-                    {{ t('project_discuss_similar', 'Échanger sur un projet similaire') }}
-                </a>
+
+                <!-- Technologies & Architecture Déployées -->
+                {% if project.stack %}
+                <div class="b-pole-card" data-reveal data-reveal-delay="2">
+                    <div class="b-step-card__num mb-2">{{ 'ARCHITECTURE & TECHNOLOGIES' if is_en else 'ARCHITECTURE & TECHNOLOGIES' }}</div>
+                    <h2 class="h5 fw-semibold mb-3" style="color: var(--c-anthracite);">
+                        {{ 'Technical stack deployed on this project' if is_en else 'Socle technique mobilisé sur ce projet' }}
+                    </h2>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for st in project.stack.split('/') %}
+                            {% if st|trim %}
+                                <span class="b-activity-pill" style="padding: 8px 14px; font-size: 0.85rem;">
+                                    {{ m.byt3lab_icon('layers', 15) }}
+                                    <span>{{ st|trim }}</span>
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
             </div>
-        </article>
+
+            <!-- Colonne Droite : Fiche Technique Sticky -->
+            <div class="col-lg-4">
+                <aside style="position: sticky; top: 92px;" data-reveal data-reveal-delay="1">
+                    <div class="b-pole-card" style="border-top: 4px solid var(--c-blue-500);">
+                        <span class="b-pole-card__tag mb-2">{{ 'TECHNICAL SHEET' if is_en else 'FICHE PROJET' }}</span>
+                        <h3 class="h5 fw-semibold mb-3" style="color: var(--c-anthracite);">{{ project.title }}</h3>
+
+                        <div class="d-flex flex-column gap-3 py-3 border-top border-bottom mb-4" style="font-size: 0.88rem;">
+                            <div class="d-flex justify-content-between gap-2">
+                                <span class="text-muted">{{ 'Domain / Sector' if is_en else 'Domaine / Secteur' }}</span>
+                                <strong style="color: var(--c-anthracite); text-align: right;">{{ project.domain|default('Ingénierie') }}</strong>
+                            </div>
+                            {% if project.client_name %}
+                            <div class="d-flex justify-content-between gap-2">
+                                <span class="text-muted">{{ 'Client' if is_en else 'Client' }}</span>
+                                <strong style="color: var(--c-anthracite); text-align: right;">{{ project.client_name }}</strong>
+                            </div>
+                            {% endif %}
+                            {% if project.stack %}
+                            <div class="d-flex justify-content-between gap-2">
+                                <span class="text-muted">Stack</span>
+                                <strong style="color: var(--c-anthracite); text-align: right;">{{ project.stack|truncate(45) }}</strong>
+                            </div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between gap-2">
+                                <span class="text-muted">{{ 'Delivery' if is_en else 'Statut' }}</span>
+                                <span class="b-status b-status--active"><span class="b-status__dot"></span>{{ 'Delivered' if is_en else 'Déployé' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2">
+                            <a href="{{ site_prefix }}/contact/?need={{ ('Projet similaire : ' ~ project.title)|urlencode }}" class="b-btn b-btn--primary w-100">
+                                <span>{{ 'Request a similar project' if is_en else 'Demander un projet similaire' }}</span>
+                            </a>
+                            {% if project.url %}
+                                <a href="{{ project.url }}" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--secondary w-100">
+                                    <span>{{ 'Open live resource' if is_en else 'Ouvrir la ressource' }} &nearr;</span>
+                                </a>
+                            {% endif %}
+                            <a href="{{ site_prefix }}/realisations/" class="small text-center text-muted text-decoration-none mt-2">
+                                &larr; {{ 'Back to all case studies' if is_en else 'Retour à toutes les réalisations' }}
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+        </div>
     </div>
 </section>
-{% endblock %}
+
+<!-- =================================================================
+     3. AUTRES RÉALISATIONS DU PORTFOLIO
+     ================================================================= -->
+{% if related_projects and related_projects|length > 0 %}
+<section class="b-section b-section--alt">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--split" data-reveal>
+            <div>
+                <span class="b-eyebrow">{{ 'More Case Studies' if is_en else 'Autres Réalisations' }}</span>
+                <h2 class="b-title">{{ 'Continue exploring our portfolio' if is_en else 'Poursuivre la découverte du portfolio' }}</h2>
+            </div>
+            <a href="{{ site_prefix }}/realisations/" class="b-btn b-btn--secondary">
+                <span>{{ 'All projects' if is_en else 'Toutes les réalisations' }}</span>
+                {{ m.byt3lab_icon('arrow-right', 16) }}
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for prj in related_projects %}
+            <div class="col-md-6 col-lg-4" data-reveal data-reveal-delay="{{ loop.index }}">
+                <article class="b-card b-card--media h-100">
+                    <div class="b-card-media">
+                        {% if prj.image_url %}
+                        <img src="{{ prj.image_url }}" alt="{{ prj.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-card-media__fallback" style="{% if prj.image_url %}display: none;{% endif %}">
+                            <span>{{ prj.domain|default('BYT3LAB') }}</span>
+                        </div>
+                    </div>
+                    <div class="b-card__meta">
+                        <span class="b-tag">{{ prj.domain }}</span>
+                    </div>
+                    <h3 class="b-card__title h5">{{ prj.title }}</h3>
+                    <p class="b-card__desc">{{ prj.summary|truncate(135) }}</p>
+                    <div class="b-card__footer">
+                        <a href="{{ site_prefix }}/realisations/{{ prj.slug }}/" class="b-card__link">
+                            {{ 'View case study' if is_en else 'Voir l\'étude de cas' }} &rarr;
+                        </a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- =================================================================
+     4. BANNIÈRE CTA FINALE
+     ================================================================= -->
+<section class="b-section b-section--tight" id="contact-project">
+    <div class="b-container b-container--wide">
+        <div class="b-cta-banner" data-reveal="scale">
+            <div class="b-cta-banner__content">
+                <span class="b-eyebrow" style="color: var(--c-cyan-400);">CREATE &middot; DEVELOP &middot; HOST &middot; EQUIP</span>
+                <h2 class="b-cta-banner__title">
+                    {{ 'Have a similar project in mind?' if is_en else 'Vous avez un projet similaire en tête ?' }}
+                </h2>
+                <p class="b-cta-banner__desc">
+                    {{ 'Our engineers and designers support you from technical scoping to deployment, hosting and ongoing maintenance.'
+                       if is_en else
+                       'Nos ingénieurs et designers vous accompagnent du cadrage technique jusqu\'au déploiement, à l\'hébergement et à la maintenance continue.' }}
+                </p>
+            </div>
+            <div class="b-cta-banner__actions d-flex flex-wrap gap-3">
+                <a href="{{ site_prefix }}/contact/?need={{ ('Projet similaire : ' ~ project.title)|urlencode }}" class="b-btn b-btn--lg b-btn--primary">
+                    <span>{{ 'Discuss your project' if is_en else 'Discutons de votre projet' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 18) }}
+                </a>
+                <a href="{{ site_prefix }}/solutions/" class="b-btn b-btn--lg b-btn--hero-ghost">
+                    <span>{{ 'Explore solutions' if is_en else 'Voir nos solutions' }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

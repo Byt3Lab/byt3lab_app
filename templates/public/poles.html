@@ -1,0 +1,124 @@
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% set is_en = (current_lang == 'en') %}
+
+<section class="b-page-hero">
+    <div class="b-container b-container--wide">
+        <div class="b-breadcrumb">
+            <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+            <span>/</span>
+            <span>{{ 'Our 4 Poles' if is_en else 'Nos Pôles' }}</span>
+        </div>
+        <span class="b-eyebrow" style="color: var(--c-cyan-400);">CREATE &middot; DEVELOP &middot; HOST &middot; EQUIP</span>
+        <h1 class="b-page-hero__title">
+            {{ 'Four complementary poles to build your technology ecosystem' if is_en else 'Quatre pôles complémentaires au service de votre transformation' }}
+        </h1>
+        <p class="b-page-hero__lead">
+            {{ 'Byt3Lab brings together creative design, software engineering, cloud operations and physical IT & energy equipment under one coherent partnership.'
+               if is_en else
+               'Byt3Lab réunit sous une même gouvernance la création de marque, le génie logiciel, l\'hébergement managé et l\'équipement informatique et énergétique.' }}
+        </p>
+    </div>
+</section>
+
+<section class="b-section">
+    <div class="b-container b-container--wide">
+        <div class="row g-4">
+            <!-- 1. Software -->
+            <div class="col-md-6">
+                <div class="b-pole-card h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('code', 26) }}</span>
+                        <span class="b-pole-card__tag">DEVELOP</span>
+                    </div>
+                    <h2 class="b-pole-card__title">1. Byt3Lab Software</h2>
+                    <p class="b-pole-card__desc">
+                        {{ 'Software Development & Business Solutions. Design and deployment of MELODI ERP, vertical business applications, APIs and automation.'
+                           if is_en else
+                           'Software Development & Business Solutions. Conception de logiciels métier, plateforme modulaire MELODI ERP, API et automatisation.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>MELODI ERP (ASSO, SUKU)</li>
+                        <li>{{ 'Custom web, mobile & API engineering' if is_en else 'Applications web, mobiles & API sur mesure' }}</li>
+                        <li>{{ 'Workflow automation & integration' if is_en else 'Automatisation & intégration de systèmes' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/software/" class="b-pole-card__link">
+                        {{ 'Open Byt3Lab Software' if is_en else 'Explorer Byt3Lab Software' }} &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- 2. Web Services -->
+            <div class="col-md-6">
+                <div class="b-pole-card h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('cloud', 26) }}</span>
+                        <span class="b-pole-card__tag">HOST</span>
+                    </div>
+                    <h2 class="b-pole-card__title">2. Byt3Lab Web Services</h2>
+                    <p class="b-pole-card__desc">
+                        {{ 'Cloud, Hosting & Managed Digital Services. Hosting, server management, backups, deployment and ongoing system administration.'
+                           if is_en else
+                           'Cloud, Hosting & Managed Digital Services. Hébergement web/applicatif, gestion de serveurs, sauvegardes et infogérance.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'Managed application hosting & deployment' if is_en else 'Hébergement applicatif & déploiement continu' }}</li>
+                        <li>{{ 'VPS, dedicated servers & system administration' if is_en else 'Serveurs VPS, dédiés & administration système' }}</li>
+                        <li>{{ 'Monitoring, backup & security maintenance' if is_en else 'Sauvegarde, supervision & infogérance' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/web-services/" class="b-pole-card__link">
+                        {{ 'Open Web Services' if is_en else 'Explorer Web Services' }} &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Equipment -->
+            <div class="col-md-6">
+                <div class="b-pole-card h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('server', 26) }}</span>
+                        <span class="b-pole-card__tag">EQUIP</span>
+                    </div>
+                    <h2 class="b-pole-card__title">3. Byt3Lab Equipment</h2>
+                    <p class="b-pole-card__desc">
+                        {{ 'IT Equipment, Energy & Infrastructure Solutions. Complete hardware, enterprise networks, IP security, backup power and Equipment as a Service.'
+                           if is_en else
+                           'IT Equipment, Energy & Infrastructure Solutions. Équipements informatiques, réseaux, vidéosurveillance, énergie et Equipment as a Service.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'IT hardware, networking & Wi-Fi infrastructure' if is_en else 'Informatique, serveurs, réseaux & télécoms' }}</li>
+                        <li>{{ 'CCTV, NVR & access control security' if is_en else 'Vidéosurveillance IP, NVR & contrôle d\'accès' }}</li>
+                        <li>{{ 'Solar backup energy & Equipment as a Service (EaaS)' if is_en else 'Énergie solaire de secours & Equipment as a Service' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/equipment/" class="b-pole-card__link">
+                        {{ 'Open Byt3Lab Equipment' if is_en else 'Explorer Byt3Lab Equipment' }} &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4. ngrafix -->
+            <div class="col-md-6">
+                <div class="b-pole-card b-pole-card--ngx h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('palette', 26) }}</span>
+                        <span class="b-pole-card__tag">CREATE</span>
+                    </div>
+                    <h2 class="b-pole-card__title">4. ngrafix</h2>
+                    <p class="b-pole-card__desc">
+                        {{ 'Creative Design & Digital Communication. Distinct creative brand for visual identity, UI/UX design, digital campaigns and print production.'
+                           if is_en else
+                           'Creative Design & Digital Communication. Marque créative dédiée au branding, au design UI/UX, à la communication digitale et au print.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'Logos, brand guidelines & corporate assets' if is_en else 'Logos, charte graphique & supports institutionnels' }}</li>
+                        <li>{{ 'UI/UX design for apps, websites & dashboards' if is_en else 'UI/UX Design d\'applications, sites & dashboards' }}</li>
+                        <li>{{ 'Digital communication & graphic production' if is_en else 'Communication digitale & production graphique' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/ngrafix/" class="b-pole-card__link">
+                        {{ 'Open ngrafix' if is_en else 'Explorer ngrafix' }} &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

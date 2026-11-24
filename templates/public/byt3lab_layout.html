@@ -29,22 +29,29 @@
     <script type="application/ld+json">{{ json_ld|safe }}</script>
     {% endif %}
     
+    <!-- Typographie épurée style Apple (SF Pro / Inter + JetBrains Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
     <!-- Bootstrap 5 Grid & Utilities -->
     <link rel="stylesheet" href="{{ _url('static', {'module': 'base', 'path': ['libs', 'bootstrap-5', 'css', 'bootstrap.min.css']}) }}">
     <!-- Design System BYT3LAB Stylesheet (Compilée depuis SCSS) -->
     <link rel="stylesheet" href="{{ _url('static', {'module': 'byt3lab_app', 'path': ['css', 'byt3lab.css']}) }}">
+    <!-- MELODI_HEAD_STYLES -->
 </head>
 <body class="{% if is_ngrafix %}b-ngrafix-page{% endif %}">
 
-    {% include "public/byt3lab_header.html" %}
+    <!-- byt3lab:header -->
 
     <main id="primary-content" class="site-main">
-        {% block content %}{% endblock %}
+        <!-- byt3lab:content -->
     </main>
 
-    {% include "public/byt3lab_footer.html" %}
+    <!-- byt3lab:footer -->
 
     <!-- Script interactif BYT3LAB (Compilé depuis TypeScript) -->
     <script type="module" src="{{ _url('static', {'module': 'byt3lab_app', 'path': ['js', 'site.js']}) }}"></script>
+    <!-- MELODI_BODY_SCRIPTS -->
 </body>
 </html>

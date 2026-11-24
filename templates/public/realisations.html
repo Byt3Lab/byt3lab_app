@@ -1,126 +1,185 @@
-{% extends "public/byt3lab_layout.html" %}
+{% import "public/byt3lab_macros.html" as m with context %}
+{% set is_en = (current_lang == 'en') %}
 
-{% block content %}
-<div class="component-realisations-body">
-    <!-- Hero Header -->
-    <section class="b-section b-section--navy">
-        <div class="b-container">
-            <span class="b-badge b-badge--dark">PROJETS &amp; DÉPLOIEMENTS</span>
-            <h1 class="b-section__title" style="margin-top: var(--space-xs);">
-                L'ingénierie éprouvée sur le terrain.
+<!-- Hero Réalisations (Style Apple aligné 4 Pôles) -->
+<section class="b-hero b-hero--apple b-hero--subpage">
+    <div class="b-hero__pattern" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--1" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--2" aria-hidden="true"></div>
+
+    <div class="b-container b-container--wide b-hero__container">
+        <div style="max-width: 820px;">
+            <nav class="b-breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <span>{{ 'Portfolio' if is_en else 'Réalisations' }}</span>
+            </nav>
+
+            <div class="b-hero__eyebrow" data-reveal="hero">
+                <span class="b-hero__eyebrow-dot"></span>
+                <span>{{ 'Delivered Projects · Case Studies & Creative Work' if is_en else 'Portfolio Centralisé · Déploiements & Créations' }}</span>
+            </div>
+
+            <h1 class="b-hero__title" data-reveal="hero" data-reveal-delay="1">
+                {% if is_en %}
+                Real <span class="b-hero__title-accent">projects delivered</span> across Byt3Lab and ngrafix.
+                {% else %}
+                Des <span class="b-hero__title-accent">réalisations concrètes</span> signées Byt3Lab et ngrafix.
+                {% endif %}
             </h1>
-            <p class="b-section__subtitle">
-                Études de cas, intégrations de plateformes métiers et architectures cloud déployées au service des organisations et entreprises partenaires.
+
+            <p class="b-hero__subtitle" data-reveal="hero" data-reveal-delay="2">
+                {{ 'Explore our software deployments, cloud & infrastructure architectures, turnkey IT installations and creative brand productions across our four poles.'
+                   if is_en else
+                   'Explorez nos déploiements logiciels, architectures cloud & infrastructure, installations matérielles clé en main et productions créatives à travers nos quatre pôles.' }}
             </p>
+
+            <div class="b-hero__actions" data-reveal="hero" data-reveal-delay="3">
+                <a href="#portfolio" class="b-btn b-btn--lg b-btn--primary b-btn--hero-primary">
+                    <span>{{ 'Browse case studies' if is_en else 'Parcourir le portfolio' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 17) }}
+                </a>
+                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--hero-ghost">
+                    <span>{{ 'Start your project' if is_en else 'Lancer votre projet' }}</span>
+                </a>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Projects Grid or Institutional Empty State -->
-    <section class="b-section b-section--light">
-        <div class="b-container">
-            {% if projects and projects|length > 0 %}
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-xl);">
-                    {% for p in projects %}
-                        <article class="b-card" style="background: #ffffff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column;">
-                            {% if p.image_url %}
-                                <div style="height: 220px; overflow: hidden; background: var(--color-slate-lightest);">
-                                    <img src="{{ p.image_url }}" alt="{{ p.title }}" style="width: 100%; height: 100%; object-fit: cover;" />
-                                </div>
-                            {% endif %}
-
-                            <div style="padding: var(--space-xl); flex-grow: 1; display: flex; flex-direction: column;">
-                                <div style="display: flex; gap: var(--space-xs); flex-wrap: wrap; margin-bottom: var(--space-xs);">
-                                    <span class="b-badge b-badge--dark">{{ p.domain|default('INGÉNIERIE')|upper }}</span>
-                                    {% if p.stack %}
-                                        {% for tech in p.stack.split('/') %}
-                                            {% if tech|trim %}
-                                                <span class="b-badge b-badge--light">{{ tech|trim }}</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                </div>
-
-                                <h3 style="font-size: var(--text-xl); color: var(--color-navy); margin: var(--space-xs) 0 var(--space-sm);">
-                                    <a href="{{ site_prefix }}/realisations/{{ p.slug }}" style="color: var(--color-navy); text-decoration: none;">
-                                        {{ p.title }}
-                                    </a>
-                                </h3>
-
-                                <div style="font-size: var(--text-sm); line-height: 1.6; color: var(--color-slate-medium); margin-bottom: var(--space-md); flex-grow: 1;">
-                                    {{ p.excerpt }}
-                                </div>
-
-                                {% if p.impact %}
-                                    <div style="padding: var(--space-sm); background: var(--color-slate-lightest); border-left: 3px solid var(--color-cyan); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--color-slate-dark); margin-bottom: var(--space-md);">
-                                        <strong>Impact :</strong> {{ p.impact }}
-                                    </div>
-                                {% endif %}
-
-                                <a href="{{ site_prefix }}/realisations/{{ p.slug }}" class="b-btn b-btn--outline" style="align-self: flex-start;">
-                                    Détails du projet &rarr;
-                                </a>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="b-empty-state" style="max-width: 820px; margin: 0 auto; background: #ffffff; padding: clamp(2.5rem, 5vw, 4rem); border: 1px solid var(--color-border); border-radius: var(--radius-lg);">
-                    <div class="b-empty-state__icon">📁</div>
-                    <span class="b-badge b-badge--dark" style="margin-bottom: var(--space-xs);">GOUVERNANCE &amp; TRANSPARENCE</span>
-                    <h2 class="b-empty-state__title" style="color: var(--color-navy); font-size: clamp(1.75rem, 3vw, 2.25rem); margin: var(--space-xs) 0 var(--space-sm);">
-                        Études de cas &amp; Déploiements en cours de documentation
-                    </h2>
-                    <p class="b-empty-state__text" style="color: var(--color-slate-medium); font-size: var(--text-md); line-height: 1.7; margin-bottom: var(--space-xl);">
-                        Dans le cadre de la nouvelle gouvernance du groupe BYT3LAB et du repositionnement autour de nos 5 divisions technologiques, nos retours d'expérience et synthèses d'ingénierie font l'objet d'un processus de validation technique et de conformité avant publication publique.
-                        <br><br>
-                        Pour toute demande de références qualifiées ou d'échanges d'architecture approfondis dans le cadre d'un appel d'offres ou d'un projet d'entreprise, nos directions de divisions sont à votre disposition.
-                    </p>
-
-                    <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
-                        <a href="{{ site_prefix }}/contact" class="b-btn b-btn--primary">
-                            Solliciter un échange technique &rarr;
-                        </a>
-                        <a href="{{ site_prefix }}/technologies" class="b-btn b-btn--outline">
-                            Explorer les 5 divisions technologiques
-                        </a>
-                        <a href="{{ site_prefix }}/partenaires" class="b-btn b-btn--outline">
-                            Espace Partenaires
-                        </a>
-                    </div>
-                </div>
-            {% endif %}
+<!-- 1. Grille Portfolio Filtrable par Domaine -->
+<section class="b-section" id="portfolio">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'By Domain' if is_en else 'Par Domaine d\'Expertise' }}</span>
+            <h2 class="b-title">{{ 'Filter our projects by pole' if is_en else 'Filtrez nos réalisations par pôle' }}</h2>
         </div>
-    </section>
 
-    <!-- Engagements CTA -->
-    <section class="b-section b-section--dark">
-        <div class="b-container">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-xl); align-items: center;">
-                <div>
-                    <span class="b-badge b-badge--dark">APPROCHE MÉTHODOLOGIQUE</span>
-                    <h2 style="color: var(--color-white); font-size: var(--text-2xl); margin: var(--space-xs) 0 var(--space-sm);">
-                        Chaque déploiement suit des normes d'ingénierie strictes
-                    </h2>
-                    <p style="color: var(--color-slate-light); font-size: var(--text-sm); line-height: 1.7; margin: 0;">
-                        De la phase de cadrage des besoins à l'exploitation en production, BYT3LAB applique des principes rigoureux : modularité, sécurité by-design, documentation exhaustive et transfert de compétences aux équipes locales.
-                    </p>
+        <!-- Filtres par pôle -->
+        <div class="b-filter-bar justify-content-center mb-5" data-portfolio-filters data-reveal data-reveal-delay="1">
+            <button type="button" class="b-filter-btn {% if not active_pole or active_pole == 'all' %}is-active{% endif %}" data-filter="all">{{ 'All' if is_en else 'Tous' }}</button>
+            <button type="button" class="b-filter-btn {% if active_pole == 'software' %}is-active{% endif %}" data-filter="software">Software</button>
+            <button type="button" class="b-filter-btn {% if active_pole == 'cloud' %}is-active{% endif %}" data-filter="cloud">Cloud &amp; Hosting</button>
+            <button type="button" class="b-filter-btn {% if active_pole == 'equipment' %}is-active{% endif %}" data-filter="equipment">Equipment</button>
+            <button type="button" class="b-filter-btn {% if active_pole == 'design' %}is-active{% endif %}" data-filter="design">Design &amp; Communication</button>
+        </div>
+
+        <div class="row g-4" data-portfolio-grid>
+            {% for prj in projects %}
+            {% set d_low = (prj.domain ~ ' ' ~ prj.title)|lower %}
+            {% set cat_key = 'cloud' if ('cloud' in d_low or 'infra' in d_low or 'bws' in d_low) else ('equipment' if ('equip' in d_low or 'réseau' in d_low or 'solaire' in d_low) else 'software') %}
+            <div class="col-md-6 col-lg-4" data-portfolio-item="{{ cat_key }}" data-reveal data-reveal-delay="{{ ((loop.index0 % 3) + 1) }}">
+                <article class="b-card b-card--media h-100">
+                    <div class="b-card-media">
+                        {% if prj.image_url %}
+                        <img src="{{ prj.image_url }}" alt="{{ prj.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-card-media__fallback" style="{% if prj.image_url %}display: none;{% endif %}">
+                            <span>{{ prj.domain|default('BYT3LAB') }}</span>
+                        </div>
+                    </div>
+                    <div class="b-card__meta">
+                        <span class="b-tag">{{ prj.domain }}</span>
+                    </div>
+                    <h3 class="b-card__title h5">{{ prj.title }}</h3>
+                    <p class="b-card__desc">{{ prj.summary|truncate(150) }}</p>
+                    <div class="b-card__footer">
+                        <a href="{{ site_prefix }}/realisations/{{ prj.slug }}/" class="b-card__link">
+                            {{ 'View case study' if is_en else 'Étude de cas complète' }} &rarr;
+                        </a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+
+            {% for ngx in ngrafix_items %}
+            <div class="col-md-6 col-lg-4" data-portfolio-item="design" data-reveal data-reveal-delay="{{ ((loop.index0 % 3) + 1) }}">
+                <article class="b-card b-card--media b-card--ngx-accent h-100">
+                    <div class="b-card-media">
+                        {% if ngx.image_url %}
+                        <img src="{{ ngx.image_url }}" alt="{{ ngx.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-card-media__fallback" style="{% if ngx.image_url %}display: none;{% endif %} --accent: #F7861E;">
+                            <span>ngrafix</span>
+                        </div>
+                    </div>
+                    <div class="b-card__meta">
+                        <span class="b-tag" style="background: rgba(247, 134, 30, 0.14); color: var(--c-ngx-orange-dark);">ngrafix &middot; {{ ngx.discipline|default('Design') }}</span>
+                    </div>
+                    <h3 class="b-card__title h5">{{ ngx.title }}</h3>
+                    <p class="b-card__desc">{{ ngx.description|default('')|truncate(150) }}</p>
+                    <div class="b-card__footer">
+                        <a href="{{ site_prefix }}/poles/ngrafix/" class="b-card__link" style="color: var(--c-ngx-orange-dark);">
+                            {{ 'Explore ngrafix' if is_en else 'Découvrir ngrafix' }} &rarr;
+                        </a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 2. Méthodologie de Livraison -->
+<section class="b-section b-section--alt">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'Delivery Method' if is_en else 'Notre Méthode de Livraison' }}</span>
+            <h2 class="b-title">{{ 'Structured execution from audit to operations' if is_en else 'Une exécution structurée, de l\'audit jusqu\'à l\'exploitation' }}</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-reveal data-reveal-delay="1">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">01 &middot; {{ 'DISCOVERY' if is_en else 'CADRAGE' }}</div>
+                    <h4>{{ 'Audit & Technical Scoping' if is_en else 'Audit & Cadrage Technique' }}</h4>
+                    <p>{{ 'Clear analysis of your business flows, existing infrastructure, power constraints and visual identity objectives.' if is_en else 'Analyse précise de vos flux métier, de votre infrastructure existante, de vos contraintes énergétiques et de vos objectifs d\'image.' }}</p>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
-                    <div style="display: flex; align-items: center; gap: var(--space-sm); color: var(--color-white); font-size: var(--text-sm);">
-                        <span style="color: var(--color-cyan); font-weight: bold;">01</span>
-                        <span>Cadrage fonctionnel, architectural &amp; cartographie des flux</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-sm); color: var(--color-white); font-size: var(--text-sm);">
-                        <span style="color: var(--color-cyan); font-weight: bold;">02</span>
-                        <span>Développement itératif, CI/CD et revues de conformité</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: var(--space-sm); color: var(--color-white); font-size: var(--text-sm);">
-                        <span style="color: var(--color-cyan); font-weight: bold;">03</span>
-                        <span>Déploiement managé, monitoring continu &amp; support réactif</span>
-                    </div>
+            </div>
+            <div class="col-md-4" data-reveal data-reveal-delay="2">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">02 &middot; {{ 'DELIVERY' if is_en else 'DÉPLOIEMENT' }}</div>
+                    <h4>{{ 'Integrated Build & Deployment' if is_en else 'Conception & Déploiement Intégré' }}</h4>
+                    <p>{{ 'Coordinated execution across software (MELODI, ASSO, SUKU), managed hosting, on-site IT equipment and UI/UX design.' if is_en else 'Exécution coordonnée entre logiciel (MELODI, ASSO, SUKU), hébergement managé, équipement sur site et design UI/UX.' }}</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-reveal data-reveal-delay="3">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">03 &middot; {{ 'CONTINUITY' if is_en else 'CONTINUITÉ' }}</div>
+                    <h4>{{ 'Training, Maintenance & Evolution' if is_en else 'Formation, Maintenance & Évolution' }}</h4>
+                    <p>{{ 'User onboarding, preventive maintenance, managed operations and phased evolution as your organization grows.' if is_en else 'Formation des équipes, maintenance préventive, infogérance et évolution progressive au rythme de votre croissance.' }}</p>
                 </div>
             </div>
         </div>
-    </section>
-</div>
-{% endblock %}
+    </div>
+</section>
+
+<!-- 3. CTA Final -->
+<section class="b-section b-section--tight">
+    <div class="b-container b-container--wide">
+        <div class="b-cta-banner" data-reveal="scale">
+            <div class="b-cta-banner__content">
+                <span class="b-eyebrow" style="color: var(--c-cyan-400);">{{ 'YOUR NEXT PROJECT' if is_en else 'VOTRE PROCHAIN PROJET' }}</span>
+                <h2 class="b-cta-banner__title">
+                    {{ 'Let\'s build your next success story.' if is_en else 'Construisons ensemble votre prochaine réalisation.' }}
+                </h2>
+                <p class="b-cta-banner__desc">
+                    {{ 'Tell us about your project—software, cloud hosting, IT & energy equipment or brand design—and let\'s plan the best approach.'
+                       if is_en else
+                       'Présentez-nous votre besoin — logiciel, hébergement, équipement IT & énergie ou identité de marque — et définissons ensemble la meilleure approche.' }}
+                </p>
+            </div>
+            <div class="b-cta-banner__actions d-flex flex-wrap gap-3">
+                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--primary">
+                    <span>{{ 'Discuss your project' if is_en else 'Parlons de votre projet' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 18) }}
+                </a>
+                <a href="{{ site_prefix }}/solutions/" class="b-btn b-btn--lg b-btn--hero-ghost">
+                    <span>{{ 'Explore solutions' if is_en else 'Explorer nos solutions' }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

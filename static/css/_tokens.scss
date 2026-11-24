@@ -103,29 +103,29 @@
     --c-cyan-400: #4FD3F5;   /* Accent cyberexcellence issu du logo */
     --c-green-accent: #3FEA3F;/* Accent vert issu du logo */
 
-    /* Neutres & Surfaces */
+    /* Neutres & Surfaces (Esthétique épurée style Apple) */
     --c-white: #FFFFFF;
-    --c-gray-25: #FCFDFE;
-    --c-gray-50: #F8FAFC;
-    --c-gray-100: #F1F5F9;
-    --c-gray-200: #E2E8F0;
+    --c-gray-25: #FBFBFD;
+    --c-gray-50: #F5F5F7;
+    --c-gray-100: #EEF1F5;
+    --c-gray-200: #E2E6EC;
     --c-gray-300: #CBD5E1;
-    --c-gray-400: #94A3B8;
-    --c-gray-500: #64748B;
-    --c-gray-600: #475569;
+    --c-gray-400: #86868B;
+    --c-gray-500: #6E6E73;
+    --c-gray-600: #4B5563;
     --c-gray-700: #334155;
-    --c-anthracite: #0F172A; /* Texte principal */
+    --c-anthracite: #1D1D1F; /* Texte principal haute lisibilité */
 
     /* Light Theme Global Aliases (style.css compatibility) */
     --bg-main: #ffffff;
-    --bg-alt: #f8fafc;
+    --bg-alt: #f5f5f7;
     --bg-card: #ffffff;
-    --text-heading: #0f172a;
-    --text-body: #334155;
-    --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    --primary-blue: #0284c7;
-    --primary-blue-hover: #0369a1;
+    --text-heading: #1d1d1f;
+    --text-body: #3a3a3c;
+    --text-muted: #6e6e73;
+    --border-color: rgba(15, 23, 42, 0.08);
+    --primary-blue: #1D7FD8;
+    --primary-blue-hover: #1565C0;
 
     /* Statuts de maturité réelle */
     --c-status-active-bg: rgba(30, 158, 106, 0.12);
@@ -146,34 +146,36 @@
     --c-ngx-orange: #F7861E;
     --c-ngx-orange-dark: #D96A0A;
 
-    /* Typographies */
-    --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    /* Typographies épurées & élégantes (SF Pro / Apple System + Inter) */
+    --font-heading: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --bs-body-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-tech: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
 
     /* Échelle typographique fluide */
-    --fs-display: clamp(2.4rem, 5vw + 1rem, 4rem);
+    --fs-display: clamp(2.45rem, 4.6vw + 0.8rem, 4.1rem);
     --fs-h1: clamp(2rem, 3.5vw + 0.5rem, 3.25rem);
-    --fs-h2: clamp(1.6rem, 2.5vw + 0.3rem, 2.35rem);
-    --fs-h3: clamp(1.25rem, 1.5vw + 0.2rem, 1.7rem);
-    --fs-h4: 1.25rem;
+    --fs-h2: clamp(1.7rem, 2.6vw + 0.35rem, 2.6rem);
+    --fs-h3: clamp(1.25rem, 1.5vw + 0.2rem, 1.65rem);
+    --fs-h4: 1.2rem;
     --fs-body-lg: 1.125rem;
     --fs-body: 1rem;
     --fs-body-sm: 0.875rem;
     --fs-xs: 0.75rem;
 
     /* Espacements de sections */
-    --section-gap: clamp(4rem, 7vw, 7rem);
+    --section-gap: clamp(4.75rem, 7.5vw, 7.5rem);
     --container-max: 1240px;
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 26px;
 
     /* Ombres subtiles & élévation */
-    --shadow-subtle: 0 1px 3px rgba(15, 23, 42, 0.05);
-    --shadow-card: 0 4px 14px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --shadow-hover: 0 16px 32px -4px rgba(0, 42, 78, 0.12), 0 4px 12px -2px rgba(0, 42, 78, 0.06);
+    --shadow-subtle: 0 2px 10px rgba(15, 23, 42, 0.035);
+    --shadow-card: 0 4px 20px -4px rgba(15, 23, 42, 0.055), 0 1px 4px rgba(15, 23, 42, 0.03);
+    --shadow-hover: 0 22px 44px -12px rgba(0, 23, 43, 0.12), 0 4px 12px -2px rgba(0, 23, 43, 0.05);
 
     /* Transitions */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);

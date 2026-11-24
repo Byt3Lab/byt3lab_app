@@ -1,0 +1,153 @@
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% set is_en = (current_lang == 'en') %}
+
+<div class="b-pole-theme b-pole-theme--software">
+    <!-- Hero Software : Engineering & Blueprint Dark Cobalt -->
+    <section class="b-pole-hero b-pole-hero--software">
+        <div class="b-container b-container--wide">
+            <div class="b-breadcrumb b-breadcrumb--light">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <a href="{{ site_prefix }}/poles/">{{ 'Our Poles' if is_en else 'Nos Pôles' }}</a>
+                <span>/</span>
+                <span>Byt3Lab Software</span>
+            </div>
+
+            <div class="row align-items-center g-5 mt-1">
+                <div class="col-lg-7">
+                    <span class="b-pole-badge b-pole-badge--software">DEVELOP &middot; SOFTWARE ENGINEERING</span>
+                    <h1 class="b-pole-hero__title mt-3">Byt3Lab Software</h1>
+                    <p class="b-pole-hero__lead">
+                        {{ 'Designing and deploying business software solutions that enable organizations to manage, automate and optimize their daily operations.'
+                           if is_en else
+                           'Concevoir et commercialiser des solutions logicielles permettant aux entreprises de gérer, automatiser et optimiser leurs activités.' }}
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="{{ site_prefix }}/contact/?pole=software" class="b-btn b-btn--lg b-btn--primary">
+                            {{ 'Request a software quote' if is_en else 'Demander un devis logiciel' }} &rarr;
+                        </a>
+                        <a href="https://melodi.byt3lab.com" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--lg b-btn--ghost">
+                            {{ 'Visit MELODI ERP' if is_en else 'Découvrir MELODI ERP' }} &nearr;
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="b-sw-terminal">
+                        <div class="b-sw-terminal__bar">
+                            <span></span><span></span><span></span>
+                            <code>melodi-core.byt3lab.com</code>
+                        </div>
+                        <div class="b-sw-terminal__body">
+                            <div class="b-sw-terminal__line"><span class="t-kw">platform</span>: <strong>MELODI ERP</strong></div>
+                            <div class="b-sw-terminal__line"><span class="t-kw">architecture</span>: Modular / API-First / Async</div>
+                            <div class="b-sw-terminal__line"><span class="t-kw">verticals</span>: ASSO, SUKU</div>
+                            <div class="b-sw-terminal__line"><span class="t-kw">compliance</span>: SYSCOHADA &middot; RBAC &middot; Multi-Tenant</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Produit Stratégique : MELODI ERP -->
+    <section class="b-section" id="melodi-erp">
+        <div class="b-container b-container--wide">
+            <div class="b-strategic-box">
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-7">
+                        <span class="b-eyebrow">{{ 'Strategic Product' if is_en else 'Produit Stratégique' }}</span>
+                        <h2 class="b-title mt-2">MELODI ERP</h2>
+                        <p class="b-lead mb-4">
+                            {{ 'A modular ERP platform built to support the management, governance and progressive digitalization of African organizations.'
+                               if is_en else
+                               'Une plateforme ERP modulaire conçue pour accompagner la gestion, la gouvernance et la digitalisation progressive des organisations.' }}
+                        </p>
+                        <div class="row g-3 mb-4">
+                            {% set melodi_pillars = [
+                                ('Architecture modulaire', 'Modular architecture', 'Activez uniquement les briques métier dont vous avez besoin, sans lourdeur monolithique.', 'Activate only the business modules you need, without monolithic bloat.'),
+                                ('Adaptation sectorielle', 'Sector adaptability', 'Conçue pour s\'adapter aux réalités du commerce, de l\'éducation, des services et de l\'industrie.', 'Built to adapt to retail, education, services and industrial workflows.'),
+                                ('Écosystème de modules', 'Module ecosystem', 'Propulse des modules métier dédiés comme ASSO (gestion commerciale) et SUKU (gestion scolaire).', 'Powers dedicated business modules such as ASSO (commercial management) and SUKU (school management).'),
+                                ('Intégration & Ouverture', 'Integration & Openness', 'Architecture API-First et hooks ouverts aux développeurs et éditeurs partenaires.', 'API-First architecture and open hooks for developers and partner publishers.')
+                            ] %}
+                            {% for fr_t, en_t, fr_d, en_d in melodi_pillars %}
+                            <div class="col-sm-6">
+                                <div class="p-3 rounded-3 border bg-white h-100">
+                                    <h4 class="h6 fw-bold mb-1" style="color: var(--c-navy-950);">{{ en_t if is_en else fr_t }}</h4>
+                                    <p class="small text-muted mb-0">{{ en_d if is_en else fr_d }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="https://melodi.byt3lab.com" target="_blank" rel="noopener noreferrer" class="b-btn b-btn--primary">
+                                {{ 'Official MELODI ERP Website' if is_en else 'Site officiel de MELODI ERP' }} &nearr;
+                            </a>
+                            <a href="{{ site_prefix }}/produits/melodi-erp/" class="b-btn b-btn--secondary">
+                                {{ 'Technical overview' if is_en else 'Fiche technique détaillée' }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="b-melodi-stack-card">
+                            <div class="small font-monospace text-uppercase mb-3" style="color: var(--c-cyan-400);">
+                                {{ 'Powered by MELODI ERP' if is_en else 'Écosystème propulsé par MELODI' }}
+                            </div>
+                            <div class="d-flex flex-column gap-3">
+                                <a href="{{ site_prefix }}/produits/asso/" class="b-stack-item">
+                                    <strong>ASSO</strong>
+                                    <span>{{ 'Commercial management, multi-warehouse inventory & POS' if is_en else 'Gestion commerciale, stocks multi-dépôts & POS' }}</span>
+                                </a>
+                                <a href="{{ site_prefix }}/produits/suku/" class="b-stack-item">
+                                    <strong>SUKU</strong>
+                                    <span>{{ 'School management, academic & financial administration' if is_en else 'Gestion scolaire, académique & financière' }}</span>
+                                </a>
+                                <a href="{{ site_prefix }}/contact/?pole=software&need=D%C3%A9veloppement%20module%20MELODI" class="b-stack-item">
+                                    <strong>{{ 'Custom Business Modules' if is_en else 'Modules Métier Sur Mesure' }}</strong>
+                                    <span>{{ 'Built for your specific industry workflows' if is_en else 'Développés selon vos processus spécifiques' }}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activités du pôle Software -->
+    <section class="b-section b-section--alt">
+        <div class="b-container b-container--wide">
+            <div class="b-section__head">
+                <span class="b-eyebrow">{{ 'Activities' if is_en else 'Nos Activités' }}</span>
+                <h2 class="b-title">{{ 'Software engineering capabilities' if is_en else 'Domaines d\'intervention logicielle' }}</h2>
+            </div>
+
+            <div class="row g-3">
+                {% set sw_activities = [
+                    ('Développement de logiciels métier', 'Custom business software development'),
+                    ('Solutions ERP et CRM', 'ERP and CRM solutions'),
+                    ('Applications web et mobiles', 'Web and mobile applications'),
+                    ('Développement d\'API', 'API design and development'),
+                    ('Automatisation des processus', 'Business process automation'),
+                    ('Solutions de gestion sectorielles', 'Industry-specific management systems'),
+                    ('Développement logiciel sur mesure', 'Tailored software engineering'),
+                    ('Intégration de solutions technologiques', 'Technology & systems integration')
+                ] %}
+                {% for fr_a, en_a in sw_activities %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="b-activity-pill h-100">
+                        {{ m.byt3lab_icon('check-circle', 18) }}
+                        <span>{{ en_a if is_en else fr_a }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-5 text-center">
+                <a href="{{ site_prefix }}/contact/?pole=software" class="b-btn b-btn--lg b-btn--primary">
+                    {{ 'Discuss your software project' if is_en else 'Discutons de votre projet logiciel' }} &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
+</div>

@@ -50,7 +50,7 @@ class ContactService:
         subject = str(data.get("subject") or data.get("contact_subject") or ("Demande de partenariat" if form_type == "partner" else "Prise de contact")).strip()
 
         partner_type = str(data.get("partner_type") or "").strip()
-        domain = str(data.get("domain") or "").strip()
+        domain = str(data.get("domain") or data.get("pole") or "").strip()
         website = str(data.get("website") or "").strip()
 
         if not name or not email or not message:

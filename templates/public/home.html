@@ -1,512 +1,455 @@
-{% extends "public/byt3lab_layout.html" %}
 {% import "public/byt3lab_macros.html" as m with context %}
 
-{% block content %}
-<div class="b-home">
+{% set is_en = (current_lang == 'en') %}
 
-    <!-- =====================================================================
-         SECTION 1 — HERO INSTITUTIONNEL
-         ===================================================================== -->
-    <section class="b-hero" id="hero">
-        <div class="b-hero__pattern" aria-hidden="true"></div>
-        <div class="b-container b-container--wide">
-            <div class="b-hero__inner">
-                
-                <div class="b-hero__content">
-                    <div class="b-hero__signature">
-                        {{ settings['home.hero.signature']|default("GROUPE TECHNOLOGIQUE & D'INNOVATION") }}
+<!-- ========================================================================
+     1. HERO : PARCOURS D'ACCUEIL ÉPURÉ & 4 DIMENSIONS
+======================================================================== -->
+<section class="b-hero b-hero--apple" id="hero">
+    <div class="b-hero__pattern" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--1" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--2" aria-hidden="true"></div>
+
+    <div class="b-container b-container--wide b-hero__container">
+        <div class="b-hero__grid">
+
+            <!-- Colonne gauche : Message & CTA -->
+            <div class="b-hero__content">
+                <div class="b-hero__eyebrow" data-reveal="hero">
+                    <span class="b-hero__eyebrow-dot"></span>
+                    <span>{{ 'Cameroon · Africa · Global Technology Partner' if is_en else 'Cameroun · Afrique · Partenaire Technologique Global' }}</span>
+                </div>
+
+                <h1 class="b-hero__title" data-reveal="hero" data-reveal-delay="1">
+                    {% if is_en %}
+                    We build the <span class="b-hero__title-accent">technology solutions</span> that move businesses forward.
+                    {% else %}
+                    Nous construisons les <span class="b-hero__title-accent">solutions technologiques</span> qui font avancer les entreprises.
+                    {% endif %}
+                </h1>
+
+                <p class="b-hero__subtitle" data-reveal="hero" data-reveal-delay="2">
+                    {{ 'From business software to digital infrastructure, professional IT equipment and creative design, Byt3Lab supports organizations in their digital and technological transformation.'
+                       if is_en else
+                       'Du logiciel aux infrastructures numériques, en passant par les équipements professionnels et le design, Byt3Lab accompagne les entreprises dans leur transformation numérique et technologique.' }}
+                </p>
+
+                <div class="b-hero__actions" data-reveal="hero" data-reveal-delay="3">
+                    <a href="{{ site_prefix }}/solutions/" class="b-btn b-btn--lg b-btn--primary b-btn--hero-primary">
+                        <span>{{ 'Discover our solutions' if is_en else 'Découvrir nos solutions' }}</span>
+                        {{ m.byt3lab_icon('arrow-right', 17) }}
+                    </a>
+                    <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--hero-ghost">
+                        <span>{{ 'Discuss your project' if is_en else 'Parler de votre projet' }}</span>
+                    </a>
+                </div>
+
+                <div class="b-hero__pillars-bar" data-reveal="hero" data-reveal-delay="4">
+                    <span>CREATE <strong>ngrafix</strong></span>
+                    <span class="b-hero__pillars-sep">&middot;</span>
+                    <span>DEVELOP <strong>Software</strong></span>
+                    <span class="b-hero__pillars-sep">&middot;</span>
+                    <span>HOST <strong>Web Services</strong></span>
+                    <span class="b-hero__pillars-sep">&middot;</span>
+                    <span>EQUIP <strong>Equipment</strong></span>
+                </div>
+            </div>
+
+            <!-- Colonne droite : Composition visuelle des 4 dimensions -->
+            <div class="b-hero__visual" data-reveal="hero" data-reveal-delay="2">
+                <div class="b-quad-panel">
+                    <div class="b-quad-panel__head">
+                        <span class="b-quad-panel__badge">BYT3LAB ECOSYSTEM</span>
+                        <span class="b-quad-panel__sub">{{ '4 Complementary Poles' if is_en else '4 Pôles Complémentaires' }}</span>
                     </div>
-                    <h1 class="b-hero__title">
-                        {{ settings['home.hero.title']|default("L'ingénierie des technologies qui façonnent l'Afrique de demain.") }}
-                    </h1>
-                    <p class="b-hero__subtitle">
-                        {{ settings['home.hero.subtitle']|default("Byt3Lab conçoit, déploie et opère des solutions logicielles, des infrastructures critiques et des technologies industrielles pour les entreprises, les gouvernements et les institutions.") }}
+                    <div class="b-quad-grid">
+                        <a href="{{ site_prefix }}/poles/ngrafix/" class="b-quad-tile b-quad-tile--ngx">
+                            <div class="b-quad-tile__top">
+                                <span class="b-quad-tile__verb">CREATE</span>
+                                <span class="b-quad-tile__arrow" aria-hidden="true">&nearr;</span>
+                            </div>
+                            <div class="b-quad-tile__icon">{{ m.byt3lab_icon('palette', 22) }}</div>
+                            <div class="b-quad-tile__name">ngrafix</div>
+                            <div class="b-quad-tile__desc">{{ 'Branding, UI/UX & Communication' if is_en else 'Identité, UI/UX & Communication' }}</div>
+                        </a>
+                        <a href="{{ site_prefix }}/poles/software/" class="b-quad-tile b-quad-tile--sw">
+                            <div class="b-quad-tile__top">
+                                <span class="b-quad-tile__verb">DEVELOP</span>
+                                <span class="b-quad-tile__arrow" aria-hidden="true">&nearr;</span>
+                            </div>
+                            <div class="b-quad-tile__icon">{{ m.byt3lab_icon('code', 22) }}</div>
+                            <div class="b-quad-tile__name">Software</div>
+                            <div class="b-quad-tile__desc">{{ 'MELODI ERP, Custom Apps & APIs' if is_en else 'MELODI ERP, Logiciels & APIs' }}</div>
+                        </a>
+                        <a href="{{ site_prefix }}/poles/web-services/" class="b-quad-tile b-quad-tile--ws">
+                            <div class="b-quad-tile__top">
+                                <span class="b-quad-tile__verb">HOST</span>
+                                <span class="b-quad-tile__arrow" aria-hidden="true">&nearr;</span>
+                            </div>
+                            <div class="b-quad-tile__icon">{{ m.byt3lab_icon('cloud', 22) }}</div>
+                            <div class="b-quad-tile__name">Web Services</div>
+                            <div class="b-quad-tile__desc">{{ 'Cloud, Hosting & Managed Ops' if is_en else 'Cloud, Hébergement & Infogérance' }}</div>
+                        </a>
+                        <a href="{{ site_prefix }}/poles/equipment/" class="b-quad-tile b-quad-tile--eq">
+                            <div class="b-quad-tile__top">
+                                <span class="b-quad-tile__verb">EQUIP</span>
+                                <span class="b-quad-tile__arrow" aria-hidden="true">&nearr;</span>
+                            </div>
+                            <div class="b-quad-tile__icon">{{ m.byt3lab_icon('server', 22) }}</div>
+                            <div class="b-quad-tile__name">Equipment</div>
+                            <div class="b-quad-tile__desc">{{ 'IT Hardware, Energy & EaaS' if is_en else 'Matériel IT, Énergie & EaaS' }}</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="#expertise" class="b-hero__scroll-cue" aria-label="{{ 'Scroll to explore' if is_en else 'Découvrir la suite' }}">
+            <span class="b-hero__scroll-text">{{ 'Explore' if is_en else 'Découvrir' }}</span>
+            <span class="b-hero__scroll-mouse" aria-hidden="true"><span></span></span>
+        </a>
+    </div>
+</section>
+
+<!-- ========================================================================
+     2. NOTRE EXPERTISE : LES 4 PÔLES EN GRANDES CARTES
+======================================================================== -->
+<section class="b-section" id="expertise">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'Our Expertise' if is_en else 'Notre Expertise' }}</span>
+            <h2 class="b-title">{{ 'Four poles to cover your entire technological chain' if is_en else 'Quatre pôles complémentaires pour toute votre chaîne technologique' }}</h2>
+            <p class="b-lead">
+                {{ 'Each pole operates with dedicated specialists while integrating seamlessly with the rest of your environment.'
+                   if is_en else
+                   'Chaque pôle intervient avec ses propres spécialistes tout en s\'intégrant nativement aux autres briques de votre organisation.' }}
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Pôle 1 : Software -->
+            <div class="col-md-6" data-reveal data-reveal-delay="1">
+                <div class="b-pole-card h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('code', 26) }}</span>
+                        <span class="b-pole-card__tag">DEVELOP</span>
+                    </div>
+                    <h3 class="b-pole-card__title">Byt3Lab Software</h3>
+                    <p class="b-pole-card__desc">
+                        {{ 'Design and commercialization of business software, modular ERP platforms (MELODI ERP), web/mobile applications and API integrations.'
+                           if is_en else
+                           'Conception et déploiement de logiciels métier, solutions ERP/CRM (MELODI ERP), applications web & mobiles et automatisation.' }}
                     </p>
-                    <div class="b-hero__actions">
-                        <a href="{{ site_prefix }}/technologies/" class="b-btn b-btn--lg b-btn--primary">
-                            <span>{{ t('hero_explore_tech', 'Explorer nos technologies') }}</span>
-                            {{ m.byt3lab_icon('arrow-right', 18) }}
-                        </a>
-                        <a href="{{ site_prefix }}/partenaires/" class="b-btn b-btn--lg b-btn--outline-dark">
-                            {{ m.byt3lab_icon('handshake', 18) }}
-                            <span>{{ t('hero_become_partner', 'Devenir partenaire') }}</span>
-                        </a>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'MELODI ERP modular platform & vertical modules (ASSO, SUKU)' if is_en else 'Plateforme modulaire MELODI ERP & déclinaisons (ASSO, SUKU)' }}</li>
+                        <li>{{ 'Custom business software & API development' if is_en else 'Développement logiciel sur mesure & API' }}</li>
+                        <li>{{ 'Process automation & systems integration' if is_en else 'Automatisation des processus & intégration SI' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/software/" class="b-pole-card__link">
+                        {{ 'Explore Byt3Lab Software' if is_en else 'Découvrir Byt3Lab Software' }} &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pôle 2 : Web Services -->
+            <div class="col-md-6" data-reveal data-reveal-delay="2">
+                <div class="b-pole-card h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('cloud', 26) }}</span>
+                        <span class="b-pole-card__tag">HOST</span>
                     </div>
+                    <h3 class="b-pole-card__title">Byt3Lab Web Services</h3>
+                    <p class="b-pole-card__desc">
+                        {{ 'Digital infrastructure and managed services to host, operate, back up and secure your applications and business data.'
+                           if is_en else
+                           'Infrastructures numériques et services managés pour héberger, exploiter, sauvegarder et sécuriser vos applications et données.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'Web & application hosting, VPS & dedicated servers' if is_en else 'Hébergement web & applicatif, VPS & serveurs dédiés' }}</li>
+                        <li>{{ 'Application deployment & system administration' if is_en else 'Déploiement d\'applications & administration système' }}</li>
+                        <li>{{ 'Proactive maintenance, backup & managed operations' if is_en else 'Sauvegarde, maintenance & infogérance continue' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/web-services/" class="b-pole-card__link">
+                        {{ 'Explore Web Services' if is_en else 'Découvrir Web Services' }} &rarr;
+                    </a>
                 </div>
+            </div>
 
-                <!-- Illustration Moderne de l'Écosystème Technologique BYT3LAB -->
-                <div class="b-hero__visual">
-                    <img
-                        src="{{ _url('static', {'module': 'byt3lab_app', 'path': ['images', 'hero-ecosystem.jpg']}) }}"
-                        alt="{{ t('hero_ecosystem_alt', 'Écosystème technologique connecté BYT3LAB') }}"
-                        style="width: 100%; max-width: 560px; height: auto; display: block; border-radius: 20px; border: 1px solid rgba(79, 211, 245, 0.2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);"
-                    />
+            <!-- Pôle 3 : Equipment -->
+            <div class="col-md-6" data-reveal data-reveal-delay="3">
+                <div class="b-pole-card h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('server', 26) }}</span>
+                        <span class="b-pole-card__tag">EQUIP</span>
+                    </div>
+                    <h3 class="b-pole-card__title">Byt3Lab Equipment</h3>
+                    <p class="b-pole-card__desc">
+                        {{ 'Turnkey IT hardware, enterprise networking, security surveillance and backup energy solutions—available via purchase or Equipment as a Service.'
+                           if is_en else
+                           'Fourniture et intégration d\'équipements informatiques, réseaux, sécurité et énergie de secours — à l\'achat ou en Equipment as a Service.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'Workstations, servers, enterprise Wi-Fi & structured cabling' if is_en else 'Postes de travail, serveurs, réseaux Wi-Fi & câblage' }}</li>
+                        <li>{{ 'IP video surveillance, NVR & access control' if is_en else 'Vidéosurveillance IP, enregistreurs NVR & contrôle d\'accès' }}</li>
+                        <li>{{ 'UPS, solar installations & Equipment as a Service (EaaS)' if is_en else 'Onduleurs, solaire & formule Equipment as a Service' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/equipment/" class="b-pole-card__link">
+                        {{ 'Explore Byt3Lab Equipment' if is_en else 'Découvrir Byt3Lab Equipment' }} &rarr;
+                    </a>
                 </div>
+            </div>
 
+            <!-- Pôle 4 : ngrafix -->
+            <div class="col-md-6" data-reveal data-reveal-delay="4">
+                <div class="b-pole-card b-pole-card--ngx h-100">
+                    <div class="b-pole-card__top">
+                        <span class="b-pole-card__icon">{{ m.byt3lab_icon('palette', 26) }}</span>
+                        <span class="b-pole-card__tag">CREATE</span>
+                    </div>
+                    <h3 class="b-pole-card__title">ngrafix</h3>
+                    <p class="b-pole-card__desc">
+                        {{ 'Byt3Lab\'s creative brand dedicated to visual identity, UI/UX product design, digital communication and graphic production.'
+                           if is_en else
+                           'La marque créative de l\'écosystème Byt3Lab dédiée à l\'identité visuelle, au design UI/UX, à la communication digitale et à la production graphique.' }}
+                    </p>
+                    <ul class="b-pole-card__list">
+                        <li>{{ 'Brand identity, logos & corporate guidelines' if is_en else 'Logos, charte graphique & identité de marque' }}</li>
+                        <li>{{ 'UI/UX design for web, mobile apps & dashboards' if is_en else 'UI/UX Design d\'applications, sites web & tableaux de bord' }}</li>
+                        <li>{{ 'Digital marketing, content & print production' if is_en else 'Communication digitale, contenus & production graphique' }}</li>
+                    </ul>
+                    <a href="{{ site_prefix }}/poles/ngrafix/" class="b-pole-card__link">
+                        {{ 'Explore ngrafix' if is_en else 'Découvrir ngrafix' }} &rarr;
+                    </a>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- =====================================================================
-         SECTION 2 — ABOUT BYT3LAB (Positionnement Groupe)
-         ===================================================================== -->
-    <section class="b-section" id="about">
-        <div class="b-container">
-            <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">{{ settings['home.about.eyebrow']|default('NOTRE POSITIONNEMENT') }}</span>
-                <h2 class="b-title">{{ settings['home.about.title']|default("Un groupe technologique intégré, fondé sur l'ingénierie d'excellence") }}</h2>
-                <p class="b-lead">{{ settings['home.about.text']|default("Byt3Lab conçoit des systèmes informatiques et industriels robustes, développant des produits propriétaires et fédérant des marques spécialisées au service de l'Afrique.") }}</p>
-            </div>
+<!-- ========================================================================
+     3. UNE APPROCHE INTÉGRÉE
+======================================================================== -->
+<section class="b-section b-section--alt" id="integrated-approach">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'Integrated Approach' if is_en else 'Une Approche Intégrée' }}</span>
+            <h2 class="b-title">{{ 'From brand identity to deployed infrastructure' if is_en else 'De l\'identité numérique jusqu\'à l\'infrastructure sur site' }}</h2>
+            <p class="b-lead">
+                {{ 'Byt3Lab supports organizations end to end: designing their identity and digital tools, hosting their applications, and installing and maintaining their on-site equipment.'
+                   if is_en else
+                   'Byt3Lab accompagne les entreprises depuis la conception de leur identité et de leurs outils numériques jusqu\'à l\'installation et l\'exploitation de leurs infrastructures.' }}
+            </p>
+        </div>
 
-            <div class="b-about-grid">
-                <div class="b-about-card">
-                    <span class="b-about-card__num">01</span>
-                    <h3 class="b-about-card__title">Écosystème structuré</h3>
-                    <p class="b-about-card__text">
-                        Byt3Lab dépasse le modèle d'agence classique pour opérer comme un ensemble coordonné de divisions technologiques, de produits propriétaires et d'une marque créative spécialisée.
-                    </p>
-                </div>
-
-                <div class="b-about-card">
-                    <span class="b-about-card__num">02</span>
-                    <h3 class="b-about-card__title">Excellence d'ingénierie</h3>
-                    <p class="b-about-card__text">
-                        De la ligne de code à l'infrastructure réseau, nos équipes conçoivent des solutions résilientes, sécurisées et adaptées aux réalités opérationnelles des entreprises en Afrique.
-                    </p>
-                </div>
-
-                <div class="b-about-card">
-                    <span class="b-about-card__num">03</span>
-                    <h3 class="b-about-card__title">Ambition panafricaine</h3>
-                    <p class="b-about-card__text">
-                        Enraciné au Cameroun, Byt3Lab construit des partenariats et déploie des technologies conçues pour accompagner la modernisation des industries et des infrastructures du continent.
-                    </p>
+        <div class="row g-3 b-journey-steps">
+            <div class="col-md-3" data-reveal data-reveal-delay="1">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">01 &middot; CREATE</div>
+                    <h4>ngrafix</h4>
+                    <p>{{ 'Visual identity, UI/UX interfaces and communication assets.' if is_en else 'Identité visuelle, interfaces UI/UX et supports de communication.' }}</p>
                 </div>
             </div>
+            <div class="col-md-3" data-reveal data-reveal-delay="2">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">02 &middot; DEVELOP</div>
+                    <h4>Software</h4>
+                    <p>{{ 'MELODI ERP deployment, custom software and business workflows.' if is_en else 'Déploiement MELODI ERP, logiciels métier et automatisation.' }}</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-reveal data-reveal-delay="3">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">03 &middot; HOST</div>
+                    <h4>Web Services</h4>
+                    <p>{{ 'Secure application hosting, backups and managed operations.' if is_en else 'Hébergement sécurisé, sauvegardes et infogérance applicative.' }}</p>
+                </div>
+            </div>
+            <div class="col-md-3" data-reveal data-reveal-delay="4">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">04 &middot; EQUIP</div>
+                    <h4>Equipment</h4>
+                    <p>{{ 'Workstations, networks, security, energy & EaaS maintenance.' if is_en else 'Postes IT, réseaux, sécurité, énergie et maintenance continue.' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="{{ site_prefix }}/a-propos/" class="b-btn b-btn--secondary">
-                    <span>Découvrir l'histoire &amp; la vision de Byt3Lab</span>
-                    {{ m.byt3lab_icon('arrow-right', 16) }}
+<!-- ========================================================================
+     4. NOS SOLUTIONS TRANSVERSALES
+======================================================================== -->
+<section class="b-section" id="solutions">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--split" data-reveal>
+            <div>
+                <span class="b-eyebrow">{{ 'Cross-Functional Solutions' if is_en else 'Nos Solutions' }}</span>
+                <h2 class="b-title">{{ 'Concrete answers to business challenges' if is_en else 'Des solutions transversales adaptées aux entreprises' }}</h2>
+            </div>
+            <a href="{{ site_prefix }}/solutions/" class="b-btn b-btn--secondary">
+                <span>{{ 'Explore all needs' if is_en else 'Voir toutes les solutions' }}</span>
+                {{ m.byt3lab_icon('arrow-right', 16) }}
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% set home_solutions = [
+                ('Digitalisation des entreprises', 'Business Digitalization', 'MELODI ERP, logiciels métier et dématérialisation des processus.', 'MELODI ERP, business software and process digitalization.', 'software'),
+                ('Infrastructure informatique', 'IT Infrastructure', 'Postes de travail, serveurs, câblage structuré et réseaux d\'entreprise.', 'Workstations, servers, structured cabling and corporate networks.', 'equipment'),
+                ('Solutions cloud', 'Cloud Solutions', 'Hébergement applicatif, déploiement, sauvegarde et sécurité cloud.', 'Application hosting, deployment, backup and cloud security.', 'web-services'),
+                ('Équipements professionnels', 'Professional Equipment', 'Achat ou location (Equipment as a Service) avec maintenance incluse.', 'Purchase or Equipment as a Service with ongoing maintenance.', 'equipment'),
+                ('Communication & identité numérique', 'Brand & Digital Identity', 'Branding, UI/UX design et stratégie de visibilité avec ngrafix.', 'Branding, UI/UX design and digital presence with ngrafix.', 'ngrafix'),
+                ('Maintenance & infogérance', 'Maintenance & Managed Ops', 'Supervision continue des serveurs, parcs informatiques et applicatifs.', 'Continuous monitoring of servers, IT fleets and applications.', 'web-services')
+            ] %}
+            {% for fr_t, en_t, fr_d, en_d, pole_slug in home_solutions %}
+            <div class="col-md-6 col-lg-4" data-reveal data-reveal-delay="{{ ((loop.index0 % 3) + 1) }}">
+                <a href="{{ site_prefix }}/poles/{{ pole_slug }}/" class="b-solution-tile h-100">
+                    <h4>{{ en_t if is_en else fr_t }}</h4>
+                    <p>{{ en_d if is_en else fr_d }}</p>
+                    <span class="b-solution-tile__cta">{{ 'Learn more' if is_en else 'En savoir plus' }} &rarr;</span>
                 </a>
             </div>
+            {% endfor %}
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- =====================================================================
-         SECTION 3 — OUR TECHNOLOGY DIVISIONS (Les 5 axes stratégiques)
-         ===================================================================== -->
-    <section class="b-section b-section--alt" id="divisions">
-        <div class="b-container">
-            <div class="b-section-head">
-                <span class="b-eyebrow">{{ settings['home.divisions.eyebrow']|default('NOS 5 DIVISIONS') }}</span>
-                <h2 class="b-title">{{ settings['home.divisions.title']|default('Une couverture technologique complète') }}</h2>
-                <p class="b-lead">{{ settings['home.divisions.intro']|default('Chaque division opère avec une gouvernance dédiée et des capacités adaptées à la criticité de ses missions.') }}</p>
+<!-- ========================================================================
+     5. NOS RÉALISATIONS FILTRABLES PAR DOMAINE
+======================================================================== -->
+<section class="b-section b-section--alt" id="realisations">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--split" data-reveal>
+            <div>
+                <span class="b-eyebrow">{{ 'Portfolio' if is_en else 'Nos Réalisations' }}</span>
+                <h2 class="b-title">{{ 'Real projects delivered across our poles' if is_en else 'Projets réalisés par Byt3Lab et ngrafix' }}</h2>
             </div>
+            <a href="{{ site_prefix }}/realisations/" class="b-btn b-btn--secondary">
+                <span>{{ 'Full portfolio' if is_en else 'Tout le portfolio' }}</span>
+                {{ m.byt3lab_icon('arrow-right', 16) }}
+            </a>
+        </div>
 
-            <div class="b-divisions-grid">
-                {% for div in divisions %}
-                    {% set is_active = (div.maturity_status == 'active') %}
-                    <article class="b-card b-div-card {% if is_active %}b-div-card--active{% else %}b-div-card--sub{% endif %}">
-                        <div class="b-card__header">
-                            <div class="b-card__icon-wrap">
-                                {{ m.byt3lab_icon(div.icon|default('code'), 24) }}
-                            </div>
-                            {{ m.byt3lab_status_badge(div.maturity_status) }}
-                        </div>
+        <div class="b-filter-bar mb-4" data-portfolio-filters data-reveal data-reveal-delay="1">
+            <button type="button" class="b-filter-btn is-active" data-filter="all">{{ 'All' if is_en else 'Tous' }}</button>
+            <button type="button" class="b-filter-btn" data-filter="software">Software</button>
+            <button type="button" class="b-filter-btn" data-filter="cloud">Cloud &amp; Hosting</button>
+            <button type="button" class="b-filter-btn" data-filter="equipment">Equipment</button>
+            <button type="button" class="b-filter-btn" data-filter="design">Design &amp; Communication</button>
+        </div>
 
-                        <h3 class="b-card__title">
-                            <a href="{{ site_prefix }}/technologies/{{ div.slug }}/">{{ div.title }}</a>
-                        </h3>
-
-                        <p class="b-card__text">
-                            {{ div.excerpt }}
-                        </p>
-
-                        {% if div.expertise_areas %}
-                            <div class="b-card__tags">
-                                {% for tag in div.expertise_areas[:4] %}
-                                    <span class="b-tag">{{ tag }}</span>
-                                {% endfor %}
-                            </div>
+        <div class="row g-4" data-portfolio-grid data-reveal data-reveal-delay="2">
+            {% for prj in projects %}
+            {% set d_low = (prj.domain ~ ' ' ~ prj.title)|lower %}
+            {% set cat_key = 'cloud' if ('cloud' in d_low or 'infra' in d_low or 'bws' in d_low) else ('equipment' if ('equip' in d_low or 'réseau' in d_low or 'solaire' in d_low) else 'software') %}
+            <div class="col-md-6 col-lg-4" data-portfolio-item="{{ cat_key }}">
+                <article class="b-card b-card--media h-100">
+                    <div class="b-card-media">
+                        {% if prj.image_url %}
+                        <img src="{{ prj.image_url }}" alt="{{ prj.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         {% endif %}
-
-                        <div class="b-card__footer">
-                            <a href="{{ site_prefix }}/technologies/{{ div.slug }}/" class="b-btn b-btn--ghost">
-                                <span>Explorer la division</span>
-                                {{ m.byt3lab_icon('arrow-right', 16) }}
-                            </a>
-                        </div>
-                    </article>
-                {% endfor %}
-            </div>
-
-            <div style="text-align: center; margin-top: 36px;">
-                <a href="{{ site_prefix }}/technologies/" class="b-btn b-btn--primary">
-                    <span>Consulter le détail des 5 divisions technologiques</span>
-                    {{ m.byt3lab_icon('arrow-right', 16) }}
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 4 — OUR PRODUCTS & SOLUTIONS (MELODI ERP, SUKU, BWS)
-         ===================================================================== -->
-    <section class="b-section" id="produits">
-        <div class="b-container">
-            <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">{{ settings['home.offers.eyebrow']|default('PRODUITS ET SOLUTIONS') }}</span>
-                <h2 class="b-title">{{ settings['home.offers.title']|default('Des plateformes propriétaires éprouvées') }}</h2>
-                <p class="b-lead">{{ settings['home.offers.intro']|default('Nos logiciels et offres d\'infrastructure répondent aux enjeux critiques de gestion et d\'hébergement des organisations.') }}</p>
-            </div>
-
-            <div class="b-grid b-grid--3">
-                {% for sol in solutions[:3] %}
-                    <article class="b-product-card" style="--card-accent: {{ sol.accent_color|default('#1D7FD8') }};">
-                        <div class="b-product-card__top">
-                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span class="b-product-card__badge" style="margin-bottom: 0;">{{ sol.badge|default(sol.category|default('Produit')) }}</span>
-                                {{ m.byt3lab_status_badge(sol.maturity_status|default('active')) }}
-                            </div>
-                            <h3 class="b-product-card__title">{{ sol.title }}</h3>
-                            {% if sol.tagline %}
-                                <p class="b-product-card__tagline">{{ sol.tagline }}</p>
-                            {% endif %}
-                        </div>
-
-                        <div class="b-product-card__body">
-                            <p style="font-size: 14px; color: var(--c-gray-600); line-height: 1.6; margin-bottom: 20px;">
-                                {{ sol.excerpt }}
-                            </p>
-
-                            {% if sol.features %}
-                                <ul class="b-checklist">
-                                    {% for feat in sol.features[:4] %}
-                                        <li>
-                                            {{ m.byt3lab_icon('check', 16) }}
-                                            <span>{{ feat }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-
-                            <div class="b-product-card__actions">
-                                <a href="{{ site_prefix }}/produits/{{ sol.slug }}/" class="b-btn b-btn--sm b-btn--secondary">
-                                    <span>Fiche détaillée</span>
-                                </a>
-                                {% if sol.external_url %}
-                                    <a href="{{ sol.external_url }}" class="b-btn b-btn--sm b-btn--primary" target="_blank" rel="noopener noreferrer">
-                                        <span>{{ sol.button_text|default('En savoir plus') }}</span>
-                                        {{ m.byt3lab_icon('arrow-up-right', 14) }}
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </article>
-                {% endfor %}
-            </div>
-
-            <div style="text-align: center; margin-top: 36px;">
-                <a href="{{ site_prefix }}/produits/" class="b-btn b-btn--secondary">
-                    <span>Explorer l'ensemble des produits et solutions</span>
-                    {{ m.byt3lab_icon('arrow-right', 16) }}
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 5 — CREATIVE EXCELLENCE / NGRAFIX STUDIO
-         ===================================================================== -->
-    <section class="b-section b-section--tight" id="ngrafix">
-        <div class="b-container">
-            <div class="b-ngx-feature">
-                <div class="b-ngx-feature__inner">
-                    
-                    <div class="b-ngx-feature__content">
-                        <span class="b-eyebrow b-ngx-eyebrow">{{ settings['home.ngrafix.eyebrow']|default('PÔLE CRÉATIF SPÉCIALISÉ') }}</span>
-                        <h2 class="b-title">{{ settings['home.ngrafix.title']|default('NGRAFIX — Creative & Brand Experience Studio') }}</h2>
-                        <p style="font-size: 16px; line-height: 1.7; margin-bottom: 28px;">
-                            {{ settings['home.ngrafix.text']|default('Studio créatif intégré du groupe Byt3Lab, NGRAFIX combine design graphique de précision, identités visuelles fortes et récits de marque pour les entreprises ambitieuses.') }}
-                        </p>
-                        <div class="d-flex gap-3 flex-wrap">
-                            <a href="{{ site_prefix }}/ngrafix/" class="b-btn b-btn--lg" style="background: var(--c-ngx-orange); color: #fff; border-color: var(--c-ngx-orange);">
-                                <span>Découvrir le Studio NGRAFIX</span>
-                                {{ m.byt3lab_icon('arrow-right', 18) }}
-                            </a>
-                            <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--outline-dark">
-                                <span>Projet créatif ou de marque</span>
-                            </a>
+                        <div class="b-card-media__fallback" style="{% if prj.image_url %}display: none;{% endif %}">
+                            <span>{{ prj.domain|default('BYT3LAB') }}</span>
                         </div>
                     </div>
-
-                    <!-- Grille des 4 pôles NGRAFIX -->
-                    <div class="b-ngx-grid">
-                        <div class="b-ngx-box">
-                            <div class="b-ngx-box__num">01 · BRAND IDENTITY</div>
-                            <div class="b-ngx-box__title">Identité de marque</div>
-                            <p class="b-ngx-box__desc">Logos, chartes 360°, naming et stratégie visuelle institutionnelle.</p>
-                        </div>
-
-                        <div class="b-ngx-box">
-                            <div class="b-ngx-box__num">02 · CREATIVE DESIGN</div>
-                            <div class="b-ngx-box__title">Design créatif</div>
-                            <p class="b-ngx-box__desc">UI/UX, supports marketing, packaging et design éditorial soigné.</p>
-                        </div>
-
-                        <div class="b-ngx-box">
-                            <div class="b-ngx-box__num">03 · DIGITAL COM</div>
-                            <div class="b-ngx-box__title">Communication digitale</div>
-                            <p class="b-ngx-box__desc">Campagnes, gestion des réseaux sociaux et stratégie de contenu.</p>
-                        </div>
-
-                        <div class="b-ngx-box">
-                            <div class="b-ngx-box__num">04 · MEDIA PRODUCTION</div>
-                            <div class="b-ngx-box__title">Production média</div>
-                            <p class="b-ngx-box__desc">Photographie professionnelle, motion design et production audiovisuelle.</p>
-                        </div>
+                    <div class="b-card__meta">
+                        <span class="b-tag">{{ prj.domain }}</span>
                     </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 6 — TECHNOLOGY & INNOVATION (Construire ce qui vient)
-         ===================================================================== -->
-    <section class="b-section b-section--alt" id="innovation">
-        <div class="b-container">
-            <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">{{ settings['home.innovation.eyebrow']|default('RECHERCHE & INNOVATION') }}</span>
-                <h2 class="b-title">{{ settings['home.innovation.title']|default('Construire les fondations technologiques de demain') }}</h2>
-                <p class="b-lead">{{ settings['home.innovation.intro']|default('Nos axes de recherche prioritaires répondent aux défis d\'industrialisation, de souveraineté numérique et d\'efficacité opérationnelle.') }}</p>
-            </div>
-
-            {% set inno_items = [
-                ['Systèmes distribués & résilience cloud', 'Architectures haute disponibilité et calcul distribué optimisés pour les contextes à connectivité variable.', 'cloud'],
-                ['Intelligence artificielle appliquée', 'Modèles prédictifs et automatisation décisionnelle adaptés aux flux d\'affaires et aux documents métiers.', 'brain'],
-                ['Instrumentation industrielle & IoT', 'Capteurs communicants, télémétrie temps réel et passerelles de télégestion pour sites isolés.', 'cpu'],
-                ['Transition énergétique & micro-réseaux', 'Monitoring de parcs solaires, optimisation du stockage stationnaire et régulation intelligente.', 'sun'],
-                ['Sécurité des systèmes & souveraineté des données', 'Chiffrement de bout en bout, conformité des hébergements et résilience face aux cybermenaces.', 'shield']
-            ] %}
-            <div class="b-grid b-grid--3">
-                {% for item in inno_items %}
-                    <div class="b-card" style="padding: 28px;">
-                        <div class="b-card__icon-wrap" style="margin-bottom: 16px;">
-                            {{ m.byt3lab_icon(item[2], 22) }}
-                        </div>
-                        <h3 style="font-size: 1.15rem; margin-bottom: 8px;">{{ item[0] }}</h3>
-                        <p style="font-size: 13.5px; color: var(--c-gray-600); line-height: 1.6; margin: 0;">
-                            {{ item[1] }}
-                        </p>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <div style="text-align: center; margin-top: 36px;">
-                <a href="{{ site_prefix }}/technologies/" class="b-btn b-btn--secondary">
-                    <span>{{ t('hero_explore_tech', 'Explorer nos technologies') }}</span>
-                    {{ m.byt3lab_icon('arrow-right', 16) }}
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 7 — INDUSTRIES WE SERVE (Secteurs d'activité)
-         ===================================================================== -->
-    <section class="b-section" id="industries">
-        <div class="b-container">
-            <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">{{ settings['home.industries.eyebrow']|default("SECTEURS D'ACTIVITÉ") }}</span>
-                <h2 class="b-title">{{ settings['home.industries.title']|default('Technologies adaptées à vos défis industriels') }}</h2>
-                <p class="b-lead">Des technologies conçues pour répondre aux défis spécifiques de vos filières.</p>
-            </div>
-
-            {% set industries_data = [
-                ['Industrie & Manufacturier', 'Obsolescence des automates, silos de données de production, maintenance corrective coûteuse.', 'Instrumentation IoT, supervision SCADA moderne, monitoring énergétique et maintenance prédictive.', 'factory'],
-                ['Banque, Finance & Assurance', 'Exigences réglementaires strictes, cybersécurité, intégration des systèmes legacy.', 'Architectures modulaires sécurisées, automatisation des processus et chiffrement de bout en bout.', 'landmark'],
-                ['Éducation & Formation', 'Absence de centralisation des données pédagogiques, gestion manuelle des inscriptions et notes.', 'Déploiement de SUKU, plateforme intégrée de gestion scolaire propulsée par le socle MELODI ERP.', 'graduation'],
-                ['Énergie & Utilities', 'Instabilité des réseaux électriques, manque de visibilité temps réel sur les flux énergétiques.', 'Systèmes de monitoring énergétique, micro-réseaux solaires et gestion intelligente de la charge.', 'zap'],
-                ['Commerce & Distribution', 'Ruptures de stocks imprévues, dispersion des points de vente, encaissement déconnecté.', 'Déploiement de SOKO (gestion commerciale, stocks et caisses POS) bâti sur le socle MELODI ERP.', 'cart']
-            ] %}
-            <div class="b-tabs">
-                <div class="b-tabs__nav" role="tablist" aria-label="Secteurs d'activité">
-                    {% for ind in industries_data %}
-                        {% set idx = loop.index0 %}
-                        <button type="button" 
-                                class="b-tabs__btn" 
-                                role="tab" 
-                                id="tab-ind-{{ idx }}" 
-                                aria-controls="panel-ind-{{ idx }}" 
-                                aria-selected="{% if idx == 0 %}true{% else %}false{% endif %}">
-                            {{ ind[0] }}
-                        </button>
-                    {% endfor %}
-                </div>
-
-                {% for ind in industries_data %}
-                    {% set idx = loop.index0 %}
-                    <div class="b-tabs__panel {% if idx == 0 %}is-active{% endif %}" 
-                         id="panel-ind-{{ idx }}" 
-                         role="tabpanel" 
-                         aria-labelledby="tab-ind-{{ idx }}">
-                        <div>
-                            <div class="b-tabs__col-title">Problématiques identifiées</div>
-                            <p style="font-size: 15px; color: var(--c-gray-700); line-height: 1.65;">
-                                {{ ind[1] }}
-                            </p>
-                        </div>
-                        <div>
-                            <div class="b-tabs__col-title">Apport technologique BYT3LAB</div>
-                            <p style="font-size: 15px; color: var(--c-navy-900); font-weight: 500; line-height: 1.65;">
-                                {{ ind[2] }}
-                            </p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 8 — PROJECTS & ACHIEVEMENTS (Réalisations réelles uniquement)
-         ===================================================================== -->
-    <section class="b-section b-section--alt" id="realisations">
-        <div class="b-container">
-            <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">{{ settings['home.projects.eyebrow']|default('RÉALISATIONS') }}</span>
-                <h2 class="b-title">{{ settings['home.projects.title']|default("L'ingénierie mise en pratique") }}</h2>
-                <p class="b-lead">{{ settings['home.projects.intro']|default('Chaque projet illustre notre capacité à concevoir et déployer des solutions adaptées aux réalités de nos partenaires.') }}</p>
-            </div>
-
-            {% if projects and projects|length > 0 %}
-                <div class="b-grid b-grid--3">
-                    {% for p in projects[:3] %}
-                        <article class="b-card">
-                            {% if p.thumbnail %}
-                                <div style="margin: -32px -32px 20px -32px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; overflow: hidden;">
-                                    <img src="{{ p.thumbnail }}" alt="{{ p.title }}" style="width:100%; height:180px; object-fit:cover;">
-                                </div>
-                            {% endif %}
-
-                            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--c-blue-500); margin-bottom: 6px;">
-                                {{ p.category|default('Ingénierie') }} {% if p.year %}· {{ p.year }}{% endif %}
-                            </div>
-
-                            <h3 class="b-card__title">{{ p.title }}</h3>
-                            <p class="b-card__text">{{ p.excerpt }}</p>
-
-                            <div class="b-card__footer">
-                                <a href="{{ site_prefix }}/realisations/{{ p.slug }}/" class="b-btn b-btn--ghost">
-                                    <span>Consulter l'étude &rarr;</span>
-                                </a>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <!-- État sobre et transparent : aucun projet fictif n'est inventé -->
-                <div class="b-empty-state">
-                    <div class="b-empty-state__icon">
-                        {{ m.byt3lab_icon('rocket', 40) }}
-                    </div>
-                    <h3 class="b-empty-state__title">Études de cas en cours de documentation</h3>
-                    <p class="b-empty-state__text">
-                        Conformément à notre charte de transparence industrielle, seules les réalisations pour lesquelles nous disposons d'une autorisation de divulgation et d'un retour d'expérience complet sont publiées. Nos équipes finalisent actuellement la documentation de projets dans les télécoms et l'industrie.
-                    </p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="{{ site_prefix }}/produits/" class="b-btn b-btn--sm b-btn--primary">
-                            <span>Voir nos produits logiciels</span>
-                        </a>
-                        <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--sm b-btn--secondary">
-                            <span>Échanger sur vos projets</span>
+                    <h3 class="b-card__title">{{ prj.title }}</h3>
+                    <p class="b-card__desc">{{ prj.summary|truncate(135) }}</p>
+                    <div class="b-card__footer">
+                        <a href="{{ site_prefix }}/realisations/{{ prj.slug }}/" class="b-card__link">
+                            {{ 'View case study' if is_en else 'Voir l\'étude de cas' }} &rarr;
                         </a>
                     </div>
-                </div>
-            {% endif %}
-        </div>
-    </section>
-
-    <!-- =====================================================================
-         SECTION 9 — PARTNERSHIPS (Construire l'avenir ensemble)
-         ===================================================================== -->
-    <section class="b-section" id="partenariats">
-        <div class="b-container">
-            <div class="b-section-head b-section-head--center">
-                <span class="b-eyebrow">{{ settings['home.partners.eyebrow']|default('PARTENARIATS & ALLIANCES') }}</span>
-                <h2 class="b-title">{{ settings['home.partners.title']|default("Construire l'avenir technologique ensemble") }}</h2>
-                <p class="b-lead">{{ settings['home.partners.intro']|default('Byt3Lab collabore avec des acteurs de référence pour intégrer les meilleures briques technologiques et étendre l\'impact de ses solutions.') }}</p>
+                </article>
             </div>
+            {% endfor %}
 
-            {% set partner_types = [
-                'Fournisseurs de technologies & composants industriels',
-                'Opérateurs cloud & centres de données régionaux',
-                'Constructeurs d\'équipements & intégrateurs matériels',
-                'Laboratoires de recherche & institutions académiques',
-                'Partenaires commerciaux & distributeurs panafricains',
-                'Bailleurs & fonds d\'investissement technologique'
-            ] %}
-            <div class="b-grid b-grid--3" style="margin-bottom: 40px;">
-                {% for ptype in partner_types %}
-                    <div class="b-card" style="padding: 24px; text-align: center;">
-                        <div class="b-card__icon-wrap" style="margin: 0 auto 12px auto;">
-                            {{ m.byt3lab_icon('handshake', 20) }}
+            {% for ngx in ngrafix_items[:3] %}
+            <div class="col-md-6 col-lg-4" data-portfolio-item="design">
+                <article class="b-card b-card--media b-card--ngx-accent h-100">
+                    <div class="b-card-media">
+                        {% if ngx.image_url %}
+                        <img src="{{ ngx.image_url }}" alt="{{ ngx.title }}" loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        {% endif %}
+                        <div class="b-card-media__fallback" style="{% if ngx.image_url %}display: none;{% endif %} --accent: #F7861E;">
+                            <span>ngrafix</span>
                         </div>
-                        <h3 style="font-size: 15px; font-weight: 700; color: var(--c-navy-950); margin: 0;">
-                            {{ ptype }}
-                        </h3>
                     </div>
-                {% endfor %}
+                    <div class="b-card__meta">
+                        <span class="b-tag" style="background: rgba(247, 134, 30, 0.14); color: var(--c-ngx-orange-dark);">ngrafix &middot; Design</span>
+                    </div>
+                    <h3 class="b-card__title">{{ ngx.title }}</h3>
+                    <p class="b-card__desc">{{ ngx.description|default('')|truncate(135) }}</p>
+                    <div class="b-card__footer">
+                        <a href="{{ site_prefix }}/poles/ngrafix/" class="b-card__link" style="color: var(--c-ngx-orange-dark);">
+                            {{ 'View in ngrafix' if is_en else 'Voir sur ngrafix' }} &rarr;
+                        </a>
+                    </div>
+                </article>
             </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
-            <!-- Logos partenaires si publiés en base -->
-            {% if partners and partners|length > 0 %}
-                <div class="b-partners-logos" style="display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 36px; padding: 24px; background: var(--c-gray-50); border-radius: var(--radius-lg);">
-                    {% for partner in partners %}
-                        <div style="opacity: 0.75; filter: grayscale(1); transition: all var(--transition-fast);">
-                            {% if partner.logo %}
-                                <img src="{{ partner.logo }}" alt="{{ partner.name }}" style="height: 40px; width: auto; object-fit: contain;">
-                            {% else %}
-                                <span style="font-weight: 600; color: var(--c-gray-600);">{{ partner.name }}</span>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+<!-- ========================================================================
+     6. POURQUOI BYT3LAB ?
+======================================================================== -->
+<section class="b-section" id="why-byt3lab">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'Why Byt3Lab' if is_en else 'Pourquoi Byt3Lab ?' }}</span>
+            <h2 class="b-title">{{ 'A pragmatic partner built for African realities' if is_en else 'Un partenaire pragmatique ancré dans les réalités africaines' }}</h2>
+        </div>
+
+        <div class="row g-4">
+            {% set reasons = [
+                ('Approche technologique intégrée', 'Integrated technological approach', 'Un seul interlocuteur capable de relier logiciel, cloud, équipement physique et identité visuelle.', 'One partner connecting software, cloud, physical equipment and visual identity.'),
+                ('Solutions adaptées aux réalités locales', 'Solutions built for local realities', 'Des systèmes pensés pour la connectivité, la continuité énergétique et les contraintes opérationnelles en Afrique.', 'Systems designed for local connectivity, power resilience and operational realities in Africa.'),
+                ('Expertise multidisciplinaire', 'Multidisciplinary expertise', 'Des équipes spécialisées en génie logiciel, administration système, intégration matériel et design.', 'Specialists across software engineering, systems administration, hardware integration and design.'),
+                ('Accompagnement sur le long terme', 'Long-term support', 'De l\'audit initial à la maintenance préventive, l\'infogérance et la formation continue.', 'From initial audit to preventive maintenance, managed operations and ongoing training.'),
+                ('Architecture évolutive', 'Scalable architecture', 'Des socles modulaires comme MELODI ERP permettant de démarrer simplement et d\'évoluer par étapes.', 'Modular foundations like MELODI ERP allowing you to start lean and scale in phases.'),
+                ('Vision tournée vers l\'Afrique', 'Vision focused on Africa', 'Ancré au Cameroun avec l\'ambition de bâtir des infrastructures numériques fiables pour le continent.', 'Rooted in Cameroon with the ambition to build reliable digital foundations across Africa.')
+            ] %}
+            {% for fr_t, en_t, fr_d, en_d in reasons %}
+            <div class="col-md-6 col-lg-4" data-reveal data-reveal-delay="{{ ((loop.index0 % 3) + 1) }}">
+                <div class="b-why-card h-100">
+                    <h4>{{ en_t if is_en else fr_t }}</h4>
+                    <p>{{ en_d if is_en else fr_d }}</p>
                 </div>
-            {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
-            <div style="text-align: center;">
-                <a href="{{ site_prefix }}/partenaires/" class="b-btn b-btn--lg b-btn--primary">
-                    {{ m.byt3lab_icon('handshake', 18) }}
-                    <span>Découvrir notre programme &amp; proposer un partenariat</span>
+<!-- ========================================================================
+     7. APPEL À L'ACTION FINAL
+======================================================================== -->
+<section class="b-section b-section--tight">
+    <div class="b-container b-container--wide">
+        <div class="b-cta-banner" data-reveal="scale">
+            <div class="b-cta-banner__content">
+                <span class="b-eyebrow" style="color: var(--c-cyan-400);">CREATE &middot; DEVELOP &middot; HOST &middot; EQUIP</span>
+                <h2 class="b-cta-banner__title">
+                    {{ 'Your technological transformation starts here.' if is_en else 'Votre transformation technologique commence ici.' }}
+                </h2>
+                <p class="b-cta-banner__desc">
+                    {{ 'Whether you want to digitalize your operations, build software, modernize your IT infrastructure or strengthen your brand presence, our teams are ready to support you.'
+                       if is_en else
+                       'Que vous souhaitiez digitaliser votre entreprise, développer une solution logicielle, moderniser votre infrastructure ou renforcer votre présence numérique, nos équipes sont prêtes à vous accompagner.' }}
+                </p>
+            </div>
+            <div class="b-cta-banner__actions">
+                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--primary">
+                    <span>{{ 'Let\'s talk about your project' if is_en else 'Parlons de votre projet' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 18) }}
                 </a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- =====================================================================
-         SECTION 10 — FINAL CTA (Concevons ce qui vient)
-         ===================================================================== -->
-    <section class="b-section b-section--tight" id="cta">
-        <div class="b-container">
-            <div class="b-cta-band">
-                <h2 class="b-title">{{ settings['home.cta.title']|default("Prêt à construire ce qui vient ?") }}</h2>
-                <p>{{ settings['home.cta.text']|default("Que vous ayez besoin d'une plateforme logicielle sur mesure, d'une infrastructure résiliente ou d'une collaboration d'ingénierie, nos divisions sont mobilisées.") }}</p>
-                <div class="b-cta-band__actions">
-                    <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--lg b-btn--on-dark">
-                        {{ m.byt3lab_icon('mail', 18) }}
-                        <span>Nous contacter</span>
-                    </a>
-                    <a href="{{ site_prefix }}/partenaires/#formulaire" class="b-btn b-btn--lg b-btn--outline-dark">
-                        {{ m.byt3lab_icon('handshake', 18) }}
-                        <span>Proposer une collaboration</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-</div>
-{% endblock %}

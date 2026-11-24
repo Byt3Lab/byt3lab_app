@@ -1,10 +1,11 @@
 {% import "public/byt3lab_macros.html" as m with context %}
-<header class="b-header" id="b-header" role="banner">
-    <div class="b-header__bar">
-        <div class="b-container b-container--wide b-header__inner">
+{% set is_en = (current_lang == 'en') %}
+<header class="b-header" id="b-main-header" role="banner">
+    <div class="b-container b-container--wide">
+        <div class="b-header__inner">
 
-            <!-- Logo & Identité Groupe -->
-            <a href="{{ site_prefix }}/" class="b-brand" aria-label="BYT3LAB — {{ t('nav_home', 'Accueil') }}">
+            <!-- Identité du Groupe -->
+            <a href="{{ site_prefix }}/" class="b-brand" aria-label="BYT3LAB — {{ 'Home' if is_en else 'Accueil' }}">
                 {{ m.byt3lab_logo_svg('b-brand__mark') }}
                 <span class="b-brand__text">
                     <span class="b-brand__name">BYT3LAB</span>
@@ -13,7 +14,7 @@
             </a>
 
             <!-- Navigation Desktop -->
-            <nav class="b-nav" aria-label="{{ t('nav_main', 'Navigation principale') }}">
+            <nav class="b-nav" aria-label="{{ 'Main navigation' if is_en else 'Navigation principale' }}">
                 <ul class="b-nav__list">
                     <li class="b-nav__item">
                         <a href="{{ site_prefix }}/" class="b-nav__link {% if active_nav == 'home' %}is-current{% endif %}">
@@ -21,104 +22,102 @@
                         </a>
                     </li>
 
-                    <!-- Menu Déroulant / Mega-menu Technologies -->
+                    <!-- Menu Déroulant Nos Pôles (4 Pôles) -->
                     <li class="b-nav__item b-nav__item--has-drop">
-                        <a href="{{ site_prefix }}/technologies/" class="b-nav__link {% if active_nav == 'technologies' %}is-current{% endif %}" aria-expanded="false" aria-haspopup="true">
-                            <span>{{ t('nav_technologies', 'Technologies') }}</span>
+                        <a href="{{ site_prefix }}/poles/" class="b-nav__link {% if active_nav in ['poles', 'ngrafix'] %}is-current{% endif %}" aria-expanded="false" aria-haspopup="true">
+                            <span>{{ 'Our Poles' if is_en else 'Nos pôles' }}</span>
                             {{ m.byt3lab_icon('chevron-down', 14, 'b-nav__caret') }}
                         </a>
                         <div class="b-mega-menu" role="menu">
                             <div class="b-mega-menu__header">
-                                <span class="b-mega-menu__title">{{ t('nav_tech_divisions', 'Divisions Technologiques') }}</span>
-                                <a href="{{ site_prefix }}/technologies/" class="b-mega-menu__all">{{ t('nav_all_divisions', 'Vue d\'ensemble &rarr;') }}</a>
+                                <span class="b-mega-menu__title">{{ '4 Complementary Poles' if is_en else '4 Pôles Complémentaires' }}</span>
+                                <a href="{{ site_prefix }}/poles/" class="b-mega-menu__all">
+                                    {{ 'Overview' if is_en else 'Vue d\'ensemble' }} &rarr;
+                                </a>
                             </div>
                             <div class="b-mega-menu__grid">
-                                {% for div in header_divisions %}
-                                <a href="{{ site_prefix }}/technologies/{{ div.slug }}/" class="b-mega-item" role="menuitem">
-                                    <span class="b-mega-item__icon">{{ m.byt3lab_icon(div.icon, 18) }}</span>
-                                    <span class="b-mega-item__content">
-                                        <span class="b-mega-item__name">{{ div.title }}</span>
-                                        <span class="b-mega-item__desc">{{ div.excerpt }}</span>
-                                        {{ m.byt3lab_status_badge(div.maturity_status) }}
+                                <a href="{{ site_prefix }}/poles/software/" class="b-mega-item" role="menuitem">
+                                    <span class="b-mega-item__icon">{{ m.byt3lab_icon('code', 20) }}</span>
+                                    <span class="b-mega-item__body">
+                                        <span class="b-mega-item__name">Byt3Lab Software</span>
+                                        <span class="b-mega-item__desc">{{ 'Business software, MELODI ERP, APIs & automation' if is_en else 'Logiciels métier, MELODI ERP, API & automatisation' }}</span>
                                     </span>
                                 </a>
-                                {% endfor %}
+                                <a href="{{ site_prefix }}/poles/web-services/" class="b-mega-item" role="menuitem">
+                                    <span class="b-mega-item__icon">{{ m.byt3lab_icon('cloud', 20) }}</span>
+                                    <span class="b-mega-item__body">
+                                        <span class="b-mega-item__name">Byt3Lab Web Services</span>
+                                        <span class="b-mega-item__desc">{{ 'Cloud, hosting, VPS & managed infrastructure' if is_en else 'Cloud, hébergement, serveurs & infogérance' }}</span>
+                                    </span>
+                                </a>
+                                <a href="{{ site_prefix }}/poles/equipment/" class="b-mega-item" role="menuitem">
+                                    <span class="b-mega-item__icon">{{ m.byt3lab_icon('server', 20) }}</span>
+                                    <span class="b-mega-item__body">
+                                        <span class="b-mega-item__name">Byt3Lab Equipment</span>
+                                        <span class="b-mega-item__desc">{{ 'IT hardware, networks, security, energy & EaaS' if is_en else 'Équipements IT, réseaux, sécurité, énergie & EaaS' }}</span>
+                                    </span>
+                                </a>
+                                <a href="{{ site_prefix }}/poles/ngrafix/" class="b-mega-item" role="menuitem">
+                                    <span class="b-mega-item__icon" style="color: var(--c-ngx-orange);">{{ m.byt3lab_icon('palette', 20) }}</span>
+                                    <span class="b-mega-item__body">
+                                        <span class="b-mega-item__name">ngrafix</span>
+                                        <span class="b-mega-item__desc">{{ 'Branding, UI/UX design & digital communication' if is_en else 'Identité visuelle, UI/UX & communication digitale' }}</span>
+                                    </span>
+                                </a>
                             </div>
                         </div>
                     </li>
 
-                    <!-- Menu Déroulant Produits -->
-                    <li class="b-nav__item b-nav__item--has-drop">
-                        <a href="{{ site_prefix }}/produits/" class="b-nav__link {% if active_nav == 'produits' %}is-current{% endif %}" aria-expanded="false" aria-haspopup="true">
-                            <span>{{ t('nav_products', 'Produits') }}</span>
-                            {{ m.byt3lab_icon('chevron-down', 14, 'b-nav__caret') }}
-                        </a>
-                        <div class="b-dropdown" role="menu">
-                            <a href="{{ site_prefix }}/produits/melodi-erp/" class="b-dropdown__item" role="menuitem">
-                                <strong>MELODI ERP</strong>
-                                <span>Progiciel de gestion modulaire</span>
-                            </a>
-                            <a href="{{ site_prefix }}/produits/suku/" class="b-dropdown__item" role="menuitem">
-                                <strong>SUKU</strong>
-                                <span>Solution pour le secteur éducatif</span>
-                            </a>
-                            <a href="{{ site_prefix }}/produits/bws/" class="b-dropdown__item" role="menuitem">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <strong>BWS Infrastructure</strong>
-                                    {{ m.byt3lab_status_badge('in_development') }}
-                                </div>
-                                <span>Hébergement &amp; cloud managé</span>
-                            </a>
-                        </div>
-                    </li>
-
                     <li class="b-nav__item">
-                        <a href="{{ site_prefix }}/services/" class="b-nav__link {% if active_nav == 'services' %}is-current{% endif %}">
-                            {{ t('nav_services', 'Services') }}
+                        <a href="{{ site_prefix }}/solutions/" class="b-nav__link {% if active_nav == 'solutions' %}is-current{% endif %}">
+                            {{ 'Solutions' if is_en else 'Solutions' }}
                         </a>
                     </li>
 
                     <li class="b-nav__item">
-                        <a href="{{ site_prefix }}/ngrafix/" class="b-nav__link b-nav__link--studio {% if active_nav == 'ngrafix' %}is-current{% endif %}">
-                            <span class="b-nav__studio-badge">Studio</span>
-                            <span>{{ t('nav_ngrafix', 'NGRAFIX') }}</span>
+                        <a href="{{ site_prefix }}/realisations/" class="b-nav__link {% if active_nav == 'realisations' %}is-current{% endif %}">
+                            {{ 'Portfolio' if is_en else 'Réalisations' }}
                         </a>
                     </li>
 
                     <li class="b-nav__item b-nav__item--has-drop">
-                        <a href="{{ site_prefix }}/a-propos/" class="b-nav__link {% if active_nav in ['a-propos', 'equipe', 'carriere'] %}is-current{% endif %}" aria-expanded="false" aria-haspopup="true">
-                            <span>{{ t('nav_group', 'Groupe') }}</span>
+                        <a href="{{ site_prefix }}/a-propos/" class="b-nav__link {% if active_nav in ['a-propos', 'equipe', 'carriere', 'blog'] %}is-current{% endif %}" aria-expanded="false" aria-haspopup="true">
+                            <span>{{ 'About' if is_en else 'À propos' }}</span>
                             {{ m.byt3lab_icon('chevron-down', 14, 'b-nav__caret') }}
                         </a>
                         <div class="b-dropdown" role="menu">
                             <a href="{{ site_prefix }}/a-propos/" class="b-dropdown__item" role="menuitem">
-                                <strong>{{ t('nav_about', 'À Propos du Groupe') }}</strong>
-                                <span>Vision, mission et organisation</span>
-                            </a>
-                            <a href="{{ site_prefix }}/equipe/" class="b-dropdown__item" role="menuitem">
-                                <strong>{{ t('nav_team', 'Équipe Dirigeante') }}</strong>
-                                <span>Domaines d'ingénierie &amp; gouvernance</span>
-                            </a>
-                            <a href="{{ site_prefix }}/carriere/" class="b-dropdown__item" role="menuitem">
-                                <strong>{{ t('nav_career', 'Carrières &amp; Recrutement') }}</strong>
-                                <span>Rejoindre nos divisions</span>
+                                <strong>{{ 'About Byt3Lab' if is_en else 'À propos de Byt3Lab' }}</strong>
+                                <span>{{ 'Vision, mission & approach' if is_en else 'Vision, mission & approche' }}</span>
                             </a>
                             <a href="{{ site_prefix }}/blog/" class="b-dropdown__item" role="menuitem">
-                                <strong>{{ t('nav_blog', 'Blog &amp; Actualités') }}</strong>
-                                <span>Articles techniques &amp; tribunes</span>
+                                <strong>{{ 'Tech Blog' if is_en else 'Blog &amp; Actualités' }}</strong>
+                                <span>{{ 'Technical insights & news' if is_en else 'Dossiers techniques & tribunes' }}</span>
+                            </a>
+                            <a href="{{ site_prefix }}/equipe/" class="b-dropdown__item" role="menuitem">
+                                <strong>{{ 'Team' if is_en else 'Équipe' }}</strong>
+                                <span>{{ 'Expertise & governance' if is_en else 'Pôles d\'expertise & gouvernance' }}</span>
+                            </a>
+                            <a href="{{ site_prefix }}/carriere/" class="b-dropdown__item" role="menuitem">
+                                <strong>{{ 'Careers' if is_en else 'Carrières' }}</strong>
+                                <span>{{ 'Join our teams' if is_en else 'Rejoindre nos équipes' }}</span>
+                            </a>
+                            <a href="{{ site_prefix }}/partenaires/" class="b-dropdown__item" role="menuitem">
+                                <strong>{{ 'Partners' if is_en else 'Partenaires' }}</strong>
+                                <span>{{ 'Institutional alliances' if is_en else 'Alliances & partenariats' }}</span>
                             </a>
                         </div>
                     </li>
 
                     <li class="b-nav__item">
-                        <a href="{{ site_prefix }}/blog/" class="b-nav__link {% if active_nav == 'blog' %}is-current{% endif %}">
-                            {{ t('nav_blog', 'Blog') }}
+                        <a href="{{ site_prefix }}/partenaires/" class="b-nav__link {% if active_nav == 'partenaires' %}is-current{% endif %}">
+                            {{ 'Partners' if is_en else 'Partenaires' }}
                         </a>
                     </li>
 
                     <li class="b-nav__item">
-                        <a href="{{ site_prefix }}/partenaires/" class="b-nav__link {% if active_nav == 'partenaires' %}is-current{% endif %}">
-                            {{ t('nav_partners', 'Partenaires') }}
+                        <a href="{{ site_prefix }}/contact/" class="b-nav__link {% if active_nav == 'contact' %}is-current{% endif %}">
+                            {{ 'Contact' if is_en else 'Contact' }}
                         </a>
                     </li>
                 </ul>
@@ -131,17 +130,13 @@
                     <a href="{{ alt_en_url|default('/lg-en/') }}" class="b-lang-switch__link {% if current_lang == 'en' %}is-active{% endif %}">EN</a>
                 </div>
 
-                <a href="{{ site_prefix }}/partenaires/#formulaire" class="b-btn b-btn--sm b-btn--primary">
-                    {{ m.byt3lab_icon('handshake', 16) }}
-                    <span>{{ t('nav_partner_cta', 'Devenir Partenaire') }}</span>
-                </a>
-                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--sm b-btn--secondary">
-                    <span>{{ t('nav_contact_cta', 'Contact') }}</span>
+                <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--sm b-btn--primary">
+                    <span>{{ 'Discuss your project' if is_en else 'Discutons de votre projet' }}</span>
                 </a>
             </div>
 
             <!-- Bouton Burger Mobile -->
-            <button type="button" class="b-burger" id="b-burger-btn" aria-label="{{ t('nav_open_nav', 'Ouvrir la navigation') }}" aria-expanded="false" aria-controls="b-mobile-drawer">
+            <button type="button" class="b-burger" id="b-burger-btn" aria-label="{{ 'Open navigation' if is_en else 'Ouvrir la navigation' }}" aria-expanded="false" aria-controls="b-mobile-drawer">
                 <span class="b-burger__line"></span>
                 <span class="b-burger__line"></span>
                 <span class="b-burger__line"></span>
@@ -151,55 +146,37 @@
     </div>
 </header>
 
-<!-- Tiroir Mobile Complet (hors du header translucide pour éviter le containing block lié au backdrop-filter) -->
+<!-- Tiroir Mobile Complet -->
 <div class="b-drawer" id="b-mobile-drawer" aria-hidden="true">
     <div class="b-drawer__head">
         <a href="{{ site_prefix }}/" class="b-brand">
             {{ m.byt3lab_logo_svg('b-brand__mark') }}
             <span class="b-brand__name">BYT3LAB</span>
         </a>
-        <button type="button" class="b-drawer__close" aria-label="{{ t('nav_close_nav', 'Fermer') }}" id="b-drawer-close-btn">
+        <button type="button" class="b-drawer__close" aria-label="{{ 'Close' if is_en else 'Fermer' }}" id="b-drawer-close-btn">
             {{ m.byt3lab_icon('x', 24) }}
         </button>
     </div>
 
     <nav class="b-drawer__nav">
         <ul class="b-drawer__list">
-            <li><a href="{{ site_prefix }}/" class="b-drawer__link">{{ t('nav_home', 'Accueil') }}</a></li>
+            <li><a href="{{ site_prefix }}/" class="b-drawer__link">{{ 'Home' if is_en else 'Accueil' }}</a></li>
             <li>
-                <span class="b-drawer__section-label">{{ t('nav_tech_divisions', 'Divisions Technologiques') }}</span>
+                <span class="b-drawer__section-label">{{ 'Our 4 Poles' if is_en else 'Nos Pôles' }}</span>
                 <ul class="b-drawer__sublist">
-                    {% for div in header_divisions %}
-                    <li>
-                        <a href="{{ site_prefix }}/technologies/{{ div.slug }}/">
-                            <span>{{ div.title }}</span>
-                            {{ m.byt3lab_status_badge(div.maturity_status) }}
-                        </a>
-                    </li>
-                    {% endfor %}
+                    <li><a href="{{ site_prefix }}/poles/">{{ 'All Poles Overview' if is_en else 'Vue d\'ensemble' }}</a></li>
+                    <li><a href="{{ site_prefix }}/poles/software/">Byt3Lab Software</a></li>
+                    <li><a href="{{ site_prefix }}/poles/web-services/">Byt3Lab Web Services</a></li>
+                    <li><a href="{{ site_prefix }}/poles/equipment/">Byt3Lab Equipment</a></li>
+                    <li><a href="{{ site_prefix }}/poles/ngrafix/" style="color: var(--c-ngx-orange); font-weight: 600;">ngrafix</a></li>
                 </ul>
             </li>
-            <li>
-                <span class="b-drawer__section-label">{{ t('nav_products', 'Produits &amp; Offres') }}</span>
-                <ul class="b-drawer__sublist">
-                    <li><a href="{{ site_prefix }}/produits/melodi-erp/">MELODI ERP</a></li>
-                    <li><a href="{{ site_prefix }}/produits/suku/">SUKU (Éducation)</a></li>
-                    <li>
-                        <a href="{{ site_prefix }}/produits/bws/">
-                            <span>BWS Infrastructure</span>
-                            {{ m.byt3lab_status_badge('in_development') }}
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li><a href="{{ site_prefix }}/services/" class="b-drawer__link">{{ t('nav_services', 'Services &amp; Ingénierie') }}</a></li>
-            <li><a href="{{ site_prefix }}/ngrafix/" class="b-drawer__link b-drawer__link--orange">{{ t('nav_creative_studio', 'Studio Créatif NGRAFIX') }}</a></li>
-            <li><a href="{{ site_prefix }}/a-propos/" class="b-drawer__link">{{ t('nav_about', 'À Propos du Groupe') }}</a></li>
-            <li><a href="{{ site_prefix }}/equipe/" class="b-drawer__link">{{ t('nav_team', 'Équipe') }}</a></li>
-            <li><a href="{{ site_prefix }}/carriere/" class="b-drawer__link">{{ t('nav_career', 'Carrières') }}</a></li>
-            <li><a href="{{ site_prefix }}/blog/" class="b-drawer__link">{{ t('nav_blog', 'Blog &amp; Actualités') }}</a></li>
-            <li><a href="{{ site_prefix }}/partenaires/" class="b-drawer__link">{{ t('nav_partners', 'Partenaires Institutionnels') }}</a></li>
-            <li><a href="{{ site_prefix }}/contact/" class="b-drawer__link">{{ t('nav_contact', 'Contactez-nous') }}</a></li>
+            <li><a href="{{ site_prefix }}/solutions/" class="b-drawer__link">{{ 'Solutions' if is_en else 'Solutions' }}</a></li>
+            <li><a href="{{ site_prefix }}/realisations/" class="b-drawer__link">{{ 'Portfolio' if is_en else 'Réalisations' }}</a></li>
+            <li><a href="{{ site_prefix }}/a-propos/" class="b-drawer__link">{{ 'About' if is_en else 'À propos' }}</a></li>
+            <li><a href="{{ site_prefix }}/partenaires/" class="b-drawer__link">{{ 'Partners' if is_en else 'Partenaires' }}</a></li>
+            <li><a href="{{ site_prefix }}/blog/" class="b-drawer__link">Blog</a></li>
+            <li><a href="{{ site_prefix }}/contact/" class="b-drawer__link">Contact</a></li>
         </ul>
     </nav>
 
@@ -209,11 +186,8 @@
             <a href="{{ alt_en_url|default('/lg-en/') }}" class="b-lang-switch__link {% if current_lang == 'en' %}is-active{% endif %}" style="flex:1; text-align:center;">English (EN)</a>
         </div>
 
-        <a href="{{ site_prefix }}/partenaires/#formulaire" class="b-btn b-btn--primary" style="width: 100%;">
-            {{ t('nav_partner_cta', 'Devenir Partenaire') }}
-        </a>
-        <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--secondary" style="width: 100%;">
-            {{ t('nav_contact_cta', 'Prendre Contact') }}
+        <a href="{{ site_prefix }}/contact/" class="b-btn b-btn--primary" style="width: 100%;">
+            {{ 'Discuss your project' if is_en else 'Discutons de votre projet' }}
         </a>
     </div>
 </div>

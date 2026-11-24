@@ -281,3 +281,94 @@ document.addEventListener('click', (e) => {
         }).catch(() => {});
     }
 });
+
+// Filtrage interactif du portfolio (Accueil & Réalisations)
+document.addEventListener('DOMContentLoaded', () => {
+    const filterBars = document.querySelectorAll<HTMLElement>('[data-portfolio-filters]');
+    filterBars.forEach((bar) => {
+        const container = bar.parentElement;
+        const grid = container?.querySelector<HTMLElement>('[data-portfolio-grid]');
+        if (!grid) return;
+
+        const applyFilter = (filterVal: string) => {
+            const items = grid.querySelectorAll<HTMLElement>('[data-portfolio-item]');
+            items.forEach((el) => {
+                const cat = el.getAttribute('data-portfolio-item') || 'software';
+                el.style.display = (filterVal === 'all' || cat === filterVal) ? '' : 'none';
+            });
+        };
+
+        const buttons = bar.querySelectorAll<HTMLButtonElement>('[data-filter]');
+        buttons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                buttons.forEach((b) => b.classList.remove('is-active'));
+                btn.classList.add('is-active');
+                applyFilter(btn.getAttribute('data-filter') || 'all');
+            });
+        });
+
+        const initialActive = bar.querySelector<HTMLButtonElement>('[data-filter].is-active');
+        if (initialActive) {
+            applyFilter(initialActive.getAttribute('data-filter') || 'all');
+        }
+    });
+});
+
+// 6. Découverte progressive légère au défilement (IntersectionObserver)
+(() => {
+    const initScrollReveal = () => {
+        const targets = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+        if (!targets.length) return;
+
+        const prefersReduced =
+            typeof window.matchMedia === 'function' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReduced || typeof IntersectionObserver === 'undefined') {
+            targets.forEach((el) => el.classList.add('is-visible'));
+            return;
+        }
+
+        document.documentElement.classList.add('js-reveal-ready');
+
+        // Révéler immédiatement les éléments Hero au chargement (chorégraphie fluide)
+        const heroEls = targets.filter((el) => el.getAttribute('data-reveal') === 'hero');
+        const scrollEls = targets.filter((el) => el.getAttribute('data-reveal') !== 'hero');
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                heroEls.forEach((el) => el.classList.add('is-visible'));
+            });
+        });
+
+        const observer = new IntersectionObserver(
+            (entries, obs) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            },
+            {
+                threshold: 0.08,
+                rootMargin: '0px 0px -36px 0px',
+            }
+        );
+
+        scrollEls.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.92) {
+                el.classList.add('is-visible');
+            } else {
+                observer.observe(el);
+            }
+        });
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollReveal);
+    } else {
+        initScrollReveal();
+    }
+})();

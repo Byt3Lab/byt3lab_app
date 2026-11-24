@@ -24,9 +24,14 @@ export const router = new MelodiRouter({
       component: SettingsView,
     },
     {
+      path: '/poles',
+      name: 'byt3lab-poles',
+      component: createContentCrudView('divisions', 'Nos 4 Pôles (Software, Web Services, Equipment, ngrafix)'),
+    },
+    {
       path: '/divisions',
       name: 'byt3lab-divisions',
-      component: createContentCrudView('divisions', 'Divisions Technologiques'),
+      component: createContentCrudView('divisions', 'Nos 4 Pôles (Software, Web Services, Equipment, ngrafix)'),
     },
     {
       path: '/solutions',

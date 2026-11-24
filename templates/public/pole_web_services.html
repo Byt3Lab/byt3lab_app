@@ -1,0 +1,154 @@
+{% import "public/byt3lab_macros.html" as m with context %}
+
+{% set is_en = (current_lang == 'en') %}
+
+<div class="b-pole-theme b-pole-theme--cloud">
+    <!-- Hero Cloud & NOC Operations : Teal / Cyan Dark -->
+    <section class="b-pole-hero b-pole-hero--cloud">
+        <div class="b-container b-container--wide">
+            <div class="b-breadcrumb b-breadcrumb--light">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <a href="{{ site_prefix }}/poles/">{{ 'Our Poles' if is_en else 'Nos Pôles' }}</a>
+                <span>/</span>
+                <span>Byt3Lab Web Services</span>
+            </div>
+
+            <div class="row align-items-center g-5 mt-1">
+                <div class="col-lg-7">
+                    <span class="b-pole-badge b-pole-badge--cloud">HOST &middot; CLOUD &amp; MANAGED SERVICES</span>
+                    <h1 class="b-pole-hero__title mt-3">Byt3Lab Web Services</h1>
+                    <p class="b-pole-hero__lead">
+                        {{ 'Providing businesses with the digital infrastructure and managed services required to host, operate and secure their applications and data.'
+                           if is_en else
+                           'Fournir aux entreprises les infrastructures numériques et les services managés nécessaires pour héberger, exploiter et sécuriser leurs applications et leurs données.' }}
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a href="{{ site_prefix }}/contact/?pole=web-services" class="b-btn b-btn--lg b-btn--primary" style="background: #0d9488; border-color: #0d9488;">
+                            {{ 'Request hosting or managed services' if is_en else 'Souscrire ou demander un devis' }} &rarr;
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="b-noc-card">
+                        <div class="b-noc-card__row">
+                            <span class="b-noc-dot b-noc-dot--live"></span>
+                            <div>
+                                <strong>{{ 'Managed Hosting & Infogérance' if is_en else 'Hébergement Managé & Infogérance' }}</strong>
+                                <small>{{ 'Operational & Supervised 24/7' if is_en else 'Opérationnel & Supervisé' }}</small>
+                            </div>
+                        </div>
+                        <div class="b-noc-card__row">
+                            <span class="b-noc-dot b-noc-dot--live"></span>
+                            <div>
+                                <strong>{{ 'Automated Backups & Security' if is_en else 'Sauvegardes & Sécurisation SSL/TLS' }}</strong>
+                                <small>{{ 'Encrypted off-site snapshots' if is_en else 'Clichés chiffrés & pare-feu' }}</small>
+                            </div>
+                        </div>
+                        <div class="b-noc-card__row">
+                            <span class="b-noc-dot b-noc-dot--dev"></span>
+                            <div>
+                                <strong>{{ 'Local Sovereign Cloud Nodes' if is_en else 'Capacités Cloud Locales Souveraines' }}</strong>
+                                <small>{{ 'Progressive deployment in progress' if is_en else 'En cours de déploiement progressif' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Offres disponibles vs En développement -->
+    <section class="b-section">
+        <div class="b-container b-container--wide">
+            <div class="b-section__head">
+                <span class="b-eyebrow" style="color: #0d9488;">{{ 'Transparency & Service Tiers' if is_en else 'Offres & Disponibilité' }}</span>
+                <h2 class="b-title">{{ 'Available managed services & evolving cloud roadmap' if is_en else 'Services opérationnels et feuille de route cloud' }}</h2>
+                <p class="b-lead">
+                    {{ 'We clearly distinguish immediately available managed services from sovereign cloud capacities currently under active deployment.'
+                       if is_en else
+                       'Nous distinguons clairement les services managés immédiatement disponibles des capacités d\'infrastructure cloud en cours de déploiement.' }}
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="b-card h-100" style="border-top: 4px solid #0d9488;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="h4 fw-bold mb-0">{{ 'Available Now' if is_en else 'Offres Disponibles' }}</h3>
+                            {{ m.byt3lab_status_badge('active') }}
+                        </div>
+                        <p class="text-muted small mb-4">
+                            {{ 'Ready-to-deploy operational services delivered and supervised by our systems engineering team.'
+                               if is_en else
+                               'Services opérationnels immédiatement mobilisables et supervisés par nos équipes d\'administration système.' }}
+                        </p>
+                        <ul class="b-pole-card__list mb-4">
+                            <li>{{ 'Web & business application hosting (MELODI ERP, web apps, APIs)' if is_en else 'Hébergement web & hébergement d\'applications métier' }}</li>
+                            <li>{{ 'Managed application deployment & CI/CD release management' if is_en else 'Déploiement d\'applications & mise en production' }}</li>
+                            <li>{{ 'Linux/PostgreSQL server administration & hardening' if is_en else 'Administration système & gestion de serveurs' }}</li>
+                            <li>{{ 'Automated backup, restoration testing & proactive maintenance' if is_en else 'Stockage, sauvegarde automatisée & maintenance préventive' }}</li>
+                            <li>{{ '24/7 monitoring & managed IT operations (infogérance)' if is_en else 'Infogérance applicative & services d\'infrastructure managée' }}</li>
+                        </ul>
+                        <a href="{{ site_prefix }}/contact/?pole=web-services&need=H%C3%A9bergement%20%26%20Infog%C3%A9rance" class="b-btn b-btn--sm b-btn--primary" style="background: #0d9488; border-color: #0d9488;">
+                            {{ 'Subscribe / Request quote' if is_en else 'Souscrire / Demander un devis' }} &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="b-card h-100" style="border-top: 4px solid #C7860A;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="h4 fw-bold mb-0">{{ 'Long-Term Roadmap' if is_en else 'Capacités en Développement' }}</h3>
+                            {{ m.byt3lab_status_badge('in_development') }}
+                        </div>
+                        <p class="text-muted small mb-4">
+                            {{ 'Progressively building local cloud and hosting capacities tailored to African enterprise compliance and latency needs.'
+                               if is_en else
+                               'Développer progressivement des capacités d\'hébergement et des infrastructures cloud adaptées aux besoins des entreprises africaines.' }}
+                        </p>
+                        <ul class="b-pole-card__list mb-4">
+                            <li>{{ 'Self-service local VPS & dedicated server provisioning portal' if is_en else 'Portail automatisé de serveurs VPS & serveurs dédiés locaux' }}</li>
+                            <li>{{ 'Regional sovereign cloud computing & multi-tenant object storage' if is_en else 'Cloud computing régional souverain & stockage distribué' }}</li>
+                            <li>{{ 'Multi-site disaster recovery & local peering interconnections' if is_en else 'Plans de reprise d\'activité multi-sites & interconnexions locales' }}</li>
+                        </ul>
+                        <a href="{{ site_prefix }}/contact/?pole=web-services&need=Programme%20Pilote%20Cloud" class="b-btn b-btn--sm b-btn--secondary">
+                            {{ 'Discuss early access / pilot' if is_en else 'Échanger sur nos déploiements pilotes' }} &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Caractéristiques & Modalités -->
+    <section class="b-section b-section--alt">
+        <div class="b-container b-container--wide">
+            <div class="b-section__head">
+                <span class="b-eyebrow" style="color: #0d9488;">{{ 'Technical Standards & Onboarding' if is_en else 'Caractéristiques & Souscription' }}</span>
+                <h2 class="b-title">{{ 'How we onboard your applications' if is_en else 'Modalités techniques et accompagnement' }}</h2>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="b-why-card h-100">
+                        <h4>{{ '1. Architecture & Sizing Audit' if is_en else '1. Audit & Dimensionnement' }}</h4>
+                        <p>{{ 'Evaluation of your CPU, RAM, storage, traffic and availability constraints before provisioning.' if is_en else 'Analyse de vos besoins applicatifs (charge, stockage, disponibilité, sauvegardes) avant mise en ligne.' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="b-why-card h-100">
+                        <h4>{{ '2. Security & Backup Policy' if is_en else '2. Sécurisation & Sauvegardes' }}</h4>
+                        <p>{{ 'SSL/TLS encryption, firewall rules, isolated environments and scheduled off-site backups.' if is_en else 'Chiffrement SSL/TLS, pare-feu, cloisonnement des environnements et sauvegardes planifiées.' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="b-why-card h-100">
+                        <h4>{{ '3. Custom SLA & Subscription' if is_en else '3. Contrat d\'Infogérance' }}</h4>
+                        <p>{{ 'Monthly or annual managed service agreements tailored to your criticality level.' if is_en else 'Souscription mensuelle ou annuelle adaptée à la criticité de vos applications métier.' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

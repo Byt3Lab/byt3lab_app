@@ -17,16 +17,19 @@ class SeoService:
 
     STATIC_PATHS: List[tuple] = [
         ("/", "1.0", "weekly"),
-        ("/technologies/", "0.9", "weekly"),
-        ("/produits/", "0.9", "weekly"),
-        ("/services/", "0.9", "weekly"),
-        ("/realisations/", "0.8", "weekly"),
-        ("/ngrafix/", "0.8", "monthly"),
+        ("/poles/", "0.95", "weekly"),
+        ("/poles/software/", "0.9", "weekly"),
+        ("/poles/web-services/", "0.9", "weekly"),
+        ("/poles/equipment/", "0.9", "weekly"),
+        ("/poles/ngrafix/", "0.9", "weekly"),
+        ("/solutions/", "0.9", "weekly"),
+        ("/services/", "0.8", "weekly"),
+        ("/realisations/", "0.85", "weekly"),
         ("/a-propos/", "0.7", "monthly"),
-        ("/equipe/", "0.7", "monthly"),
+        ("/equipe/", "0.6", "monthly"),
         ("/carriere/", "0.7", "weekly"),
         ("/partenaires/", "0.7", "monthly"),
-        ("/contact/", "0.8", "monthly"),
+        ("/contact/", "0.85", "monthly"),
         ("/blog/", "0.9", "daily"),
     ]
 
@@ -58,9 +61,6 @@ class SeoService:
 
         for path, prio, freq in cls.STATIC_PATHS:
             blocks.append(cls._render_url_entry(base_url, path, prio, freq, today))
-
-        for div in await DivisionRepository.get_all(session, published_only=True):
-            blocks.append(cls._render_url_entry(base_url, f"/technologies/{div.slug}/", "0.8", "monthly"))
 
         for sol in await SolutionRepository.get_all(session, published_only=True):
             blocks.append(cls._render_url_entry(base_url, f"/produits/{sol.slug}/", "0.9", "weekly"))

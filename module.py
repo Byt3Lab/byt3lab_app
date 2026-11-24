@@ -127,6 +127,7 @@ class Byt3labModule(ApplicationModule):
             f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS features_list_en JSON",
             f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS problems_list_en JSON",
             f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS benefits_list_en JSON",
+            f"ALTER TABLE {Byt3labTables.SOLUTIONS} ADD COLUMN IF NOT EXISTS image_url VARCHAR(300)",
             f"ALTER TABLE {Byt3labTables.JOBS} ADD COLUMN IF NOT EXISTS requirements_en JSON",
             f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS category_id INTEGER REFERENCES {Byt3labTables.BLOG_CATEGORIES}(id) ON DELETE SET NULL",
             f"ALTER TABLE {Byt3labTables.POSTS} ADD COLUMN IF NOT EXISTS tags_fr VARCHAR(300)",
@@ -277,15 +278,17 @@ class Byt3labModule(ApplicationModule):
                     self.router.add_route(f"{lp}{with_slash}", handler, methods=["GET"])
 
         _add_seo_route("/", PublicWebController.home)
-        _add_seo_route("/technologies", PublicWebController.technologies)
-        _add_seo_route("/technologies/<slug>", PublicWebController.division_detail)
-        _add_seo_route("/produits", PublicWebController.produits)
+        _add_seo_route("/poles", PublicWebController.poles)
+        _add_seo_route("/poles/software", PublicWebController.pole_software)
+        _add_seo_route("/poles/web-services", PublicWebController.pole_web_services)
+        _add_seo_route("/poles/equipment", PublicWebController.pole_equipment)
+        _add_seo_route("/poles/ngrafix", PublicWebController.ngrafix)
+        _add_seo_route("/solutions", PublicWebController.solutions)
         _add_seo_route("/produits/<slug>", PublicWebController.solution_detail)
         _add_seo_route("/services", PublicWebController.services)
         _add_seo_route("/services/<slug>", PublicWebController.service_detail)
         _add_seo_route("/realisations", PublicWebController.realisations)
         _add_seo_route("/realisations/<slug>", PublicWebController.project_detail)
-        _add_seo_route("/ngrafix", PublicWebController.ngrafix)
         _add_seo_route("/a-propos", PublicWebController.a_propos)
         _add_seo_route("/equipe", PublicWebController.equipe)
         _add_seo_route("/equipe/<slug>", PublicWebController.team_detail)

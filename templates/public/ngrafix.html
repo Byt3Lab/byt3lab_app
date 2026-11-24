@@ -1,7 +1,5 @@
-{% extends "public/byt3lab_layout.html" %}
 {% import "public/byt3lab_macros.html" as m with context %}
 
-{% block content %}
 <div class="theme-ngrafix" style="background-color: var(--c-ngx-black); color: var(--c-white); min-height: 100vh;">
 
     <!-- Ruban d'appartenance à l'écosystème -->
@@ -205,22 +203,28 @@
                 <p style="color: #888;">Une sélection de nos projets en identité visuelle, branding et création graphique.</p>
             </div>
 
-            {% if works and works|length > 0 %}
+            {% set ngx_list = ngrafix_items or works or [] %}
+            {% if ngx_list and ngx_list|length > 0 %}
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-                    {% for w in works %}
+                    {% for w in ngx_list %}
+                        {% set thumb = w.image_url or w.thumbnail %}
                         <article class="b-card" style="background: #181818; border-color: rgba(255,255,255,0.08); padding: 28px; color: #FFF;">
-                            {% if w.thumbnail %}
+                            {% if thumb %}
                                 <div style="margin: -28px -28px 20px -28px; overflow: hidden; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
-                                    <img src="{{ w.thumbnail }}" alt="{{ w.title }}" style="width: 100%; height: 200px; object-fit: cover;" />
+                                    <img src="{{ thumb }}" alt="{{ w.title }}" style="width: 100%; height: 200px; object-fit: cover;"
+                                         onerror="this.parentElement.style.display='none';" />
                                 </div>
+                            {% endif %}
+                            {% if w.discipline %}
+                                <span style="display:inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-ngx-orange); font-weight: 700; margin-bottom: 6px;">{{ w.discipline }}</span>
                             {% endif %}
                             <h3 style="color: #FFF; font-size: 1.2rem; margin-bottom: 6px;">{{ w.title }}</h3>
-                            {% if w.client %}
+                            {% if w.client_name or w.client %}
                                 <div style="font-size: 12px; color: var(--c-ngx-orange); margin-bottom: 12px; font-weight: 600;">
-                                    {{ w.client }} {% if w.year %}· {{ w.year }}{% endif %}
+                                    {{ w.client_name or w.client }} {% if w.year %}· {{ w.year }}{% endif %}
                                 </div>
                             {% endif %}
-                            <p style="font-size: 13.5px; color: #999; line-height: 1.6; margin: 0;">{{ w.excerpt }}</p>
+                            <div style="font-size: 13.5px; color: #bbb; line-height: 1.6; margin: 0;">{{ (w.description or w.excerpt or '')|safe }}</div>
                         </article>
                     {% endfor %}
                 </div>
@@ -272,4 +276,3 @@
     </section>
 
 </div>
-{% endblock %}

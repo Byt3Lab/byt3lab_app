@@ -121,6 +121,15 @@ class PublicWebController:
             **seo_urls,
         }
 
+    @classmethod
+    async def _render_public_page(cls, response: Response, component_name: str, ctx: dict):
+        root = Component(module_name="byt3lab_app", name="public/byt3lab_layout", anchor="byt3lab", context=ctx)
+        root.add(Component(module_name="byt3lab_app", name="public/byt3lab_header", context=ctx), slot="header")
+        root.add(Component(module_name="byt3lab_app", name=component_name, context=ctx), slot="content")
+        root.add(Component(module_name="byt3lab_app", name="public/byt3lab_footer", context=ctx), slot="footer")
+        page = Page(ctx["page_title"], root, context=ctx, module_name="byt3lab_app")
+        return await response.render_page(page)
+
     # 1. Accueil
     @classmethod
     async def home(cls, request: Request, response: Response):
@@ -130,71 +139,101 @@ class PublicWebController:
             divisions = await DivisionRepository.get_all(session, published_only=True)
             solutions = await SolutionRepository.get_all(session, published_only=True)
             projects = await ProjectRepository.get_all(session, published_only=True)
+            ngrafix_items = await NgrafixRepository.get_all(session, published_only=True)
             partners = await PartnerRepository.get_all(session, published_only=True)
 
         ctx.update({
             "divisions": [d.to_dict(lang=lang) for d in divisions],
             "solutions": [s.to_dict(lang=lang) for s in solutions],
             "projects": [p.to_dict(lang=lang) for p in projects],
+            "ngrafix_items": [n.to_dict(lang=lang) for n in ngrafix_items],
             "partners": [p.to_dict(lang=lang) for p in partners],
-            "page_title": "Concevoir les technologies de demain",
+            "page_title": "Building technology solutions that move businesses forward" if lang == "en" else "Solutions technologiques qui font avancer les entreprises",
         })
 
-        comp = Component(module_name="byt3lab_app", name="public/home", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/home", ctx)
 
-    # 2. Technologies & Divisions
+    # 2. Nos 4 Pôles Stratégiques (Software, Web Services, Equipment, ngrafix)
     @classmethod
-    async def technologies(cls, request: Request, response: Response):
-        ctx = await cls._build_base_context(request, active_nav="technologies")
+    async def poles(cls, request: Request, response: Response):
+        ctx = await cls._build_base_context(request, active_nav="poles")
+        lang = ctx["current_lang"]
+        ctx.update({
+            "page_title": "Our 4 Divisions & Poles" if lang == "en" else "Nos 4 Pôles Technologiques",
+            "meta_description": (
+                "Discover Byt3Lab's four complementary poles: Software, Web Services, Equipment and ngrafix."
+                if lang == "en" else
+                "Découvrez les quatre pôles complémentaires de Byt3Lab : Software, Web Services, Equipment et ngrafix."
+            ),
+        })
+        return await cls._render_public_page(response, "public/poles", ctx)
+
+    @classmethod
+    async def pole_software(cls, request: Request, response: Response):
+        ctx = await cls._build_base_context(request, active_nav="poles")
         lang = ctx["current_lang"]
         async with request.app.db.get_session() as session:
-            divisions = await DivisionRepository.get_all(session, published_only=True)
-
+            all_solutions = await SolutionRepository.get_all(session, published_only=True)
+            all_services = await ServiceRepository.get_all(session, published_only=True)
+        software_solutions = [
+            s.to_dict(lang=lang) for s in all_solutions
+            if s.slug in ("melodi-erp", "asso", "suku")
+        ]
         ctx.update({
-            "divisions": [d.to_dict(lang=lang) for d in divisions],
-            "page_title": "Divisions Technologiques",
+            "software_solutions": software_solutions,
+            "services": [s.to_dict(lang=lang) for s in all_services],
+            "page_title": "Byt3Lab Software — Software Development & MELODI ERP",
+            "meta_description": (
+                "Custom business software, ERP & CRM solutions, APIs and MELODI ERP modular platform."
+                if lang == "en" else
+                "Développement de logiciels métier, ERP & CRM, API et plateforme modulaire MELODI ERP."
+            ),
         })
-        comp = Component(module_name="byt3lab_app", name="public/technologies", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/pole_software", ctx)
 
     @classmethod
-    async def division_detail(cls, request: Request, response: Response):
-        slug = (request.params or {}).get("slug")
-        ctx = await cls._build_base_context(request, active_nav="technologies")
+    async def pole_web_services(cls, request: Request, response: Response):
+        ctx = await cls._build_base_context(request, active_nav="poles")
         lang = ctx["current_lang"]
-        async with request.app.db.get_session() as session:
-            division = await DivisionRepository.get_by_slug(session, slug)
-            if not division:
-                return await cls.not_found(request, response)
-            related_solutions = await SolutionRepository.get_by_division(session, slug)
-
         ctx.update({
-            "division": division.to_dict(lang=lang),
-            "related_solutions": [s.to_dict(lang=lang) for s in related_solutions],
-            "page_title": division.title_en if lang == "en" else division.title_fr,
+            "page_title": "Byt3Lab Web Services — Cloud, Hosting & Managed Services",
+            "meta_description": (
+                "Application hosting, VPS, dedicated servers, system administration and managed cloud services in Africa."
+                if lang == "en" else
+                "Hébergement d'applications, serveurs, administration système, infogérance et services cloud managés."
+            ),
         })
-        comp = Component(module_name="byt3lab_app", name="public/division_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/pole_web_services", ctx)
 
-    # 3. Produits & Solutions
     @classmethod
-    async def produits(cls, request: Request, response: Response):
-        ctx = await cls._build_base_context(request, active_nav="produits")
+    async def pole_equipment(cls, request: Request, response: Response):
+        ctx = await cls._build_base_context(request, active_nav="poles")
+        lang = ctx["current_lang"]
+        ctx.update({
+            "page_title": "Byt3Lab Equipment — IT, Energy & Equipment as a Service",
+            "meta_description": (
+                "Complete IT equipment, enterprise networking, security, solar backup energy and Equipment as a Service."
+                if lang == "en" else
+                "Équipements informatiques, réseaux, vidéosurveillance, solutions énergétiques et Equipment as a Service."
+            ),
+        })
+        return await cls._render_public_page(response, "public/pole_equipment", ctx)
+
+    # 3. Solutions orientées besoins clients
+    @classmethod
+    async def solutions(cls, request: Request, response: Response):
+        ctx = await cls._build_base_context(request, active_nav="solutions")
         lang = ctx["current_lang"]
         async with request.app.db.get_session() as session:
             solutions = await SolutionRepository.get_all(session, published_only=True)
+            services = await ServiceRepository.get_all(session, published_only=True)
 
         ctx.update({
             "solutions": [s.to_dict(lang=lang) for s in solutions],
-            "page_title": "Produits & Solutions",
+            "services": [s.to_dict(lang=lang) for s in services],
+            "page_title": "Business & Technology Solutions" if lang == "en" else "Solutions par Besoin Métier",
         })
-        comp = Component(module_name="byt3lab_app", name="public/produits", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/solutions", ctx)
 
     @classmethod
     async def solution_detail(cls, request: Request, response: Response):
@@ -210,9 +249,7 @@ class PublicWebController:
             "solution": solution.to_dict(lang=lang),
             "page_title": solution.title_en if lang == "en" else solution.title_fr,
         })
-        comp = Component(module_name="byt3lab_app", name="public/solution_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/solution_detail", ctx)
 
     # 4. Services
     @classmethod
@@ -226,9 +263,7 @@ class PublicWebController:
             "services": [s.to_dict(lang=lang) for s in services],
             "page_title": "Services d'Ingénierie",
         })
-        comp = Component(module_name="byt3lab_app", name="public/services", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/services", ctx)
 
     @classmethod
     async def service_detail(cls, request: Request, response: Response):
@@ -244,25 +279,26 @@ class PublicWebController:
             "service": service.to_dict(lang=lang),
             "page_title": service.title_en if lang == "en" else service.title_fr,
         })
-        comp = Component(module_name="byt3lab_app", name="public/service_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/service_detail", ctx)
 
     # 5. Réalisations & Projets
     @classmethod
     async def realisations(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request, active_nav="realisations")
         lang = ctx["current_lang"]
+        query = getattr(request, "query", {}) or getattr(request, "args", {}) or {}
+        active_pole = str(query.get("pole") or "").strip().lower()
         async with request.app.db.get_session() as session:
             projects = await ProjectRepository.get_all(session, published_only=True)
+            ngrafix_items = await NgrafixRepository.get_all(session, published_only=True)
 
         ctx.update({
             "projects": [p.to_dict(lang=lang) for p in projects],
-            "page_title": "Réalisations & Portfolio",
+            "ngrafix_items": [n.to_dict(lang=lang) for n in ngrafix_items],
+            "active_pole": active_pole,
+            "page_title": "Portfolio & Case Studies" if lang == "en" else "Réalisations & Portfolio",
         })
-        comp = Component(module_name="byt3lab_app", name="public/realisations", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/realisations", ctx)
 
     @classmethod
     async def project_detail(cls, request: Request, response: Response):
@@ -273,14 +309,20 @@ class PublicWebController:
             project = await ProjectRepository.get_by_slug(session, slug)
             if not project:
                 return await cls.not_found(request, response)
+            all_projects = await ProjectRepository.get_all(session, published_only=True)
+
+        related_projects = [
+            p.to_dict(lang=lang)
+            for p in all_projects
+            if p.slug != slug
+        ][:3]
 
         ctx.update({
             "project": project.to_dict(lang=lang),
+            "related_projects": related_projects,
             "page_title": project.title_en if lang == "en" else project.title_fr,
         })
-        comp = Component(module_name="byt3lab_app", name="public/project_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/project_detail", ctx)
 
     # 6. NGRAFIX Studio
     @classmethod
@@ -295,18 +337,14 @@ class PublicWebController:
             "ngrafix_items": [i.to_dict(lang=lang) for i in ngrafix_items],
             "page_title": "NGRAFIX — Studio Créatif & Brand Experience",
         })
-        comp = Component(module_name="byt3lab_app", name="public/ngrafix", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/ngrafix", ctx)
 
     # 7. À Propos
     @classmethod
     async def a_propos(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request, active_nav="a-propos")
         ctx["page_title"] = "À Propos du Groupe"
-        comp = Component(module_name="byt3lab_app", name="public/a_propos", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/a_propos", ctx)
 
     # 9. Équipe
     @classmethod
@@ -320,9 +358,7 @@ class PublicWebController:
             "team_members": [m.to_dict(lang=lang) for m in members],
             "page_title": "Équipe & Gouvernance",
         })
-        comp = Component(module_name="byt3lab_app", name="public/equipe", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/equipe", ctx)
 
     @classmethod
     async def team_detail(cls, request: Request, response: Response):
@@ -338,9 +374,7 @@ class PublicWebController:
             "member": member.to_dict(lang=lang),
             "page_title": member.name,
         })
-        comp = Component(module_name="byt3lab_app", name="public/team_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/team_detail", ctx)
 
     # 10. Carrières
     @classmethod
@@ -354,9 +388,7 @@ class PublicWebController:
             "jobs": [j.to_dict(lang=lang) for j in jobs],
             "page_title": "Carrières & Recrutement",
         })
-        comp = Component(module_name="byt3lab_app", name="public/carriere", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/carriere", ctx)
 
     @classmethod
     async def job_detail(cls, request: Request, response: Response):
@@ -372,9 +404,7 @@ class PublicWebController:
             "job": job.to_dict(lang=lang),
             "page_title": job.title_en if lang == "en" else job.title_fr,
         })
-        comp = Component(module_name="byt3lab_app", name="public/job_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/job_detail", ctx)
 
     # 11. Partenaires
     @classmethod
@@ -388,22 +418,22 @@ class PublicWebController:
             "partners": [p.to_dict(lang=lang) for p in partners],
             "page_title": "Partenaires & Alliances",
         })
-        comp = Component(module_name="byt3lab_app", name="public/partenaires", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/partenaires", ctx)
 
     # 12. Contact
     @classmethod
     async def contact(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request, active_nav="contact")
-        subject = getattr(request, "args", {}).get("subject", "")
+        lang = ctx["current_lang"]
+        query = getattr(request, "query", {}) or getattr(request, "args", {}) or {}
+        subject = str(query.get("need") or query.get("subject") or "").strip()
+        pole = str(query.get("pole") or "").strip().lower()
         ctx.update({
             "prefilled_subject": subject,
-            "page_title": "Contact & Siège",
+            "prefilled_pole": pole,
+            "page_title": "Contact & Project Inquiry" if lang == "en" else "Contact & Demande de Devis",
         })
-        comp = Component(module_name="byt3lab_app", name="public/contact", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/contact", ctx)
 
     # 13. Blog & Articles (Pagination, Recherche, Catégories, Tags, Commentaires, JSON-LD)
     @classmethod
@@ -469,9 +499,7 @@ class PublicWebController:
             "total_posts": total,
             "page_title": page_title,
         })
-        comp = Component(module_name="byt3lab_app", name="public/blog", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/blog", ctx)
 
     @classmethod
     async def blog(cls, request: Request, response: Response):
@@ -517,9 +545,7 @@ class PublicWebController:
             "og_type": "article",
             "json_ld": json_ld,
         })
-        comp = Component(module_name="byt3lab_app", name="public/post_detail", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/post_detail", ctx)
 
     # 14. Endpoints SEO (sitemap.xml, robots.txt, blog/rss.xml)
     @classmethod
@@ -560,6 +586,4 @@ class PublicWebController:
     async def not_found(cls, request: Request, response: Response):
         ctx = await cls._build_base_context(request)
         ctx["page_title"] = "Page Non Trouvée (404)"
-        comp = Component(module_name="byt3lab_app", name="public/not_found", context=ctx)
-        page = Page(ctx["page_title"], comp)
-        return await response.render_page(page)
+        return await cls._render_public_page(response, "public/not_found", ctx)
