@@ -312,6 +312,24 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilter(initialActive.getAttribute('data-filter') || 'all');
         }
     });
+
+    // Synchronisation des puces de sélection rapide de Pôle sur la page Contact
+    const contactChips = document.querySelector<HTMLElement>('[data-contact-pole-chips]');
+    const poleSelect = document.getElementById('c-pole') as HTMLSelectElement | null;
+    if (contactChips && poleSelect) {
+        const chipBtns = contactChips.querySelectorAll<HTMLButtonElement>('[data-pole-val]');
+        const setChipActive = (val: string) => {
+            chipBtns.forEach((b) => b.classList.toggle('is-active', b.getAttribute('data-pole-val') === val));
+        };
+        chipBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const val = btn.getAttribute('data-pole-val') || 'global';
+                poleSelect.value = val;
+                setChipActive(val);
+            });
+        });
+        poleSelect.addEventListener('change', () => setChipActive(poleSelect.value));
+    }
 });
 
 // 6. Découverte progressive légère au défilement (IntersectionObserver)

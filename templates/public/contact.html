@@ -1,81 +1,98 @@
 {% import "public/byt3lab_macros.html" as m with context %}
-
 {% set is_en = (current_lang == 'en') %}
 
-<section class="b-page-hero">
-    <div class="b-container b-container--wide">
-        <div class="b-breadcrumb">
-            <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
-            <span>/</span>
-            <span>Contact</span>
+<!-- =================================================================
+     1. HERO CONTACT (Style Apple aligné 4 Pôles)
+     ================================================================= -->
+<section class="b-hero b-hero--apple b-hero--subpage">
+    <div class="b-hero__pattern" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--1" aria-hidden="true"></div>
+    <div class="b-hero__glow b-hero__glow--2" aria-hidden="true"></div>
+
+    <div class="b-container b-container--wide b-hero__container">
+        <div style="max-width: 820px;">
+            <nav class="b-breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ site_prefix }}/">{{ 'Home' if is_en else 'Accueil' }}</a>
+                <span>/</span>
+                <span>Contact</span>
+            </nav>
+
+            <div class="b-hero__eyebrow" data-reveal="hero">
+                <span class="b-hero__eyebrow-dot"></span>
+                <span>{{ 'Project Inquiry & Quotes · Response within 24–48h' if is_en else 'Contact & Demande de Devis · Réponse sous 24–48h' }}</span>
+            </div>
+
+            <h1 class="b-hero__title" data-reveal="hero" data-reveal-delay="1">
+                {% if is_en %}
+                Let's discuss your <span class="b-hero__title-accent">technological project</span>.
+                {% else %}
+                Discutons de votre <span class="b-hero__title-accent">projet technologique</span>.
+                {% endif %}
+            </h1>
+
+            <p class="b-hero__subtitle" data-reveal="hero" data-reveal-delay="2">
+                {{ 'Select the relevant Byt3Lab pole and describe your objective so our engineers, integrators or designers can come back with a clear, concrete proposal.'
+                   if is_en else
+                   'Sélectionnez le pôle Byt3Lab concerné et décrivez votre besoin afin que nos ingénieurs, intégrateurs ou designers vous répondent avec une proposition claire et concrète.' }}
+            </p>
+
+            <div class="b-hero__actions" data-reveal="hero" data-reveal-delay="3">
+                <a href="#formulaire-contact" class="b-btn b-btn--lg b-btn--primary b-btn--hero-primary">
+                    <span>{{ 'Fill the project brief' if is_en else 'Remplir le formulaire' }}</span>
+                    {{ m.byt3lab_icon('arrow-right', 17) }}
+                </a>
+                {% if settings['contact.phone'] %}
+                <a href="tel:{{ settings['contact.phone'] }}" class="b-btn b-btn--lg b-btn--hero-ghost">
+                    {{ m.byt3lab_icon('phone', 16) }}
+                    <span>{{ settings['contact.phone'] }}</span>
+                </a>
+                {% endif %}
+            </div>
         </div>
-        <span class="b-eyebrow" style="color: var(--c-cyan-400);">{{ 'PROJECT INQUIRY & QUOTES' if is_en else 'CONTACT & DEMANDE DE DEVIS' }}</span>
-        <h1 class="b-page-hero__title">
-            {{ 'Let\'s discuss your technological project' if is_en else 'Discutons de votre projet technologique' }}
-        </h1>
-        <p class="b-page-hero__lead">
-            {{ 'Select the relevant Byt3Lab pole and describe your need so our specialists can respond with a concrete proposal.'
-               if is_en else
-               'Précisez le pôle concerné et la nature de votre besoin afin que nos équipes vous répondent avec une proposition adaptée.' }}
-        </p>
     </div>
 </section>
 
-<section class="b-section">
+<!-- =================================================================
+     2. FORMULAIRE DE CONTACT & COORDONNÉES STICKY
+     ================================================================= -->
+<section class="b-section" id="formulaire-contact">
     <div class="b-container b-container--wide">
-        <div class="row g-5">
+        <div class="row g-4 align-items-start">
 
-            <!-- Colonne Coordonnées -->
-            <div class="col-lg-4">
-                <div class="b-card h-100">
-                    <span class="b-eyebrow">{{ 'Headquarters' if is_en else 'Coordonnées Professionnelles' }}</span>
-                    <h2 class="h4 fw-bold mt-2 mb-4" style="color: var(--c-navy-950);">Byt3Lab</h2>
-
-                    <div class="d-flex flex-column gap-3 mb-4">
-                        <div class="d-flex gap-3 align-items-start">
-                            <span style="color: var(--c-blue-600);">{{ m.byt3lab_icon('map-pin', 20) }}</span>
-                            <div>
-                                <div class="small fw-bold text-muted">{{ 'Location' if is_en else 'Localisation' }}</div>
-                                <div class="fw-semibold">{{ settings['contact.location'] }}</div>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 align-items-start">
-                            <span style="color: var(--c-blue-600);">{{ m.byt3lab_icon('mail', 20) }}</span>
-                            <div>
-                                <div class="small fw-bold text-muted">E-mail</div>
-                                <a href="mailto:{{ settings['contact.email'] }}" class="fw-semibold text-decoration-none">{{ settings['contact.email'] }}</a>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-3 align-items-start">
-                            <span style="color: var(--c-blue-600);">{{ m.byt3lab_icon('phone', 20) }}</span>
-                            <div>
-                                <div class="small fw-bold text-muted">{{ 'Phone / WhatsApp' if is_en else 'Téléphone / WhatsApp' }}</div>
-                                <a href="tel:{{ settings['contact.phone'] }}" class="fw-semibold text-decoration-none">{{ settings['contact.phone'] }}</a>
-                            </div>
-                        </div>
+            <!-- Colonne Principale : Formulaire -->
+            <div class="col-lg-8" data-reveal>
+                <div class="b-pole-card" style="padding: clamp(1.75rem, 4vw, 3rem);">
+                    <div class="mb-4">
+                        <span class="b-eyebrow">{{ 'Direct Inquiry' if is_en else 'Brief & Demande de Devis' }}</span>
+                        <h2 class="h3 fw-semibold mt-1 mb-2" style="color: var(--c-anthracite); letter-spacing: -0.025em;">
+                            {{ 'Tell us about your project' if is_en else 'Décrivez votre besoin' }}
+                        </h2>
+                        <p class="small text-muted mb-0">
+                            {{ 'Every inquiry is automatically routed to the right pole for fast follow-up.' if is_en else 'Chaque demande est orientée directement vers le pôle concerné pour une prise en charge rapide.' }}
+                        </p>
                     </div>
 
-                    <div class="pt-3 border-top">
-                        <div class="small fw-bold text-muted mb-2">{{ 'Our 4 Poles' if is_en else 'Nos 4 Pôles' }}</div>
-                        <ul class="list-unstyled small text-muted mb-0 d-flex flex-column gap-1">
-                            <li><strong>Software</strong> — MELODI ERP &amp; Logiciels</li>
-                            <li><strong>Web Services</strong> — Cloud &amp; Infogérance</li>
-                            <li><strong>Equipment</strong> — IT, Réseaux, Énergie &amp; EaaS</li>
-                            <li><strong style="color: var(--c-ngx-orange-dark);">ngrafix</strong> — Branding, UI/UX &amp; Design</li>
-                        </ul>
+                    <!-- Sélecteur visuel rapide de Pôle (synchronisé avec #c-pole) -->
+                    <div class="mb-4">
+                        <div class="small fw-semibold text-muted mb-2">{{ 'Quick Pole Selection:' if is_en else 'Choix rapide du pôle :' }}</div>
+                        <div class="b-filter-bar" data-contact-pole-chips>
+                            <button type="button" class="b-filter-btn {% if not prefilled_pole or prefilled_pole == 'global' %}is-active{% endif %}" data-pole-val="global">
+                                {{ 'Global / Multi-Pole' if is_en else 'Global (Multi-pôles)' }}
+                            </button>
+                            <button type="button" class="b-filter-btn {% if prefilled_pole == 'software' %}is-active{% endif %}" data-pole-val="software">
+                                Software
+                            </button>
+                            <button type="button" class="b-filter-btn {% if prefilled_pole == 'web-services' %}is-active{% endif %}" data-pole-val="web-services">
+                                Web Services
+                            </button>
+                            <button type="button" class="b-filter-btn {% if prefilled_pole == 'equipment' %}is-active{% endif %}" data-pole-val="equipment">
+                                Equipment &amp; EaaS
+                            </button>
+                            <button type="button" class="b-filter-btn {% if prefilled_pole == 'ngrafix' %}is-active{% endif %}" data-pole-val="ngrafix">
+                                ngrafix
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Colonne Formulaire -->
-            <div class="col-lg-8">
-                <div class="b-card">
-                    <h2 class="h4 fw-bold mb-1" style="color: var(--c-navy-950);">
-                        {{ 'Send your project brief' if is_en else 'Formulaire de prise de contact & devis' }}
-                    </h2>
-                    <p class="small text-muted mb-4">
-                        {{ 'Each pole receives and tracks its own business inquiries.' if is_en else 'Chaque demande est orientée vers le pôle concerné pour un suivi rapide.' }}
-                    </p>
 
                     <form id="byt3lab-contact-form" action="{{ base_prefix }}/api/byt3lab_app/contact" data-b-ajax="1" method="POST">
                         <input type="hidden" name="form_type" value="contact">
@@ -87,19 +104,19 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="c-name" class="b-label">{{ 'Full Name *' if is_en else 'Nom & Prénom *' }}</label>
-                                <input type="text" id="c-name" name="name" class="b-input" placeholder="ex: Jean-Paul Mbianda" required>
+                                <input type="text" id="c-name" name="name" class="b-input" placeholder="{{ 'e.g. Jean-Paul Mbianda' if is_en else 'ex: Jean-Paul Mbianda' }}" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="c-org" class="b-label">{{ 'Company / Organization' if is_en else 'Entreprise / Organisation' }}</label>
-                                <input type="text" id="c-org" name="org" class="b-input" placeholder="ex: Groupe Logistique Sahel">
+                                <input type="text" id="c-org" name="org" class="b-input" placeholder="{{ 'e.g. Sahel Logistics Group' if is_en else 'ex: Groupe Logistique Sahel' }}">
                             </div>
                             <div class="col-md-6">
-                                <label for="c-email" class="b-label">{{ 'Business Email *' if is_en else 'Adresse e-mail *' }}</label>
-                                <input type="email" id="c-email" name="email" class="b-input" placeholder="ex: direction@entreprise.cm" required>
+                                <label for="c-email" class="b-label">{{ 'Business Email *' if is_en else 'Adresse e-mail professionnelle *' }}</label>
+                                <input type="email" id="c-email" name="email" class="b-input" placeholder="direction@entreprise.cm" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="c-phone" class="b-label">{{ 'Phone' if is_en else 'Téléphone' }}</label>
-                                <input type="tel" id="c-phone" name="phone" class="b-input" placeholder="ex: +237 6xx xx xx xx">
+                                <label for="c-phone" class="b-label">{{ 'Phone / WhatsApp' if is_en else 'Téléphone / WhatsApp' }}</label>
+                                <input type="tel" id="c-phone" name="phone" class="b-input" placeholder="+237 6xx xx xx xx">
                             </div>
                             <div class="col-md-6">
                                 <label for="c-pole" class="b-label">{{ 'Relevant Pole *' if is_en else 'Pôle concerné *' }}</label>
@@ -108,16 +125,16 @@
                                         {{ 'Global Transformation / Multi-Pole' if is_en else 'Accompagnement Global (Multi-pôles)' }}
                                     </option>
                                     <option value="software" {% if prefilled_pole == 'software' %}selected{% endif %}>
-                                        Byt3Lab Software (MELODI ERP, Logiciels, API)
+                                        Byt3Lab Software (MELODI ERP, ASSO, SUKU, API)
                                     </option>
                                     <option value="web-services" {% if prefilled_pole == 'web-services' %}selected{% endif %}>
                                         Byt3Lab Web Services (Cloud, Hébergement, Infogérance)
                                     </option>
                                     <option value="equipment" {% if prefilled_pole == 'equipment' %}selected{% endif %}>
-                                        Byt3Lab Equipment (Matériel IT, Réseaux, Énergie, EaaS)
+                                        Byt3Lab Equipment (IT, Réseaux, Énergie &amp; EaaS)
                                     </option>
                                     <option value="ngrafix" {% if prefilled_pole == 'ngrafix' %}selected{% endif %}>
-                                        ngrafix (Branding, UI/UX, Communication)
+                                        ngrafix (Branding, UI/UX &amp; Communication)
                                     </option>
                                 </select>
                             </div>
@@ -125,25 +142,131 @@
                                 <label for="c-subject" class="b-label">{{ 'Nature of Need *' if is_en else 'Nature du besoin *' }}</label>
                                 <input type="text" id="c-subject" name="subject" class="b-input"
                                        value="{{ prefilled_subject|default('') }}"
-                                       placeholder="{{ 'e.g. ERP deployment, EaaS quote, branding...' if is_en else 'ex: Déploiement ERP, Devis EaaS, Identité visuelle...' }}" required>
+                                       placeholder="{{ 'e.g. MELODI ERP deployment, EaaS quote, branding...' if is_en else 'ex: Déploiement MELODI ERP, Devis EaaS, Identité visuelle...' }}" required>
                             </div>
                             <div class="col-12">
                                 <label for="c-message" class="b-label">{{ 'Project Description *' if is_en else 'Description du projet *' }}</label>
                                 <textarea id="c-message" name="message" rows="5" class="b-textarea" required
-                                          placeholder="{{ 'Describe your context, goals and timeline...' if is_en else 'Décrivez votre contexte, vos objectifs et vos contraintes...' }}"></textarea>
+                                          placeholder="{{ 'Describe your context, goals, team size and target timeline...' if is_en else 'Décrivez votre contexte, vos objectifs, vos contraintes et vos échéances...' }}"></textarea>
                             </div>
-                            <div class="col-12">
-                                <button type="submit" class="b-btn b-btn--lg b-btn--primary">
-                                    <span>{{ 'Send inquiry' if is_en else 'Envoyer ma demande' }}</span>
+                            <div class="col-12 pt-2">
+                                <button type="submit" class="b-btn b-btn--lg b-btn--primary w-100">
+                                    <span>{{ 'Send my inquiry' if is_en else 'Envoyer ma demande' }}</span>
                                     {{ m.byt3lab_icon('arrow-right', 18) }}
                                 </button>
                             </div>
                         </div>
-                        <div class="b-form-feedback mt-3" style="display: none;"></div>
+
+                        <div class="b-form-feedback mt-3" role="alert" style="display: none;"></div>
                     </form>
                 </div>
             </div>
 
+            <!-- Colonne Droite : Coordonnées Sticky & Routage 4 Pôles -->
+            <div class="col-lg-4" data-reveal data-reveal-delay="1">
+                <aside style="position: sticky; top: 92px;" class="d-flex flex-column gap-4">
+
+                    <!-- Carte Coordonnées -->
+                    <div class="b-pole-card" style="border-top: 4px solid var(--c-blue-500);">
+                        <span class="b-pole-card__tag mb-2">{{ 'HEADQUARTERS & DIRECT CHANNELS' if is_en else 'COORDONNÉES DIRECTES' }}</span>
+                        <h3 class="h5 fw-semibold mb-4" style="color: var(--c-anthracite);">Byt3Lab Group</h3>
+
+                        <div class="d-flex flex-column gap-3 mb-4">
+                            <div class="d-flex gap-3 align-items-start">
+                                <span class="b-pole-card__icon" style="width: 38px; height: 38px; flex-shrink: 0;">{{ m.byt3lab_icon('map-pin', 18) }}</span>
+                                <div>
+                                    <div class="small text-muted">{{ 'Location' if is_en else 'Siège & Interventions' }}</div>
+                                    <div class="fw-semibold" style="color: var(--c-anthracite); font-size: 0.92rem;">{{ settings['contact.location'] }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-3 align-items-start">
+                                <span class="b-pole-card__icon" style="width: 38px; height: 38px; flex-shrink: 0;">{{ m.byt3lab_icon('mail', 18) }}</span>
+                                <div>
+                                    <div class="small text-muted">E-mail</div>
+                                    <a href="mailto:{{ settings['contact.email'] }}" class="fw-semibold text-decoration-none" style="font-size: 0.92rem;">{{ settings['contact.email'] }}</a>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-3 align-items-start">
+                                <span class="b-pole-card__icon" style="width: 38px; height: 38px; flex-shrink: 0;">{{ m.byt3lab_icon('phone', 18) }}</span>
+                                <div>
+                                    <div class="small text-muted">{{ 'Phone / WhatsApp' if is_en else 'Téléphone / WhatsApp' }}</div>
+                                    <a href="tel:{{ settings['contact.phone'] }}" class="fw-semibold text-decoration-none" style="font-size: 0.92rem;">{{ settings['contact.phone'] }}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-4" style="background: var(--c-gray-50); border: 1px solid rgba(15, 23, 42, 0.06);">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="b-status b-status--active"><span class="b-status__dot"></span>{{ 'Fast response' if is_en else 'Réponse rapide' }}</span>
+                            </div>
+                            <p class="small text-muted mb-0" style="line-height: 1.5;">
+                                {{ 'Our teams review every inquiry within 24 to 48 business hours.' if is_en else 'Nos équipes étudient chaque demande sous 24 à 48h ouvrées.' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Carte 4 Pôles -->
+                    <div class="b-pole-card">
+                        <span class="b-pole-card__tag mb-2">{{ 'OUR 4 POLES' if is_en else 'NOS 4 PÔLES' }}</span>
+                        <div class="d-flex flex-column gap-2 mt-2" style="font-size: 0.88rem;">
+                            <a href="{{ site_prefix }}/poles/software/" class="text-decoration-none d-flex justify-content-between align-items-center py-2 border-bottom" style="color: var(--c-anthracite);">
+                                <span><strong>Software</strong> &middot; <span class="text-muted">MELODI, ASSO, SUKU</span></span>
+                                <span>&rarr;</span>
+                            </a>
+                            <a href="{{ site_prefix }}/poles/web-services/" class="text-decoration-none d-flex justify-content-between align-items-center py-2 border-bottom" style="color: var(--c-anthracite);">
+                                <span><strong>Web Services</strong> &middot; <span class="text-muted">Cloud &amp; Hosting</span></span>
+                                <span>&rarr;</span>
+                            </a>
+                            <a href="{{ site_prefix }}/poles/equipment/" class="text-decoration-none d-flex justify-content-between align-items-center py-2 border-bottom" style="color: var(--c-anthracite);">
+                                <span><strong>Equipment</strong> &middot; <span class="text-muted">IT, Énergie &amp; EaaS</span></span>
+                                <span>&rarr;</span>
+                            </a>
+                            <a href="{{ site_prefix }}/poles/ngrafix/" class="text-decoration-none d-flex justify-content-between align-items-center py-2" style="color: var(--c-ngx-orange-dark);">
+                                <span><strong>ngrafix</strong> &middot; <span class="text-muted">Branding &amp; UI/UX</span></span>
+                                <span>&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- =================================================================
+     3. PARCOURS DE PRISE EN CHARGE
+     ================================================================= -->
+<section class="b-section b-section--alt">
+    <div class="b-container b-container--wide">
+        <div class="b-section__head b-section__head--center" data-reveal>
+            <span class="b-eyebrow">{{ 'What Happens Next' if is_en else 'Suite de Votre Demande' }}</span>
+            <h2 class="b-title">{{ 'A simple, transparent 3-step onboarding' if is_en else 'Une prise en charge simple et transparente en 3 étapes' }}</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-reveal data-reveal-delay="1">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">01 &middot; {{ 'SCOPING' if is_en else 'ANALYSE' }}</div>
+                    <h4>{{ 'Qualification & Call' if is_en else 'Écoute & Cadrage' }}</h4>
+                    <p>{{ 'A pole lead reviews your brief and schedules a focused discovery exchange to clarify priorities.' if is_en else 'Un référent de pôle étudie votre besoin et organise un échange ciblé pour clarifier vos priorités.' }}</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-reveal data-reveal-delay="2">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">02 &middot; {{ 'PROPOSAL' if is_en else 'PROPOSITION' }}</div>
+                    <h4>{{ 'Clear Roadmap & Quote' if is_en else 'Devis & Feuille de Route' }}</h4>
+                    <p>{{ 'You receive a transparent technical and financial proposal—purchase, subscription or Equipment as a Service.' if is_en else 'Vous recevez une proposition technique et financière claire : achat, déploiement progressif ou Equipment as a Service.' }}</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-reveal data-reveal-delay="3">
+                <div class="b-step-card h-100">
+                    <div class="b-step-card__num">03 &middot; {{ 'EXECUTION' if is_en else 'EXÉCUTION' }}</div>
+                    <h4>{{ 'Delivery & Ongoing Support' if is_en else 'Déploiement & Suivi' }}</h4>
+                    <p>{{ 'Our teams deploy your solution, train your staff and provide long-term maintenance and managed operations.' if is_en else 'Nos équipes déploient votre solution, forment vos utilisateurs et assurent la maintenance dans la durée.' }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
